@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlertHub - Smart Alert & Reminder Management</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="AlertHub helps you organize business, family, and financial dues with smart alerts, notification channels, calendar sync, and AI-driven cash flow insights.">
+</head>
+<body>
+    <!-- Login & Signup Screen -->
+    <div class="auth-container" id="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo-header">
+                <div class="auth-logo-icon">A</div>
+                <h2>AlertHub</h2>
+            </div>
+            <p class="auth-tagline">Manage your Business, Family, and Finance schedules smartly.</p>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tab-login">Log In</button>
+                <button class="auth-tab-btn" id="tab-signup">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="e.g., dr.balaji@alerthub.com" value="dr.balaji@alerthub.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" value="password123" required>
+                </div>
+                <button type="submit" class="btn-primary auth-submit-btn">Log In</button>
+            </form>
+            
+            <!-- Signup Form -->
+            <form id="signup-form" class="auth-form">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" class="form-control" placeholder="e.g., Dr. Balaji" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-country">Country</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <select id="signup-country" class="form-control" style="flex: 1;" required>
+                            <option value="" disabled selected>Select a country</option>
+                        </select>
+                        <span id="signup-country-symbol" class="form-control" style="width: 3.5rem; display: flex; align-items: center; justify-content: center; font-weight: bold; background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">--</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" class="form-control" placeholder="e.g., balaji@domain.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" class="form-control" placeholder="Create a password" required>
+                </div>
+                <button type="submit" class="btn-primary auth-submit-btn">Create Account</button>
+            </form>
+            
+            <div class="auth-divider">
+                <span>or connect with</span>
+            </div>
+            
+            <div class="social-login-grid">
+                <button class="social-btn btn-google" id="social-btn-google" type="button">
+                    <svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12.24 10.285V13.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.859-3.578-7.859-8s3.53-8 7.859-8c2.46 0 4.105 1.025 5.047 1.926l2.427-2.334C17.955 2.192 15.34 1 12.24 1 6.033 1 12.24 12.24 1 12.24s5.033 11.24 11.24 11.24c6.478 0 10.793-4.537 10.793-10.983 0-.74-.08-1.302-.177-1.858H12.24z"/></svg>
+                    Google
+                </button>
+                <button class="social-btn btn-github" id="social-btn-github" type="button">
+                    <svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                    GitHub
+                </button>
+            </div>
+            
+            <div class="auth-footer">
+                <button type="button" class="btn-secondary" id="auth-skip-btn" style="width: 100%; font-size: 0.85rem; padding: 0.4rem; border-style: dashed; justify-content: center;">
+                    Try Sandbox Mode (Skip Login)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo-icon">A</div>
+                <span class="logo-text">AlertHub</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <li class="nav-item active" data-view="dashboard">
+                    <a href="#dashboard">
+                        <!-- Dashboard SVG -->
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-view="reminders">
+                    <a href="#reminders">
+                        <!-- List SVG -->
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        <span>All Reminders</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-view="calendar">
+                    <a href="#calendar">
+                        <!-- Calendar SVG -->
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span>Calendar View</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-view="insights">
+                    <a href="#insights">
+                        <!-- Sparkles/Insight SVG -->
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <span>AI Smart Insights</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-view="pricing">
+                    <a href="#pricing">
+                        <!-- Pricing/Settings SVG -->
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        <span>Plans & Pricing</span>
+                    </a>
+                </li>
+            </nav>
+            
+            <div class="profile-card">
+                <div id="sidebar-plan-tag" class="user-plan-badge">Free Plan</div>
+                <div class="user-info" style="justify-content: space-between; width: 100%;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div class="avatar" id="user-avatar">DB</div>
+                        <div class="user-details">
+                            <h4 id="user-display-name">Dr. Balaji</h4>
+                            <p id="user-tier-label">Free Account</p>
+                        </div>
+                    </div>
+                    <button class="action-btn" id="sidebar-logout-btn" title="Log Out" aria-label="Log Out" style="margin-left: auto;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Header -->
+            <header class="top-header">
+                <button class="menu-toggle" id="sidebar-toggle" aria-label="Toggle Navigation Sidebar">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                
+                <div class="page-title">
+                    <h1 id="view-title">Dashboard</h1>
+                    <p id="view-subtitle">Welcome back, Dr. Balaji. Here is your overview.</p>
+                </div>
+                
+                <div class="header-actions">
+                    <select id="header-country-select" class="select-custom" style="padding: 0.5rem; font-size: 0.85rem; max-width: 150px; font-weight: 500;" aria-label="Select Country">
+                    </select>
+                    <div class="search-bar">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" id="global-search" placeholder="Search reminders...">
+                    </div>
+                    
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Theme">
+                        <!-- Sun Icon (Light Mode) -->
+                        <svg class="light-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-11.314l.707.707m11.314 11.314l.707-.707M12 7a5 5 0 100 10 5 5 0 000-10z"></path></svg>
+                        <!-- Moon Icon (Dark Mode) -->
+                        <svg class="dark-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </button>
+                    
+                    <button class="btn-primary" id="add-reminder-btn">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        Add Reminder
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="app-view active">
+                
+                <!-- KPI Statistics -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon-container" style="background-color: var(--primary-glow); color: var(--primary);">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div class="kpi-info">
+                            <p>Monthly Outflow</p>
+                            <h3 id="stat-total-outflow">₹0</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-icon-container" style="background-color: var(--danger-bg); color: var(--danger);">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        </div>
+                        <div class="kpi-info">
+                            <p>Alerts Due Today</p>
+                            <h3 id="stat-due-today">0</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-icon-container" style="background-color: var(--warning-bg); color: var(--warning);">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div class="kpi-info">
+                            <p>Upcoming Dues</p>
+                            <h3 id="stat-upcoming">0</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Module Filters -->
+                <div class="module-filters">
+                    <button class="filter-tab active" data-module="all">All Modules</button>
+                    <button class="filter-tab" data-module="business">Business</button>
+                    <button class="filter-tab" data-module="family">Family</button>
+                    <button class="filter-tab" data-module="finance">Finance</button>
+                </div>
+                
+                <!-- Main Dashboard Panels Grid -->
+                <div class="alerts-layout">
+                    
+                    <!-- Left Column: Active Alerts -->
+                    <div class="panel-card">
+                        <div class="panel-header">
+                            <h2>Today's Alerts & Reminders</h2>
+                            <span class="reminder-days-left due-danger" id="today-alerts-count">0 due today</span>
+                        </div>
+                        
+                        <div class="reminders-list" id="today-alerts-list">
+                            <!-- Dynamic Inject -->
+                        </div>
+                        
+                        <div class="panel-header" style="margin-top: 2.5rem;">
+                            <h2>Upcoming Dues</h2>
+                        </div>
+                        
+                        <div class="reminders-list" id="upcoming-alerts-list">
+                            <!-- Dynamic Inject -->
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Channels & AI Teaser -->
+                    <div class="right-panel">
+                        
+                        <!-- Channels Status -->
+                        <div class="panel-card">
+                            <div class="panel-header">
+                                <h2>Notification Channels</h2>
+                            </div>
+                            <div class="channels-grid">
+                                <div class="channel-card">
+                                    <div class="channel-name">
+                                        <!-- Bell SVG -->
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="color:var(--primary);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                        <span>Push Notification</span>
+                                    </div>
+                                    <span class="channel-status active">Active</span>
+                                </div>
+                                <div class="channel-card">
+                                    <div class="channel-name">
+                                        <!-- Mail SVG -->
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="color:var(--success);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                        <span>Email Reminder</span>
+                                    </div>
+                                    <span class="channel-status premium" id="email-channel-status">Unlocked</span>
+                                </div>
+                                <div class="channel-card">
+                                    <div class="channel-name">
+                                        <!-- Chat/WhatsApp SVG -->
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="color:var(--warning);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                                        <span>WhatsApp Alerts</span>
+                                    </div>
+                                    <span class="channel-status" id="whatsapp-channel-status" style="background-color: var(--border-color); color: var(--text-secondary);">Premium Only</span>
+                                </div>
+                                <div class="channel-card">
+                                    <div class="channel-name">
+                                        <!-- Device/SMS SVG -->
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="color:var(--danger);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                        <span>SMS Alerts</span>
+                                    </div>
+                                    <span class="channel-status" id="sms-channel-status" style="background-color: var(--border-color); color: var(--text-secondary);">Premium Only</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- AI Insight Teaser Card -->
+                        <div class="ai-insights-teaser">
+                            <div class="ai-header">
+                                <span class="ai-badge">AI Assistant</span>
+                            </div>
+                            <h3>Smart Cash Flow Alerts</h3>
+                            <p>AlertHub analyzes your deadlines to spot overlap conflicts and predict cash flow strain.</p>
+                            
+                            <div id="ai-teaser-box" class="ai-insight-box">
+                                <p>"Electricity bill and Home Loan EMI are falling due within 48 hours. Ensure account balance exceeds ₹42,500."</p>
+                            </div>
+                            
+                            <button class="btn-primary" id="jump-to-insights-btn" style="background: white; color: #1e1b4b; border: none; font-size: 0.85rem; width: 100%; justify-content: center; box-shadow: none; margin-top: 0.5rem;">
+                                View All Financial Insights
+                            </button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Reminders Management View -->
+            <section id="view-reminders" class="app-view">
+                
+                <div class="reminders-toolbar">
+                    <div class="filter-controls">
+                        <!-- Module Dropdown -->
+                        <select id="reminder-filter-module" class="select-custom">
+                            <option value="all">All Modules</option>
+                            <option value="business">Business</option>
+                            <option value="family">Family</option>
+                            <option value="finance">Finance</option>
+                        </select>
+                        
+                        <!-- Schedule Dropdown -->
+                        <select id="reminder-filter-schedule" class="select-custom">
+                            <option value="all">All Schedules</option>
+                            <option value="today">Due Today</option>
+                            <option value="soon">Due in 7 Days</option>
+                            <option value="month">Due this Month</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn-primary" id="btn-add-reminder-toolbar">
+                        Add New Reminder
+                    </button>
+                </div>
+                
+                <div class="reminders-table-container">
+                    <table class="reminders-table">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Reminder Name</th>
+                                <th>Category</th>
+                                <th>Due Date</th>
+                                <th>Amount</th>
+                                <th>Active Channels</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reminders-table-body">
+                            <!-- Dynamic Inject -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- Calendar View -->
+            <section id="view-calendar" class="app-view">
+                <div class="calendar-layout">
+                    
+                    <!-- Calendar Main Grid -->
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <span class="calendar-month-year" id="calendar-title">June 2026</span>
+                            <div class="calendar-nav">
+                                <button class="action-btn" id="calendar-prev-btn" aria-label="Previous Month">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                </button>
+                                <button class="action-btn" id="calendar-today-btn" style="width:auto; padding:0 0.5rem; font-size:0.8rem; font-weight:600;">Today</button>
+                                <button class="action-btn" id="calendar-next-btn" aria-label="Next Month">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="calendar-grid-header">
+                            <div>Sun</div>
+                            <div>Mon</div>
+                            <div>Tue</div>
+                            <div>Wed</div>
+                            <div>Thu</div>
+                            <div>Fri</div>
+                            <div>Sat</div>
+                        </div>
+                        
+                        <div class="calendar-grid" id="calendar-days-grid">
+                            <!-- Dynamic Calendar Days Inject -->
+                        </div>
+                    </div>
+                    
+                    <!-- Calendar Side Panel -->
+                    <div class="calendar-side-panel">
+                        <div class="panel-card">
+                            <div class="panel-header">
+                                <h2 id="calendar-selected-date-label">Selected Date</h2>
+                            </div>
+                            <div class="reminders-list" id="calendar-day-alerts-list">
+                                <!-- Dynamic selected date reminder inject -->
+                            </div>
+                        </div>
+                        
+                        <div class="panel-card">
+                            <h3>Reminder Schedule Rules</h3>
+                            <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:0.5rem; line-height:1.4;">
+                                Alerts are dispatched in advance according to your reminder schedule configurations (e.g. 30, 15, 7, 3, 1 days prior, and due day).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- AI Smart Insights View -->
+            <section id="view-insights" class="app-view">
+                
+                <!-- Insights Header Card -->
+                <div class="insights-header-card">
+                    <div class="insights-header-info">
+                        <h2>Smart AI Outflow Analysis</h2>
+                        <p>AlertHub AI continuously reviews your upcoming payment schedules to analyze liquidity levels, find potential payment conflicts, and alert you of major due date clusters.</p>
+                    </div>
+                    <div class="insights-header-visual">
+                        <div class="num" id="ai-est-outflow">₹0</div>
+                        <div class="lbl">7-Day Outflow Expected</div>
+                    </div>
+                </div>
+                
+                <!-- Insights Chart Card -->
+                <div class="panel-card insights-chart-card">
+                    <div class="panel-header">
+                        <h2>7-Day Outflow & Projected Cash Flow</h2>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-dot balance"></span>
+                                <span>Projected Balance</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot outflow"></span>
+                                <span>Daily Outflows</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container-wrapper" style="position: relative;">
+                        <svg id="insights-flow-chart" viewBox="0 0 800 250" width="100%" height="100%">
+                            <!-- Dynamic SVG Content will be injected here -->
+                        </svg>
+                        <div class="chart-tooltip" id="chart-tooltip" style="position: absolute; display: none; pointer-events: none;"></div>
+                    </div>
+                </div>
+                
+                <div class="insights-grid">
+                    
+                    <!-- Left Column: Insights Listing -->
+                    <div class="insights-column">
+                        <div class="panel-card">
+                            <div class="panel-header">
+                                <h2>AI Insights & Cash Flow Advisory</h2>
+                            </div>
+                            
+                            <div style="display:flex; flex-direction:column; gap:1rem;" id="insights-card-container">
+                                <!-- Dynamic Inject -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Interactive Simulators -->
+                    <div class="insights-column">
+                        
+                        <!-- AI Insights Preview Text Sandbox -->
+                        <div class="panel-card">
+                            <h3>AI Insight Engine Simulator</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0.5rem 0 1rem 0; line-height:1.4;">
+                                Toggle filters or update details in the app to see how AI recommendations change. Use the sandbox below to simulate alerts manually.
+                            </p>
+                            
+                            <div class="form-group">
+                                <label for="sim-weekly-cash" id="sim-weekly-cash-label">Simulate Weekly Account Balance (₹)</label>
+                                <input type="number" id="sim-weekly-cash" class="form-control" value="25000">
+                            </div>
+                            
+                            <button class="btn-primary" id="btn-recalc-ai-insights" style="width: 100%; justify-content: center;">
+                                Re-run AI Analytics
+                            </button>
+                        </div>
+                        
+                        <!-- Dev Roadmap Status -->
+                        <div class="panel-card">
+                            <h3>Development Roadmap</h3>
+                            
+                            <div class="roadmap-timeline">
+                                <div class="roadmap-node completed">
+                                    <div class="roadmap-card">
+                                        <h4>Phase 1: Foundation</h4>
+                                        <ul>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                Account Login Mockup
+                                            </li>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                Modular Alert Dashboard
+                                            </li>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                Add Reminders Engine
+                                            </li>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                Monthly Calendar View
+                                            </li>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                Desktop Toast Notifications
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="roadmap-node active">
+                                    <div class="roadmap-card">
+                                        <h4>Phase 2: Enhanced Reminders</h4>
+                                        <ul>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                Email Alert Delivery Mock
+                                            </li>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                Recurring Due Date System
+                                            </li>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                Module Categories (Business, Family, Finance)
+                                            </li>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                Global Fuzzy Search Filters
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="roadmap-node">
+                                    <div class="roadmap-card">
+                                        <h4>Phase 3: Premium Integrations</h4>
+                                        <ul>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                WhatsApp & SMS APIs (Premium Mode)
+                                            </li>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                AI Smart Advisor Simulation
+                                            </li>
+                                            <li class="checked">
+                                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                                PDF/Excel Statement Export Mocks
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Pricing Page View -->
+            <section id="view-pricing" class="app-view">
+                <div class="pricing-header">
+                    <h2>Choose Your Pricing Plan</h2>
+                    <p>Unlock premium features, additional notification channels, and shared family/business reminders.</p>
+                </div>
+                
+                <div class="pricing-grid">
+                    <!-- Free Plan -->
+                    <div class="pricing-card" id="pricing-tier-free">
+                        <h3>Free</h3>
+                        <p class="description">For basic personal use and small reminders.</p>
+                        <div class="price">₹0 <span>/ month</span></div>
+                        
+                        <ul class="pricing-features">
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Up to 30 active reminders
+                            </li>
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Push notifications
+                            </li>
+                            <li style="opacity: 0.5; text-decoration: line-through;">
+                                WhatsApp & SMS channels
+                            </li>
+                            <li style="opacity: 0.5; text-decoration: line-through;">
+                                Shared family portals
+                            </li>
+                            <li style="opacity: 0.5; text-decoration: line-through;">
+                                Business reminders (GST, TDS)
+                            </li>
+                        </ul>
+                        
+                        <button class="btn-secondary btn-pricing" id="btn-select-free">Current Plan</button>
+                    </div>
+                    
+                    <!-- Personal Plan -->
+                    <div class="pricing-card" id="pricing-tier-personal">
+                        <h3>Personal</h3>
+                        <p class="description">Ideal for active individuals tracking personal bills.</p>
+                        <div class="price">₹99 <span>/ month</span></div>
+                        
+                        <ul class="pricing-features">
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Unlimited reminders
+                            </li>
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Push & Email notifications
+                            </li>
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                WhatsApp (100 / month)
+                            </li>
+                            <li style="opacity: 0.5; text-decoration: line-through;">
+                                Shared family portals
+                            </li>
+                            <li style="opacity: 0.5; text-decoration: line-through;">
+                                GST & Vendor invoicing
+                            </li>
+                        </ul>
+                        
+                        <button class="btn-primary btn-pricing" id="btn-select-personal">Upgrade</button>
+                    </div>
+                    
+                    <!-- Family Plan -->
+                    <div class="pricing-card featured" id="pricing-tier-family">
+                        <span class="pricing-badge">Popular</span>
+                        <h3>Family</h3>
+                        <p class="description">Best for household management and sharing utilities.</p>
+                        <div class="price">₹199 <span>/ month</span></div>
+                        
+                        <ul class="pricing-features">
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Up to 5 family members
+                            </li>
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Shared family dashboard
+                            </li>
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Full WhatsApp & SMS alerts
+                            </li>
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                AI Cashflow predictions
+                            </li>
+                            <li style="opacity: 0.5; text-decoration: line-through;">
+                                Multiple businesses / GST
+                            </li>
+                        </ul>
+                        
+                        <button class="btn-primary btn-pricing" id="btn-select-family">Upgrade</button>
+                    </div>
+                    
+                    <!-- Business Plan -->
+                    <div class="pricing-card" id="pricing-tier-business">
+                        <h3>Business</h3>
+                        <p class="description">For professionals, entrepreneurs, and SMBs.</p>
+                        <div class="price">₹499 <span>/ month</span></div>
+                        
+                        <ul class="pricing-features">
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Multiple business profile entities
+                            </li>
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Vendor payment alerts & GST tracking
+                            </li>
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Shared roles for staff / employees
+                            </li>
+                            <li>
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                                Full AI advisors & CSV/PDF exports
+                            </li>
+                        </ul>
+                        
+                        <button class="btn-primary btn-pricing" id="btn-select-business">Upgrade</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Add/Edit Reminder Modal -->
+    <div class="modal-overlay" id="reminder-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-title-text">Create New Reminder</h3>
+                <button class="close-modal-btn" id="modal-close-btn" aria-label="Close Dialog">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <form id="reminder-form">
+                <input type="hidden" id="form-reminder-id">
+                
+                <div class="modal-body">
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label for="form-title">Reminder Title *</label>
+                        <input type="text" id="form-title" class="form-control" placeholder="e.g., Credit Card Bill, Gas Booking" required>
+                    </div>
+                    
+                    <!-- Module & Category -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="form-module">Module *</label>
+                            <select id="form-module" class="form-control" required>
+                                <option value="business">Business</option>
+                                <option value="family" selected>Family</option>
+                                <option value="finance">Finance</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-category">Category *</label>
+                            <select id="form-category" class="form-control" required>
+                                <!-- Injected dynamically via JS depending on module selection -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Amount & Due Date -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="form-amount" id="form-amount-label">Amount (₹) *</label>
+                            <input type="number" id="form-amount" class="form-control" placeholder="0" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="form-due-date">Due Date *</label>
+                            <input type="date" id="form-due-date" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Recurrence Option -->
+                    <div class="form-group">
+                        <label for="form-recurrence">Recurrence Cycle</label>
+                        <select id="form-recurrence" class="form-control">
+                            <option value="none">One-time</option>
+                            <option value="monthly" selected>Monthly (Recurring)</option>
+                            <option value="yearly">Yearly (Recurring)</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Reminder Schedule Config -->
+                    <div class="form-group">
+                        <label>Reminder Schedule (Days in Advance)</label>
+                        <div class="form-checkbox-group">
+                            <label class="checkbox-label"><input type="checkbox" id="sched-30" value="30"> 30 Days</label>
+                            <label class="checkbox-label"><input type="checkbox" id="sched-15" value="15"> 15 Days</label>
+                            <label class="checkbox-label"><input type="checkbox" id="sched-7" value="7" checked> 7 Days</label>
+                            <label class="checkbox-label"><input type="checkbox" id="sched-3" value="3" checked> 3 Days</label>
+                            <label class="checkbox-label"><input type="checkbox" id="sched-1" value="1" checked> 1 Day</label>
+                            <label class="checkbox-label"><input type="checkbox" id="sched-0" value="0" checked> Due Day</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Notification Channels Config -->
+                    <div class="form-group">
+                        <label>Notification Channels</label>
+                        <div class="form-checkbox-group" style="grid-template-columns: 1fr 1fr;">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="chan-push" value="push" checked> Push Alert
+                            </label>
+                            <label class="checkbox-label" id="lbl-chan-email">
+                                <input type="checkbox" id="chan-email" value="email"> Email
+                            </label>
+                            <label class="checkbox-label locked" id="lbl-chan-whatsapp">
+                                <input type="checkbox" id="chan-whatsapp" value="whatsapp" disabled> WhatsApp
+                                <span class="lock-badge">Prem</span>
+                            </label>
+                            <label class="checkbox-label locked" id="lbl-chan-sms">
+                                <input type="checkbox" id="chan-sms" value="sms" disabled> SMS
+                                <span class="lock-badge">Prem</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="modal-cancel-btn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="modal-submit-btn">Save Reminder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Floating AI Chat Assistant -->
+    <div class="ai-chat-widget" id="ai-chat-widget">
+        <!-- Chat toggle button -->
+        <button class="chat-toggle-btn" id="chat-toggle-btn" aria-label="Toggle AI Chat Assistant">
+            <svg class="chat-icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+            <span class="chat-badge">AI</span>
+        </button>
+        
+        <!-- Chat Panel Window -->
+        <div class="chat-panel" id="chat-panel">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-avatar">AI</div>
+                    <div>
+                        <h4>AlertHub Advisor</h4>
+                        <p>Powered by Gemini 1.5 Flash • Online</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 0.25rem;">
+                    <!-- Speech Synthesis Toggle -->
+                    <button class="chat-header-btn" id="chat-voice-toggle" title="Toggle Voice Output" aria-label="Toggle Voice Output" style="color: var(--text-muted);">
+                        <svg id="voice-on-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                    </button>
+                    <button class="chat-header-btn" id="chat-close-btn" title="Close Assistant" aria-label="Close Assistant" style="font-size: 1.5rem; line-height: 1;">
+                        &times;
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be injected here -->
+            </div>
+            
+            <!-- Quick Chips -->
+            <div class="chat-chips">
+                <button class="chat-chip" data-query="What is due today?">Dues today?</button>
+                <button class="chat-chip" data-query="Search my EMIs">Search EMIs</button>
+                <button class="chat-chip" data-query="Analyze payment risks">Analyze risks</button>
+                <button class="chat-chip" data-query="Outflow this week?">Weekly Outflow</button>
+            </div>
+            
+            <div class="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Ask about EMIs, GST, bills...">
+                
+                <!-- Voice Mic Button -->
+                <button class="chat-action-btn" id="chat-mic-btn" title="Speak command (Voice)" aria-label="Speak command">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </button>
+                
+                <button class="chat-send-btn" id="chat-send-btn" aria-label="Send message">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;transform:rotate(90deg);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Voice listening state overlay -->
+            <div class="chat-listening-overlay" id="chat-listening-overlay">
+                <div class="listening-spinner"></div>
+                <p style="font-weight: 600;">Listening to your voice...</p>
+                <button class="btn-secondary" id="chat-mic-stop" style="font-size:0.75rem; padding: 0.2rem 0.5rem; margin-top:0.5rem; color: var(--text-primary);">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notifications System -->
+    <div class="toast-container" id="global-toast-container">
+        <!-- Render toasts dynamically -->
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
