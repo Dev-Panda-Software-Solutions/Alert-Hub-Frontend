@@ -1,4 +1,5 @@
-const API = import.meta.env.VITE_API_URL || 'http://localhost:3005';
+import { API_BASE_URL } from '../config/api.config';
+const API = API_BASE_URL;
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -16,7 +17,7 @@ export async function registerPush(token: string): Promise<void> {
     await navigator.serviceWorker.ready;
 
     // Get VAPID public key from server
-    const res = await fetch(`${API}/api/push/vapid-key`, {
+    const res = await fetch(`${API}/push/vapid-key`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) return;
@@ -34,7 +35,7 @@ export async function registerPush(token: string): Promise<void> {
     }
 
     // Send subscription to server
-    await fetch(`${API}/api/push/subscribe`, {
+    await fetch(`${API}/push/subscribe`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -49,7 +50,7 @@ export async function registerPush(token: string): Promise<void> {
 
 export async function sendTestPush(token: string): Promise<{ sent: number; failed: number } | null> {
   try {
-    const res = await fetch(`${API}/api/push/test`, {
+    const res = await fetch(`${API}/push/test`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
     });

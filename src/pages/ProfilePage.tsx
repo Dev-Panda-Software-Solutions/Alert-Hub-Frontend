@@ -6,6 +6,7 @@ import { useAuth } from '../context/useAuth';
 import { userApi } from '../services/api';
 import { formatAmount, countryLabel, sortCountriesForIndia } from '../utils/currency';
 import { sendTestPush } from '../services/push';
+import { API_BASE_URL } from '../config/api.config';
 import type { Plan } from '../types';
 
 const PLAN_BADGE: Record<Plan, string> = {
@@ -199,7 +200,7 @@ const ProfilePage: React.FC = () => {
                 setTestingEmail(true);
                 const token = localStorage.getItem('authToken') ?? '';
                 try {
-                  const r = await fetch('http://localhost:3005/api/push/test-email', {
+                  const r = await fetch(`${API_BASE_URL}/push/test-email`, {
                     method: 'POST',
                     headers: { Authorization: `Bearer ${token}` },
                   });
@@ -222,7 +223,7 @@ const ProfilePage: React.FC = () => {
                 setSetupRunning(true);
                 setPushSteps({ sw: 'idle', perm: 'idle', sub: 'idle', send: 'idle' });
                 const token = localStorage.getItem('authToken') ?? '';
-                const API = (window as any).__VITE_API__ || 'http://localhost:3005';
+                const API = API_BASE_URL;
 
                 /* Step 1 — Service Worker */
                 if (!('serviceWorker' in navigator)) {
@@ -262,7 +263,7 @@ const ProfilePage: React.FC = () => {
                 /* Step 3 — Subscribe */
                 try {
                   const reg = await navigator.serviceWorker.ready;
-                  const keyRes = await fetch(`http://localhost:3005/api/push/vapid-key`, { headers: { Authorization: `Bearer ${token}` } });
+                  const keyRes = await fetch(`${API}/push/vapid-key`, { headers: { Authorization: `Bearer ${token}` } });
                   const { publicKey } = await keyRes.json();
 
                   let sub = await reg.pushManager.getSubscription();
@@ -274,7 +275,7 @@ const ProfilePage: React.FC = () => {
                     sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key });
                   }
 
-                  await fetch(`http://localhost:3005/api/push/subscribe`, {
+                  await fetch(`${API}/push/subscribe`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                     body: JSON.stringify({ subscription: sub.toJSON() }),
@@ -289,7 +290,7 @@ const ProfilePage: React.FC = () => {
 
                 /* Step 4 — Send test */
                 try {
-                  const r = await fetch(`http://localhost:3005/api/push/test`, {
+                  const r = await fetch(`${API}/push/test`, {
                     method: 'POST',
                     headers: { Authorization: `Bearer ${token}` },
                   });
