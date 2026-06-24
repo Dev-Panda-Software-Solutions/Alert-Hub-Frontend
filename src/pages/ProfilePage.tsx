@@ -5,8 +5,7 @@ import { useToast } from '../components/ui/Toast';
 import { useAuth } from '../context/useAuth';
 import { userApi } from '../services/api';
 import { formatAmount, countryLabel, sortCountriesForIndia } from '../utils/currency';
-import { sendTestPush } from '../services/push';
-import { API_BASE_URL } from '../config/api.config';
+import { API_BASE_URL, resolveAssetUrl } from '../config/api.config';
 import type { Plan } from '../types';
 
 const PLAN_BADGE: Record<Plan, string> = {
@@ -26,7 +25,6 @@ const ProfilePage: React.FC = () => {
   const [country, setCountry]   = useState(user?.country || 'India');
   const [saving, setSaving]         = useState(false);
   const [uploading, setUploading]   = useState(false);
-  const [testingPush, setTestingPush] = useState(false);
   const [testingEmail, setTestingEmail] = useState(false);
   const [pushSteps, setPushSteps]   = useState<{
     sw: 'idle'|'ok'|'error';
@@ -89,7 +87,7 @@ const ProfilePage: React.FC = () => {
           <div className="relative">
             <div className="w-20 h-20 rounded-full overflow-hidden bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 text-3xl font-bold shrink-0">
               {user.avatarUrl
-                ? <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                ? <img src={resolveAssetUrl(user.avatarUrl)!} alt={user.name} className="w-full h-full object-cover" />
                 : user.name.charAt(0).toUpperCase()
               }
             </div>

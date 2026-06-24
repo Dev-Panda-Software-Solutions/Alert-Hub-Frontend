@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { resolveAssetUrl } from '../../config/api.config';
 import {
   LuLayoutDashboard, LuBell, LuCalendar, LuSparkles,
   LuZap, LuUser, LuLogOut, LuShield, LuChevronsLeft, LuChevronsRight, LuX,
@@ -107,7 +108,7 @@ const Sidebar: React.FC = () => {
             <div className="flex items-center gap-3 px-2 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 mb-1.5">
               <div className="w-8 h-8 rounded-full overflow-hidden bg-linear-to-br from-blue-500 to-indigo-600 shrink-0 flex items-center justify-center text-white text-sm font-bold shadow-sm">
                 {user.avatarUrl
-                  ? <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                  ? <img src={resolveAssetUrl(user.avatarUrl)!} alt={user.name} className="w-full h-full object-cover" />
                   : user.name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
