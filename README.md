@@ -1,289 +1,72 @@
-# ProjectTracker - Client Project Progress Website
+# AlertHub — Frontend
 
-A modern, production-quality SaaS-style frontend application for managing client projects and tracking progress. Built with React + Vite + Tailwind CSS.
+React 19 + Vite 7 + TypeScript + Tailwind CSS v4 frontend for AlertHub, a smart payment & reminder management SaaS.
 
-## 🎯 Overview
+## Tech Stack
 
-ProjectTracker is a comprehensive project management UI where:
-- **Admins** can create projects, manage clients, track progress, and post updates
-- **Clients** can view assigned projects, track progress, and receive updates
+- **React 19** — UI framework
+- **Vite 7** — build tool & dev server
+- **TypeScript** — type safety
+- **Tailwind CSS v4** — styling (`bg-linear-to-br`, class-based dark mode)
+- **Axios** — API client with JWT interceptor
+- **react-icons/lu** — Lucide SVG icon set
+- **Web Push API** — background push notifications via Service Worker
 
-## 🚀 Quick Start
+## Pages
 
-### Prerequisites
-- Node.js 18+ and npm/yarn installed
-- Modern web browser with JavaScript enabled
+| Route | Page | Description |
+|-------|------|-------------|
+| `/login` | LoginPage | JWT login + sandbox demo mode |
+| `/signup` | SignupPage | Registration with password strength meter |
+| `/dashboard` | DashboardPage | KPI cards, today's reminders, overdue list |
+| `/reminders` | RemindersPage | Full CRUD, filters, bulk delete |
+| `/calendar` | CalendarPage | Month grid with module colour-coded dots |
+| `/insights` | InsightsPage | AI insights, cashflow chart, AI chat |
+| `/pricing` | PricingPage | Plan comparison (FREE & PERSONAL active) |
+| `/profile` | ProfilePage | Account settings, push/email notification test |
 
-### Installation & Running
+## Local Development
 
 ```bash
-# Install dependencies
 npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+npm run dev        # http://localhost:5174
+npm run build      # production build → dist/
 ```
 
-The app will be available at `http://localhost:5174`
-
-## 📋 Demo Accounts
-
-### Admin Account
-- **Email:** `admin@example.com`
-- **Password:** `admin123`
-- **Access:** Full admin dashboard with all management features
-
-### Client Account
-- **Email:** `john@example.com`
-- **Password:** `client123`
-- **Access:** Client dashboard viewing assigned projects only
-
-*Note: Demo accounts are pre-configured for testing. In production, replace with real authentication.*
-
-## 📁 Project Structure
+## Key Structure
 
 ```
 src/
-├── components/
-│   ├── ui/                          # Reusable UI components
-│   │   ├── ProgressBar.tsx          # Progress visualization
-│   │   ├── StatusBadge.tsx          # Status indicators
-│   │   ├── ProjectCard.tsx          # Project card component
-│   │   ├── TaskList.tsx             # Task management UI
-│   │   ├── MilestoneTimeline.tsx    # Milestone visualization
-│   │   ├── UpdateFeed.tsx           # Updates and notes feed
-│   │   ├── LoadingSpinner.tsx       # Loading state
-│   │   ├── Header.tsx               # Top navigation bar
-│   │   └── index.ts                 # Component exports
-│   ├── layouts/
-│   │   ├── AdminLayout.tsx          # Admin page wrapper
-│   │   ├── ClientLayout.tsx         # Client page wrapper
-│   │   ├── AdminSidebar.tsx         # Admin navigation sidebar
-│   │   └── index.ts                 # Layout exports
-│   └── ProtectedRoute.tsx           # Route protection component
-├── pages/
-│   ├── LandingPage.tsx              # Public home page
-│   ├── LoginPage.tsx                # Authentication page
-│   ├── AdminDashboard.tsx           # Admin overview
-│   ├── AdminProjectsPage.tsx        # Admin project list
-│   ├── AdminClientsPage.tsx         # Admin client management
-│   ├── AdminSettingsPage.tsx        # Admin settings (stub)
-│   ├── ClientDashboard.tsx          # Client project view
-│   └── ProjectDetailsPage.tsx       # Project detail view
+├── config/api.config.ts      # Backend base URL
 ├── context/
-│   ├── AuthContext.tsx              # Authentication state
-│   └── ThemeContext.tsx             # Dark/light mode state
+│   ├── AuthContext.tsx        # Login, signup, sandbox, JWT storage
+│   ├── ThemeContext.tsx       # Dark/light mode, persisted in localStorage
+│   └── LayoutContext.tsx      # Sidebar collapsed/mobile open state
 ├── services/
-│   ├── projectService.ts            # Project API calls
-│   └── clientService.ts             # Client API calls
-├── data/
-│   └── dummy.ts                     # Mock data for development
-├── hooks/                           # Custom React hooks (future)
-├── App.tsx                          # Main app component & routing
-├── main.tsx                         # App entry point
-├── index.css                        # Tailwind imports & base styles
-└── globals.css                      # Custom CSS utilities
+│   ├── api.ts                 # All Axios API calls + 401 interceptor
+│   └── push.ts                # Web Push subscription + test helper
+├── utils/currency.ts          # Country → symbol/code map, India-priority sort
+└── public/sw.js               # Service Worker — background push handler
 ```
 
-## 🎨 Key Features
+## Environment
 
-### 1. **Authentication & Role-Based Access**
-- Login with email/password
-- Two user roles: Admin and Client
-- Protected routes based on user role
-- Session persistence using localStorage
+No `.env` needed for local dev — API defaults to `http://localhost:3005/api`.
 
-### 2. **Admin Dashboard**
-- Overview statistics (projects, budget, progress)
-- Project creation and management
-- Client organization management
-- Progress tracking and updates
-- Project filtering by status
-
-### 3. **Client Dashboard**
-- View assigned projects only
-- Track project progress
-- View tasks and milestones
-- Read updates and notes
-- Project statistics
-
-### 4. **Project Management**
-- Detailed project views with tabs:
-  - **Overview:** Key metrics and status
-  - **Tasks:** Checklist with priority levels
-  - **Milestones:** Timeline view of key milestones
-  - **Updates:** Activity feed and notes
-- Real-time progress indicators
-- Budget tracking
-- Team member assignments
-
-### 5. **UI Components**
-- **ProgressBar:** Visual progress with percentage
-- **StatusBadge:** Status indicators with color coding
-- **ProjectCard:** Reusable project summary cards
-- **TaskList:** Interactive task checklist
-- **MilestoneTimeline:** Visual milestone tracker
-- **UpdateFeed:** Activity feed with filtering
-- **LoadingSpinner:** Async operation feedback
-
-### 6. **Dark/Light Mode**
-- System preference detection
-- Manual toggle in header
-- Persistent theme selection
-- Smooth transitions
-
-### 7. **Responsive Design**
-- Mobile-first approach
-- Tablet and desktop optimizations
-- Touch-friendly controls
-- Accessible navigation
-
-## 🔧 Technology Stack
-
-| Technology | Purpose |
-|-----------|---------|
-| **React 19** | UI framework |
-| **Vite 7** | Fast build tool & dev server |
-| **TypeScript** | Type safety |
-| **Tailwind CSS v4** | Utility-first styling |
-| **React Router v7** | Client-side routing |
-| **Axios** | API calls (ready for integration) |
-
-## 🚀 Routes
-
-### Public Routes
-- `/` - Landing page
-- `/login` - Login page
-
-### Authenticated Routes
-- `/dashboard` - Smart redirect to role-appropriate dashboard
-- `/client` - Client dashboard
-- `/projects/:projectId` - Project details
-- `/admin` - Admin dashboard
-- `/admin/projects` - All projects list
-- `/admin/clients` - Client management
-- `/admin/settings` - Settings (stub)
-
-## 🎨 Styling
-
-### Custom CSS Classes
-- `.btn`, `.btn-primary`, `.btn-secondary`, `.btn-ghost` - Buttons
-- `.card` - Card containers
-- `.input` - Form inputs
-- `.badge`, `.badge-success`, `.badge-warning`, `.badge-error`, `.badge-info` - Status badges
-- `.line-clamp-2` - Text truncation
-
-### Color Scheme
-- **Primary:** Sky blue (`rgb(2, 132, 199)`)
-- **Success:** Green (`rgb(34, 197, 94)`)
-- **Warning:** Yellow (`rgb(234, 179, 8)`)
-- **Error:** Red (`rgb(239, 68, 68)`)
-- **Info:** Blue (`rgb(59, 130, 246)`)
-
-## 📝 Dummy Data
-
-Mock data is provided in `src/data/dummy.ts`:
-- 3 sample users (1 admin, 2 clients)
-- 3 sample client organizations
-- 5 sample projects
-- Tasks, milestones, and updates for each project
-
-## 🔐 Security Notes
-
-This is a **frontend-only** implementation. For production:
-
-1. **Authentication:** Replace localStorage with secure HTTP-only cookies
-2. **API Integration:** Replace dummy data with real API calls
-3. **Authorization:** Implement server-side authorization checks
-4. **Data Validation:** Add form validation and sanitization
-5. **HTTPS:** Always use HTTPS in production
-6. **Environment Variables:** Store API endpoints in `.env` files
-
-## 🚀 Production Deployment
-
-```bash
-# Build for production
-npm run build
-
-# The dist/ folder is ready to deploy
-# Can be hosted on:
-# - Vercel
-# - Netlify
-# - AWS S3 + CloudFront
-# - Traditional web servers (Apache, Nginx, etc.)
+For production, create `frontend/.env`:
+```
+VITE_API_URL=http://YOUR_VPS_IP:3005/api
 ```
 
----
+## Features
 
-**Version:** 1.0.0  
-**Status:** Production-Ready Frontend ✓
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-# Alert-Hub-Frontend
+- Dark mode — class-based toggle, persisted in localStorage
+- Responsive sidebar — collapsible on desktop, hamburger drawer on mobile
+- Country/currency selector — 30+ countries, India-priority order, shows ₹/$/£ symbol
+- Push notifications — full VAPID setup with step-by-step status checker in Profile
+- Email test — send a live test email from Profile page
+- Password strength — real-time bar on signup, correctness hint on login
+- Business upgrade prompt — clear message instead of generic error when plan too low
+- Pricing lock — FAMILY & BUSINESS plans show Coming Soon ribbon
+- Sandbox mode — full demo with pre-seeded data, no account required
+- AI Chat — 22 rotating questions with fade animation
