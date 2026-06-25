@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="arcLeft" x1="0.15" y1="0.1" x2="0.5" y2="0.95" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="arcRight" x1="0.85" y1="0.1" x2="0.5" y2="0.95" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+    <linearGradient id="arcBottom" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="circleTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="circleBL" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="circleBR" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="bell" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Arcs (drawn behind circles) -->
+  <!-- Left arc: top-circle to bottom-left circle -->
+  <path d="M 88 42 Q 42 80 52 144" stroke="url(#arcLeft)" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <!-- Right arc: top-circle to bottom-right circle -->
+  <path d="M 112 42 Q 158 80 148 144" stroke="url(#arcRight)" stroke-width="16" stroke-linecap="round" fill="none"/>
+  <!-- Bottom arc: bottom-left to bottom-right circle -->
+  <path d="M 56 158 Q 100 180 144 158" stroke="url(#arcBottom)" stroke-width="16" stroke-linecap="round" fill="none"/>
+
+  <!-- Top circle — Family (people) -->
+  <circle cx="100" cy="32" r="30" fill="url(#circleTop)"/>
+  <!-- Parent figures -->
+  <circle cx="93" cy="24" r="6" fill="white"/>
+  <path d="M80 44 Q80 36 93 36 Q106 36 106 44" fill="white"/>
+  <circle cx="107" cy="24" r="6" fill="white" opacity="0.8"/>
+  <!-- Child figure -->
+  <circle cx="100" cy="31" r="4.5" fill="white"/>
+  <path d="M92 44 Q92 39 100 39 Q108 39 108 44" fill="white"/>
+
+  <!-- Bottom-left circle — Business (briefcase) -->
+  <circle cx="52" cy="158" r="30" fill="url(#circleBL)"/>
+  <rect x="38" y="153" width="28" height="19" rx="3" fill="white"/>
+  <path d="M45 153 v-4 a7 7 0 0 1 14 0 v4" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <line x1="38" y1="162" x2="66" y2="162" stroke="url(#circleBL)" stroke-width="2.5"/>
+
+  <!-- Bottom-right circle — Finance (bar chart) -->
+  <circle cx="148" cy="158" r="30" fill="url(#circleBR)"/>
+  <rect x="136" y="158" width="8" height="14" rx="2" fill="white"/>
+  <rect x="147" y="151" width="8" height="21" rx="2" fill="white"/>
+  <rect x="158" y="154" width="8" height="18" rx="2" fill="white"/>
+
+  <!-- Central bell -->
+  <path d="M100 82 C86 82 76 92 76 106 L76 118 L124 118 L124 106 C124 92 114 82 100 82 Z" fill="url(#bell)"/>
+  <circle cx="100" cy="82" r="5" fill="url(#bell)"/>
+  <path d="M93 118 Q93 126 100 126 Q107 126 107 118" fill="url(#bell)"/>
+  <!-- Bell sound waves -->
+  <path d="M70 103 Q66 108 70 113" stroke="#818cf8" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M63 98 Q57 108 63 118" stroke="#818cf8" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <path d="M130 103 Q134 108 130 113" stroke="#818cf8" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M137 98 Q143 108 137 118" stroke="#818cf8" stroke-width="3.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+</svg>

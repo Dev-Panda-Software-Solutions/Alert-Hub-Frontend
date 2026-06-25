@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { resolveAssetUrl } from '../../config/api.config';
 import {
   LuLayoutDashboard, LuBell, LuCalendar, LuSparkles,
-  LuZap, LuUser, LuLogOut, LuShield, LuChevronsLeft, LuChevronsRight, LuX,
+  LuZap, LuUser, LuLogOut, LuChevronsLeft, LuChevronsRight, LuX,
 } from 'react-icons/lu';
 import { useAuth } from '../../context/useAuth';
 import { useLayout } from '../../context/LayoutContext';
@@ -47,12 +47,10 @@ const Sidebar: React.FC = () => {
     >
       {/* Logo row */}
       <div className={`flex items-center border-b border-slate-100 dark:border-slate-800 ${collapsed ? 'px-3 py-5 justify-center' : 'px-4 py-5 gap-3'}`}>
-        <div className="w-9 h-9 rounded-xl bg-linear-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
-          <LuShield className="w-5 h-5 text-white" />
-        </div>
+        <img src="/logo.svg" alt="Alert-Guard" className="w-9 h-9 shrink-0" />
         {!collapsed && (
           <div className="flex-1 min-w-0">
-            <span className="font-bold text-base text-slate-900 dark:text-white tracking-tight">AlertHub</span>
+            <span className="font-bold text-base text-slate-900 dark:text-white tracking-tight">Alert-Guard</span>
             <p className="text-xs text-slate-400 dark:text-slate-500 -mt-0.5">Smart Finance Alerts</p>
           </div>
         )}

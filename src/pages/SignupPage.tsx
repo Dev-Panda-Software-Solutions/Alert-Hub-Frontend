@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LuShield, LuMail, LuLock, LuEye, LuEyeOff, LuUser, LuGlobe } from 'react-icons/lu';
+import { LuMail, LuLock, LuEye, LuEyeOff, LuUser, LuGlobe } from 'react-icons/lu';
 import { useAuth } from '../context/useAuth';
 import { useToast } from '../components/ui/Toast';
 import { userApi } from '../services/api';
@@ -41,7 +41,7 @@ const SignupPage: React.FC = () => {
     if (password.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
     try {
       await signup(name, email, password, country);
-      toast('Account created! Welcome to AlertHub', 'success');
+      toast('Account created! Welcome to Alert-Guard', 'success');
       navigate('/dashboard');
     } catch (err: unknown) {
       toast(err instanceof Error ? err.message : 'Sign up failed', 'error');
@@ -54,10 +54,8 @@ const SignupPage: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 px-4 py-8">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-linear-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/25 mb-4">
-            <LuShield className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">AlertHub</h1>
+          <img src="/logo.svg" alt="Alert-Guard" className="w-16 h-16 mx-auto mb-4" />
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Alert-Guard</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">Create your free account</p>
         </div>
 

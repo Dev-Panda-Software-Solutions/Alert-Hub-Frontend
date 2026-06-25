@@ -4,13 +4,13 @@ import TopHeader from '../components/layout/TopHeader';
 import { useAuth } from '../context/useAuth';
 import { useToast } from '../components/ui/Toast';
 import { userApi } from '../services/api';
-import { getCurrencyForCountry } from '../utils/currency';
 import type { Plan } from '../types';
 
 interface PlanTier {
   id: Plan;
   name: string;
   priceINR: number;
+  priceUSD: number;
   color: string;
   badge?: string;
   features: string[];
@@ -23,6 +23,7 @@ const PLANS: PlanTier[] = [
     id: 'FREE',
     name: 'Free',
     priceINR: 0,
+    priceUSD: 0,
     color: 'border-slate-200 dark:border-slate-700',
     features: ['Up to 30 reminders', 'Business, Family & Finance modules', 'Push notifications', 'AI Insights (basic)', 'Calendar view'],
     channels: ['Push'],
@@ -32,6 +33,7 @@ const PLANS: PlanTier[] = [
     id: 'PERSONAL',
     name: 'Personal',
     priceINR: 99,
+    priceUSD: 1,
     color: 'border-blue-400',
     features: ['Unlimited reminders', 'All FREE features', 'Email & WhatsApp notifications', 'Monthly & yearly recurrence', 'Full AI Insights'],
     channels: ['Push', 'Email', 'WhatsApp'],
@@ -41,6 +43,7 @@ const PLANS: PlanTier[] = [
     id: 'FAMILY',
     name: 'Family',
     priceINR: 199,
+    priceUSD: 5,
     color: 'border-purple-400',
     badge: 'Popular',
     features: ['Everything in Personal', 'SMS notifications', 'Business module unlocked', 'AI balance simulator', 'Priority support'],
@@ -51,6 +54,7 @@ const PLANS: PlanTier[] = [
     id: 'BUSINESS',
     name: 'Business',
     priceINR: 499,
+    priceUSD: 10,
     color: 'border-amber-400',
     features: ['Everything in Family', 'Dedicated business module', 'GST / TDS reminders', 'Team access (soon)', 'API access (soon)', 'SLA support'],
     channels: ['Push', 'Email', 'WhatsApp', 'SMS'],
@@ -62,7 +66,7 @@ const PricingPage: React.FC = () => {
   const { user, updateLocalUser } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const currency = getCurrencyForCountry(user?.country || 'India');
+  const isIndia = (user?.country || 'India') === 'India';
   const [upgrading, setUpgrading] = useState<Plan | null>(null);
 
   const handleUpgrade = async (planId: Plan) => {
@@ -82,13 +86,10 @@ const PricingPage: React.FC = () => {
     }
   };
 
-  // Simple currency conversion factor (approximate for demo)
-  const conversionFactor: Record<string, number> = { INR: 1, USD: 0.012, GBP: 0.0095, EUR: 0.011, AUD: 0.018, CAD: 0.016, SGD: 0.016 };
-  const factor = conversionFactor[currency.code] ?? 0.012;
-  const formatPrice = (priceINR: number) => {
-    if (priceINR === 0) return 'Free';
-    const converted = Math.round(priceINR * factor);
-    return `${currency.symbol}${converted}/mo`;
+  const formatPrice = (plan: PlanTier) => {
+    if (plan.priceINR === 0) return 'Free';
+    if (isIndia) return `₹${plan.priceINR}/mo`;
+    return `$${plan.priceUSD}/mo`;
   };
 
   return (
@@ -101,7 +102,7 @@ const PricingPage: React.FC = () => {
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Simple, transparent pricing</h2>
           <p className="text-slate-500 dark:text-slate-400">
             Start free, upgrade as you grow.
-            {user?.country && ` Prices shown in ${currency.code} for ${user.country}.`}
+            {user?.country && ` Prices shown in ${isIndia ? 'INR' : 'USD'} for ${user.country}.`}
           </p>
           {user?.plan && (
             <div className="mt-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm font-medium">
@@ -143,11 +144,12 @@ const PricingPage: React.FC = () => {
                     {isLocked && <span className="text-base">🔒</span>}
                   </div>
                   <div className="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">
-                    {formatPrice(plan.priceINR)}
+                    {formatPrice(plan)}
                   </div>
                   {plan.priceINR > 0 && (
                     <p className="text-xs text-slate-400 mt-0.5">
-                      billed monthly &bull; ₹{plan.priceINR}/mo in INR
+                      billed monthly
+                      {!isIndia && ` · ₹${plan.priceINR}/mo in INR`}
                     </p>
                   )}
                 </div>
@@ -199,13 +201,13 @@ const PricingPage: React.FC = () => {
 
         {/* Coming soon note */}
         <p className="mt-6 text-center text-xs text-slate-400 dark:text-slate-500">
-          🔒 Family &amp; Business plans are coming soon — join the waitlist at <span className="text-blue-500">support@alerthub.app</span>
+          🔒 Family &amp; Business plans are coming soon — join the waitlist at <span className="text-blue-500">support@alert-guard.app</span>
         </p>
 
         {/* FAQ / info */}
         <div className="mt-10 text-center text-sm text-slate-500 dark:text-slate-400 space-y-2">
           <p>💳 No credit card required for Free plan. Cancel anytime.</p>
-          <p>📧 Questions? Contact <span className="text-blue-600 dark:text-blue-400">support@alerthub.app</span></p>
+          <p>📧 Questions? Contact <span className="text-blue-600 dark:text-blue-400">support@alert-guard.app</span></p>
         </div>
       </div>
     </div>

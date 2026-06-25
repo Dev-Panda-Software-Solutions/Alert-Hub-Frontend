@@ -341,7 +341,7 @@ const PLANNING_TIPS = [
 const PlanningTipsSection: React.FC = () => (
   <div className="card p-5">
     <h3 className="font-semibold text-slate-800 dark:text-white mb-1">Smart Money Planning</h3>
-    <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">Tips to get the most out of AlertHub for your finances</p>
+    <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">Tips to get the most out of Alert-Guard for your finances</p>
     <div className="space-y-3">
       {PLANNING_TIPS.map((t, i) => (
         <div key={i} className="flex gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
