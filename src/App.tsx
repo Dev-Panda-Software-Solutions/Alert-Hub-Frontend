@@ -8,8 +8,10 @@ import AppLayout from './components/layout/AppLayout';
 import { registerPush } from './services/push';
 
 // Pages
-import LoginPage   from './pages/LoginPage';
-import SignupPage  from './pages/SignupPage';
+import LoginPage            from './pages/LoginPage';
+import SignupPage           from './pages/SignupPage';
+import ForgotPasswordPage   from './pages/ForgotPasswordPage';
+import ResetPasswordPage    from './pages/ResetPasswordPage';
 import DashboardPage from './pages/DashboardPage';
 import RemindersPage from './pages/RemindersPage';
 import CalendarPage  from './pages/CalendarPage';
@@ -42,8 +44,10 @@ const PushRegistrar: React.FC = () => {
 const AppRoutes: React.FC = () => (
   <Routes>
     {/* Public */}
-    <Route path="/login"  element={<GuestOnly><LoginPage /></GuestOnly>} />
-    <Route path="/signup" element={<GuestOnly><SignupPage /></GuestOnly>} />
+    <Route path="/login"           element={<GuestOnly><LoginPage /></GuestOnly>} />
+    <Route path="/signup"          element={<GuestOnly><SignupPage /></GuestOnly>} />
+    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+    <Route path="/reset-password"  element={<ResetPasswordPage />} />
 
     {/* Protected — all wrapped in AppLayout (sidebar + outlet) */}
     <Route element={<RequireAuth><AppLayout /></RequireAuth>}>

@@ -59,6 +59,18 @@ export const authApi = {
 
   me: () =>
     http.get<User>('/auth/me').then((r) => r.data),
+
+  forgotPassword: (email: string) =>
+    http.post<{ ok: boolean }>('/auth/forgot-password', { email }).then((r) => r.data),
+
+  resetPassword: (token: string, password: string) =>
+    http.post<{ ok: boolean; message: string }>('/auth/reset-password', { token, password }).then((r) => r.data),
+
+  sendOtp: () =>
+    http.post<{ ok: boolean; message: string }>('/auth/send-otp').then((r) => r.data),
+
+  verifyOtp: (otp: string, password: string) =>
+    http.post<{ ok: boolean; message: string }>('/auth/verify-otp', { otp, password }).then((r) => r.data),
 };
 
 // ─── User ─────────────────────────────────────────────────────────────────────

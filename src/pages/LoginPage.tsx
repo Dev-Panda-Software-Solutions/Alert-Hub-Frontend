@@ -84,6 +84,12 @@ const LoginPage: React.FC = () => {
               )}
             </div>
 
+            <div className="flex justify-end -mt-1">
+              <Link to="/forgot-password" className="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                Forgot password?
+              </Link>
+            </div>
+
             <button type="submit" disabled={isLoading} className="w-full btn btn-primary py-2.5 text-base disabled:opacity-60 disabled:cursor-not-allowed mt-2">
               {isLoading ? 'Signing in…' : 'Sign In'}
             </button>

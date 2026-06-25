@@ -6,6 +6,7 @@ import { useAuth } from '../context/useAuth';
 import { userApi } from '../services/api';
 import { formatAmount, countryLabel, sortCountriesForIndia } from '../utils/currency';
 import { API_BASE_URL, resolveAssetUrl } from '../config/api.config';
+import { authApi } from '../services/api';
 import type { Plan } from '../types';
 
 const PLAN_BADGE: Record<Plan, string> = {
@@ -118,6 +119,9 @@ const ProfilePage: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Change Password */}
+        {!user?.sandbox && <ChangePasswordCard />}
 
         {/* Push Notifications Setup */}
         <div className="card p-6">
@@ -392,6 +396,147 @@ const ProfilePage: React.FC = () => {
         )}
 
       </div>
+    </div>
+  );
+};
+
+// ── Change Password Card (OTP flow) ──────────────────────────────────────────
+
+const ChangePasswordCard: React.FC = () => {
+  const { toast } = useToast();
+  const [step, setStep] = useState<'idle' | 'otp-sent' | 'done'>('idle');
+  const [otp, setOtp] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSendOtp = async () => {
+    setLoading(true);
+    try {
+      const res = await authApi.sendOtp();
+      toast(res.message || 'OTP sent to your email', 'success');
+      setStep('otp-sent');
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : 'Failed to send OTP', 'error');
+    } finally { setLoading(false); }
+  };
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password.length < 6) { toast('Password must be at least 6 characters', 'error'); return; }
+    if (password !== confirm) { toast('Passwords do not match', 'error'); return; }
+    setLoading(true);
+    try {
+      const res = await authApi.verifyOtp(otp, password);
+      toast(res.message || 'Password changed successfully', 'success');
+      setStep('done');
+      setOtp(''); setPassword(''); setConfirm('');
+      setTimeout(() => setStep('idle'), 4000);
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : 'Invalid OTP', 'error');
+    } finally { setLoading(false); }
+  };
+
+  return (
+    <div className="card p-6">
+      <h2 className="font-semibold text-slate-800 dark:text-white mb-1">Change Password</h2>
+      <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">
+        We'll send a one-time code to your email to verify it's you.
+      </p>
+
+      {step === 'done' ? (
+        <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800">
+          <span className="text-2xl">✅</span>
+          <div>
+            <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">Password changed successfully!</p>
+            <p className="text-xs text-emerald-600 dark:text-emerald-400">Use your new password next time you sign in.</p>
+          </div>
+        </div>
+      ) : step === 'idle' ? (
+        <button
+          onClick={handleSendOtp}
+          disabled={loading}
+          className="btn btn-secondary text-sm disabled:opacity-50"
+        >
+          {loading ? 'Sending OTP…' : '🔑 Send OTP to My Email'}
+        </button>
+      ) : (
+        <form onSubmit={handleVerify} className="space-y-4">
+          <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-xs text-blue-700 dark:text-blue-300">
+            ✉️ Check your email for a 6-digit OTP. It expires in 10 minutes.
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Enter OTP</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              value={otp}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              placeholder="6-digit code"
+              required
+              className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm tracking-[0.4em] font-mono text-center"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">New Password</label>
+            <div className="relative">
+              <input
+                type={showPw ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Min. 6 characters"
+                required
+                className="w-full pl-3 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              />
+              <button type="button" onClick={() => setShowPw(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                {showPw ? '🙈' : '👁️'}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Confirm Password</label>
+            <input
+              type={showPw ? 'text' : 'password'}
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              placeholder="Repeat password"
+              required
+              className="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            />
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => { setStep('idle'); setOtp(''); setPassword(''); setConfirm(''); }}
+              className="btn btn-secondary text-sm flex-1"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading || otp.length < 6 || !password || !confirm}
+              className="btn btn-primary text-sm flex-1 disabled:opacity-50"
+            >
+              {loading ? 'Verifying…' : 'Change Password'}
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleSendOtp}
+            disabled={loading}
+            className="text-xs text-blue-600 dark:text-blue-400 hover:underline w-full text-center"
+          >
+            Resend OTP
+          </button>
+        </form>
+      )}
     </div>
   );
 };
