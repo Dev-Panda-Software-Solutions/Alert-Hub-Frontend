@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { LuPencil, LuTrash2, LuCheck } from 'react-icons/lu';
 import ModuleTag from '../ui/ModuleTag';
-import { getPriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../../utils/priority';
+import { getEffectivePriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../../utils/priority';
 import type { Priority } from '../../utils/priority';
 import type { Reminder } from '../../types';
 import { formatAmount } from '../../utils/currency';
@@ -28,13 +28,13 @@ const KanbanBoard: React.FC<Props> = ({ reminders, country, onEdit, onDelete, on
   const dragPriority = useRef<Priority | null>(null);
 
   const grouped = PRIORITY_ORDER.reduce<Record<Priority, Reminder[]>>((acc, p) => {
-    acc[p] = reminders.filter((r) => getPriority(r.dueDate, r.completed) === p);
+    acc[p] = reminders.filter((r) => getEffectivePriority(r) === p);
     return acc;
   }, { CRITICAL: [], HIGH: [], MEDIUM: [], LOW: [] });
 
   const handleDragStart = (e: React.DragEvent, r: Reminder) => {
     setDraggingId(r.id);
-    dragPriority.current = getPriority(r.dueDate, r.completed);
+    dragPriority.current = getEffectivePriority(r);
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', r.id);
   };

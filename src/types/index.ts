@@ -28,6 +28,7 @@ export interface Reminder {
   recurrence: Recurrence;
   schedule: number[];
   channels: NotificationChannel[];
+  priority: string | null;   // manual override; null = auto-computed from dueDate
   completed: boolean;
   completedAt: string | null;
   createdAt: string;

@@ -7,7 +7,7 @@ import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { dashboardApi } from '../services/api';
 import { useAuth } from '../context/useAuth';
 import { getCurrencyForCountry } from '../utils/currency';
-import { getPriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../utils/priority';
+import { getEffectivePriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../utils/priority';
 import type { Priority } from '../utils/priority';
 import type { DashboardStats, Reminder, ChannelsResponse } from '../types';
 
@@ -48,7 +48,7 @@ const DashboardPage: React.FC = () => {
 
   // Compute priority breakdown from upcoming reminders
   const priorityCounts = PRIORITY_ORDER.reduce<Record<Priority, number>>((acc, p) => {
-    acc[p] = upcoming.filter((r) => !r.completed && getPriority(r.dueDate, r.completed) === p).length;
+    acc[p] = upcoming.filter((r) => !r.completed && getEffectivePriority(r) === p).length;
     return acc;
   }, { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 });
   const totalPending = upcoming.filter((r) => !r.completed).length;
@@ -92,7 +92,7 @@ const DashboardPage: React.FC = () => {
             ) : (
               <div className="space-y-2">
                 {upcoming.slice(0, 8).map((r) => {
-                  const priority = getPriority(r.dueDate, r.completed);
+                  const priority = getEffectivePriority(r);
                   const pcfg = PRIORITY_CONFIG[priority];
                   return (
                     <div key={r.id} className="flex items-center gap-3 py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">

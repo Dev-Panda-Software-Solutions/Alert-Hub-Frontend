@@ -10,7 +10,7 @@ import KanbanBoard from '../components/reminders/KanbanBoard';
 import { reminderApi } from '../services/api';
 import { useAuth } from '../context/useAuth';
 import { formatAmount } from '../utils/currency';
-import { getPriority, getDueDateForPriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../utils/priority';
+import { getPriority, getEffectivePriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../utils/priority';
 import type { Priority } from '../utils/priority';
 import type { Reminder, ReminderModule, Recurrence } from '../types';
 
@@ -69,8 +69,8 @@ const EMPTY_FORM = {
 };
 
 // ── Priority Badge ────────────────────────────────────────────────────────────
-const PriorityBadge: React.FC<{ dueDate: string; completed: boolean }> = ({ dueDate, completed }) => {
-  const p = getPriority(dueDate, completed);
+const PriorityBadge: React.FC<{ reminder: Reminder }> = ({ reminder }) => {
+  const p = getEffectivePriority(reminder);
   const cfg = PRIORITY_CONFIG[p];
   return (
     <span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${cfg.bg} ${cfg.text}`}>
@@ -353,9 +353,8 @@ const RemindersPage: React.FC = () => {
   };
 
   const handleMovePriority = async (reminder: Reminder, newPriority: Priority) => {
-    const newDueDate = getDueDateForPriority(newPriority);
     try {
-      const updated = await reminderApi.update(reminder.id, { dueDate: newDueDate });
+      const updated = await reminderApi.update(reminder.id, { priority: newPriority });
       setReminders((prev) => prev.map((r) => r.id === reminder.id ? updated : r));
       toast(`Moved to ${PRIORITY_CONFIG[newPriority].label}`, 'success');
     } catch {
@@ -397,7 +396,7 @@ const RemindersPage: React.FC = () => {
   // Priority summary counts (pending only)
   const pending = reminders.filter((r) => !r.completed);
   const priorityCounts = PRIORITY_ORDER.reduce<Record<Priority, number>>((acc, p) => {
-    acc[p] = pending.filter((r) => getPriority(r.dueDate, r.completed) === p).length;
+    acc[p] = pending.filter((r) => getEffectivePriority(r) === p).length;
     return acc;
   }, { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 });
 
@@ -557,7 +556,7 @@ const RemindersPage: React.FC = () => {
                         {isOverdue && <span className="text-xs text-red-500">Overdue</span>}
                       </td>
                       <td className="px-4 py-3 hidden sm:table-cell">
-                        <PriorityBadge dueDate={r.dueDate} completed={r.completed} />
+                        <PriorityBadge reminder={r} />
                       </td>
                       <td className="px-4 py-3 hidden md:table-cell"><ModuleTag module={r.module} /></td>
                       <td className="px-4 py-3 text-slate-500 dark:text-slate-400 hidden lg:table-cell">{r.dueDate}</td>

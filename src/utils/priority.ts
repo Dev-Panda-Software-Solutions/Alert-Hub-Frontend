@@ -49,6 +49,12 @@ export function getPriority(dueDate: string, completed: boolean): Priority {
   return 'LOW';
 }
 
+/** Returns the effective priority — respects manual override stored on the reminder. */
+export function getEffectivePriority(r: { dueDate: string; completed: boolean; priority?: string | null }): Priority {
+  if (!r.completed && r.priority && r.priority in PRIORITY_CONFIG) return r.priority as Priority;
+  return getPriority(r.dueDate, r.completed);
+}
+
 /** Returns a due date string matching the priority boundary */
 export function getDueDateForPriority(priority: Priority): string {
   const d = new Date();
