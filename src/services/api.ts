@@ -79,7 +79,7 @@ export const userApi = {
   getProfile: () =>
     http.get<User>('/user/profile').then((r) => r.data),
 
-  updateProfile: (data: { name?: string; country?: string }) =>
+  updateProfile: (data: { name?: string; email?: string; whatsApp?: string | null; country?: string }) =>
     http.put('/user/profile', data).then((r) => r.data),
 
   updatePlan: (plan: string) =>
