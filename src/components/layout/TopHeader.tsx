@@ -14,7 +14,7 @@ interface TopHeaderProps {
 const TopHeader: React.FC<TopHeaderProps> = ({ title, subtitle }) => {
   const { theme, toggleTheme } = useTheme();
   const { user, updateLocalUser } = useAuth();
-  const { openMobile, collapsed } = useLayout();
+  const { openMobile } = useLayout();
   const [countries, setCountries] = useState<string[]>([]);
   const [changing, setChanging] = useState(false);
   const [open, setOpen] = useState(false);
