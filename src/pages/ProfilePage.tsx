@@ -23,6 +23,8 @@ const ProfilePage: React.FC = () => {
 
   const [countries, setCountries] = useState<string[]>([]);
   const [name, setName]         = useState(user?.name || '');
+  const [email, setEmail]       = useState(user?.email || '');
+  const [whatsApp, setWhatsApp] = useState(user?.whatsApp || '');
   const [country, setCountry]   = useState(user?.country || 'India');
   const [saving, setSaving]         = useState(false);
   const [uploading, setUploading]   = useState(false);
@@ -41,16 +43,19 @@ const ProfilePage: React.FC = () => {
 
   useEffect(() => {
     setName(user?.name || '');
+    setEmail(user?.email || '');
+    setWhatsApp(user?.whatsApp || '');
     setCountry(user?.country || 'India');
   }, [user]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) { toast('Name cannot be empty', 'error'); return; }
+    if (!email.trim()) { toast('Email cannot be empty', 'error'); return; }
     setSaving(true);
     try {
-      await userApi.updateProfile({ name: name.trim(), country });
-      updateLocalUser({ name: name.trim(), country });
+      await userApi.updateProfile({ name: name.trim(), email: email.trim(), whatsApp: whatsApp.trim() || null, country });
+      updateLocalUser({ name: name.trim(), email: email.trim(), whatsApp: whatsApp.trim() || null, country });
       toast('Profile updated', 'success');
     } catch (err: unknown) {
       toast(err instanceof Error ? err.message : 'Failed to update', 'error');
@@ -371,7 +376,29 @@ const ProfilePage: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Country / Currency</label>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">WhatsApp Number</label>
+                <input
+                  type="tel"
+                  value={whatsApp}
+                  onChange={(e) => setWhatsApp(e.target.value)}
+                  className="input"
+                  placeholder="+91 98765 43210"
+                />
+                <p className="text-xs text-slate-400 mt-1">Include country code (e.g. +91 for India)</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Country</label>
                 <select
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}

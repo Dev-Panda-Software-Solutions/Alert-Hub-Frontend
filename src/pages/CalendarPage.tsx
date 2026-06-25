@@ -244,7 +244,7 @@ const CalendarPage: React.FC = () => {
                             <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
                               {formatAmount(r.amount, user?.country || 'India')}
                             </span>
-                            {r.channels.length > 0 && (
+                            {(r.channels?.length ?? 0) > 0 && (
                               <span className="text-xs text-slate-400">{r.channels.join(', ')}</span>
                             )}
                           </div>

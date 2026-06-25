@@ -13,6 +13,7 @@ export interface User {
   plan: Plan;
   simBalance: number;
   avatarUrl: string | null;
+  whatsApp?: string | null;
   sandbox?: boolean;
 }
 
