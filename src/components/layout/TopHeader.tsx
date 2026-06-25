@@ -96,32 +96,51 @@ const TopHeader: React.FC<TopHeaderProps> = ({ title, subtitle }) => {
             <button
               onClick={() => setOpen((v) => !v)}
               disabled={changing}
-              className="flex items-center gap-1.5 text-xs border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors disabled:opacity-60 max-w-44"
+              style={{
+                background: theme === 'dark' ? '#1e293b' : '#f8fafc',
+                border: `1px solid ${theme === 'dark' ? '#334155' : '#e2e8f0'}`,
+                color: theme === 'dark' ? '#e2e8f0' : '#374151',
+              }}
+              className="flex items-center gap-1.5 text-xs rounded-lg px-2.5 py-1.5 transition-colors disabled:opacity-60 max-w-44"
             >
-              <LuGlobe className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <LuGlobe className="w-3.5 h-3.5 shrink-0 opacity-60" />
               <span className="truncate">{countryLabel(selected)}</span>
-              <LuChevronDown className={`w-3 h-3 text-slate-400 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+              <LuChevronDown className={`w-3 h-3 shrink-0 opacity-60 transition-transform ${open ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Dropdown panel */}
             {open && (
-              <div className="absolute right-0 top-full mt-1.5 w-64 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl shadow-black/10 dark:shadow-black/40 z-50 overflow-hidden">
+              <div
+                style={{
+                  background: theme === 'dark' ? '#1e293b' : '#ffffff',
+                  border: `1px solid ${theme === 'dark' ? '#334155' : '#e2e8f0'}`,
+                  boxShadow: theme === 'dark' ? '0 20px 40px rgba(0,0,0,0.5)' : '0 8px 24px rgba(0,0,0,0.1)',
+                }}
+                className="absolute right-0 top-full mt-1.5 w-64 rounded-xl z-50 overflow-hidden"
+              >
                 {/* Search */}
-                <div className="p-2 border-b border-slate-100 dark:border-slate-700">
+                <div style={{ borderBottom: `1px solid ${theme === 'dark' ? '#334155' : '#f1f5f9'}` }} className="p-2">
                   <input
                     ref={searchRef}
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search country..."
-                    className="w-full text-xs px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none border border-transparent focus:border-blue-400 dark:focus:border-blue-500 transition-colors"
+                    style={{
+                      background: theme === 'dark' ? '#0f172a' : '#f1f5f9',
+                      color: theme === 'dark' ? '#f1f5f9' : '#1e293b',
+                      border: '1px solid transparent',
+                    }}
+                    className="w-full text-xs px-2.5 py-1.5 rounded-lg outline-none transition-colors placeholder:opacity-50"
                   />
                 </div>
 
                 {/* List */}
                 <ul className="max-h-60 overflow-y-auto py-1">
                   {filtered.length === 0 && (
-                    <li className="px-3 py-4 text-center text-xs text-slate-400 dark:text-slate-500">No results</li>
+                    <li style={{ color: theme === 'dark' ? '#64748b' : '#94a3b8' }} className="px-3 py-4 text-center text-xs">
+                      No results
+                    </li>
                   )}
                   {filtered.map((c) => {
                     const isActive = c === selected;
@@ -129,14 +148,23 @@ const TopHeader: React.FC<TopHeaderProps> = ({ title, subtitle }) => {
                       <li key={c}>
                         <button
                           onClick={() => handleSelect(c)}
-                          className={`w-full flex items-center justify-between gap-2 px-3 py-2 text-left text-xs transition-colors
-                            ${isActive
-                              ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold'
-                              : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/60'
-                            }`}
+                          style={isActive ? {
+                            background: theme === 'dark' ? 'rgba(59,130,246,0.2)' : '#eff6ff',
+                            color: theme === 'dark' ? '#93c5fd' : '#1d4ed8',
+                            fontWeight: 600,
+                          } : {
+                            color: theme === 'dark' ? '#cbd5e1' : '#374151',
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isActive) (e.currentTarget as HTMLElement).style.background = theme === 'dark' ? '#0f172a' : '#f8fafc';
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isActive) (e.currentTarget as HTMLElement).style.background = 'transparent';
+                          }}
+                          className="w-full flex items-center justify-between gap-2 px-3 py-2 text-left text-xs transition-colors"
                         >
                           <span className="truncate">{countryLabel(c)}</span>
-                          {isActive && <LuCheck className="w-3.5 h-3.5 shrink-0 text-blue-500" />}
+                          {isActive && <LuCheck className="w-3.5 h-3.5 shrink-0" />}
                         </button>
                       </li>
                     );
