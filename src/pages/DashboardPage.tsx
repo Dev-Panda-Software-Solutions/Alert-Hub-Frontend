@@ -7,6 +7,8 @@ import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { dashboardApi } from '../services/api';
 import { useAuth } from '../context/useAuth';
 import { getCurrencyForCountry } from '../utils/currency';
+import { getPriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../utils/priority';
+import type { Priority } from '../utils/priority';
 import type { DashboardStats, Reminder, ChannelsResponse } from '../types';
 
 const DashboardPage: React.FC = () => {
@@ -43,6 +45,13 @@ const DashboardPage: React.FC = () => {
 
   const fmt = (n: number) => `${currency.symbol}${Math.round(n).toLocaleString('en-IN')}`;
   const today = new Date().toISOString().split('T')[0];
+
+  // Compute priority breakdown from upcoming reminders
+  const priorityCounts = PRIORITY_ORDER.reduce<Record<Priority, number>>((acc, p) => {
+    acc[p] = upcoming.filter((r) => !r.completed && getPriority(r.dueDate, r.completed) === p).length;
+    return acc;
+  }, { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 });
+  const totalPending = upcoming.filter((r) => !r.completed).length;
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -82,19 +91,26 @@ const DashboardPage: React.FC = () => {
               <p className="text-sm text-slate-400 py-6 text-center">No upcoming reminders</p>
             ) : (
               <div className="space-y-2">
-                {upcoming.slice(0, 8).map((r) => (
-                  <div key={r.id} className="flex items-center gap-3 py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
-                    <StatusDot completed={r.completed} overdue={r.dueDate < today && !r.completed} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-800 dark:text-white truncate">{r.title}</p>
-                      <p className="text-xs text-slate-400">{r.dueDate}</p>
+                {upcoming.slice(0, 8).map((r) => {
+                  const priority = getPriority(r.dueDate, r.completed);
+                  const pcfg = PRIORITY_CONFIG[priority];
+                  return (
+                    <div key={r.id} className="flex items-center gap-3 py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                      <StatusDot completed={r.completed} overdue={r.dueDate < today && !r.completed} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-slate-800 dark:text-white truncate">{r.title}</p>
+                        <p className="text-xs text-slate-400">{r.dueDate}</p>
+                      </div>
+                      <span className={`hidden sm:inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${pcfg.bg} ${pcfg.text}`}>
+                        {pcfg.emoji}
+                      </span>
+                      <ModuleTag module={r.module} />
+                      <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap">
+                        {fmt(r.amount)}
+                      </span>
                     </div>
-                    <ModuleTag module={r.module} />
-                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap">
-                      {fmt(r.amount)}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -137,6 +153,37 @@ const DashboardPage: React.FC = () => {
                     Upgrade to unlock more channels →
                   </Link>
                 )}
+              </div>
+            )}
+
+            {/* Priority Overview */}
+            {totalPending > 0 && (
+              <div className="card p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-slate-800 dark:text-white">Priority Overview</h3>
+                  <Link to="/reminders" className="text-xs text-blue-600 dark:text-blue-400 hover:underline">Kanban →</Link>
+                </div>
+                <div className="space-y-2">
+                  {PRIORITY_ORDER.map((p) => {
+                    const cfg = PRIORITY_CONFIG[p];
+                    const count = priorityCounts[p];
+                    const pct = totalPending ? Math.round((count / totalPending) * 100) : 0;
+                    return (
+                      <div key={p}>
+                        <div className="flex items-center justify-between mb-0.5">
+                          <span className={`text-xs font-medium ${cfg.text}`}>{cfg.emoji} {cfg.label}</span>
+                          <span className={`text-xs font-bold ${cfg.text}`}>{count}</span>
+                        </div>
+                        <div className="h-1.5 rounded-full bg-slate-100 dark:bg-slate-700">
+                          <div
+                            className="h-1.5 rounded-full transition-all duration-500"
+                            style={{ width: `${pct}%`, background: cfg.color }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
 

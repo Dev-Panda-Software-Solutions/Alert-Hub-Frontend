@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { LuLayoutList, LuLayoutGrid } from 'react-icons/lu';
 import TopHeader from '../components/layout/TopHeader';
 import ModuleTag from '../components/ui/ModuleTag';
 import StatusDot from '../components/ui/StatusDot';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { useToast } from '../components/ui/Toast';
+import KanbanBoard from '../components/reminders/KanbanBoard';
 import { reminderApi } from '../services/api';
 import { useAuth } from '../context/useAuth';
 import { formatAmount } from '../utils/currency';
+import { getPriority, getDueDateForPriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../utils/priority';
+import type { Priority } from '../utils/priority';
 import type { Reminder, ReminderModule, Recurrence } from '../types';
 
 // ── Category map ──────────────────────────────────────────────────────────────
@@ -62,6 +66,17 @@ const EMPTY_FORM = {
   title: '', module: 'FINANCE' as ReminderModule, category: 'credit_card',
   amount: '', dueDate: '', recurrence: 'NONE' as Recurrence,
   channels: [] as string[], schedule: [] as number[],
+};
+
+// ── Priority Badge ────────────────────────────────────────────────────────────
+const PriorityBadge: React.FC<{ dueDate: string; completed: boolean }> = ({ dueDate, completed }) => {
+  const p = getPriority(dueDate, completed);
+  const cfg = PRIORITY_CONFIG[p];
+  return (
+    <span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${cfg.bg} ${cfg.text}`}>
+      {cfg.emoji} {cfg.label}
+    </span>
+  );
 };
 
 // ── Modal ──────────────────────────────────────────────────────────────────────
@@ -140,6 +155,9 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
     { ch: 'sms', label: '📱 SMS', locked: plan === 'FREE' || plan === 'PERSONAL' },
   ];
 
+  const previewPriority = form.dueDate ? getPriority(form.dueDate, false) : null;
+  const previewCfg = previewPriority ? PRIORITY_CONFIG[previewPriority] : null;
+
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
@@ -151,7 +169,7 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* BUSINESS plan gate — show before user wastes time filling the form */}
+          {/* BUSINESS plan gate */}
           {form.module === 'BUSINESS' && plan !== 'BUSINESS' && (
             <div className="flex gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50">
               <span className="text-xl shrink-0">🔒</span>
@@ -199,6 +217,11 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Due Date *</label>
               <input type="date" value={form.dueDate} onChange={(e) => set('dueDate', e.target.value)} required className="input" />
+              {previewCfg && (
+                <p className={`mt-1 text-xs font-medium ${previewCfg.text}`}>
+                  {previewCfg.emoji} {previewCfg.label} priority
+                </p>
+              )}
             </div>
           </div>
 
@@ -266,6 +289,7 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
 
 // ── Main page ──────────────────────────────────────────────────────────────────
 const MODULES: (ReminderModule | 'ALL')[] = ['ALL', 'BUSINESS', 'FAMILY', 'FINANCE'];
+type ViewMode = 'list' | 'kanban';
 
 const RemindersPage: React.FC = () => {
   const { user } = useAuth();
@@ -275,6 +299,7 @@ const RemindersPage: React.FC = () => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading]     = useState(true);
   const [activeModule, setActiveModule] = useState<ReminderModule | 'ALL'>('ALL');
+  const [viewMode, setViewMode]   = useState<ViewMode>('list');
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing]     = useState<Reminder | null>(null);
   const [defaultDate, setDefaultDate] = useState<string | undefined>();
@@ -295,7 +320,6 @@ const RemindersPage: React.FC = () => {
 
   useEffect(() => { load(); }, [load]);
 
-  // Handle ?date= param from calendar "Add" button
   useEffect(() => {
     if (didHandleParam.current) return;
     const dateParam = searchParams.get('date');
@@ -325,6 +349,17 @@ const RemindersPage: React.FC = () => {
       toast('Reminder deleted', 'success');
     } catch {
       toast('Failed to delete', 'error');
+    }
+  };
+
+  const handleMovePriority = async (reminder: Reminder, newPriority: Priority) => {
+    const newDueDate = getDueDateForPriority(newPriority);
+    try {
+      const updated = await reminderApi.update(reminder.id, { dueDate: newDueDate });
+      setReminders((prev) => prev.map((r) => r.id === reminder.id ? updated : r));
+      toast(`Moved to ${PRIORITY_CONFIG[newPriority].label}`, 'success');
+    } catch {
+      toast('Failed to move reminder', 'error');
     }
   };
 
@@ -359,28 +394,88 @@ const RemindersPage: React.FC = () => {
     r.category.includes(search.toLowerCase())
   );
 
+  // Priority summary counts (pending only)
+  const pending = reminders.filter((r) => !r.completed);
+  const priorityCounts = PRIORITY_ORDER.reduce<Record<Priority, number>>((acc, p) => {
+    acc[p] = pending.filter((r) => getPriority(r.dueDate, r.completed) === p).length;
+    return acc;
+  }, { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 });
+
   return (
     <div className="flex-1 overflow-y-auto">
       <TopHeader title="Reminders" subtitle="Manage all your payment reminders" />
 
-      <div className="p-6 max-w-7xl mx-auto">
-        {/* Controls */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-5">
+      <div className="p-6 max-w-7xl mx-auto space-y-5">
+        {/* Priority Summary Bar */}
+        {pending.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {PRIORITY_ORDER.map((p) => {
+              const cfg = PRIORITY_CONFIG[p];
+              const count = priorityCounts[p];
+              return (
+                <div
+                  key={p}
+                  className={`relative overflow-hidden rounded-xl border px-4 py-3 flex items-center gap-3 ${cfg.bg} ${cfg.border}`}
+                >
+                  <span className="text-2xl">{cfg.emoji}</span>
+                  <div>
+                    <p className={`text-xs font-medium ${cfg.text}`}>{cfg.label}</p>
+                    <p className={`text-2xl font-bold ${cfg.text}`}>{count}</p>
+                  </div>
+                  {count > 0 && (
+                    <div
+                      className="absolute inset-y-0 right-0 w-1.5 rounded-r-xl"
+                      style={{ background: cfg.color }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Controls row */}
+        <div className="flex flex-col sm:flex-row gap-3">
           <input
             value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Search reminders…"
             className="input flex-1"
           />
-          {selectedIds.size > 0 && (
+          {selectedIds.size > 0 && viewMode === 'list' && (
             <button onClick={handleBulkDelete} className="btn whitespace-nowrap bg-red-600 hover:bg-red-700 text-white">
               Delete {selectedIds.size} selected
             </button>
           )}
+
+          {/* View toggle */}
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-xl p-1 shrink-0">
+            <button
+              onClick={() => setViewMode('list')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                viewMode === 'list'
+                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+              }`}
+            >
+              <LuLayoutList className="w-4 h-4" /> List
+            </button>
+            <button
+              onClick={() => setViewMode('kanban')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                viewMode === 'kanban'
+                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+              }`}
+            >
+              <LuLayoutGrid className="w-4 h-4" /> Kanban
+            </button>
+          </div>
+
           <button onClick={openNew} className="btn btn-primary whitespace-nowrap">+ New Reminder</button>
         </div>
 
         {/* Module tabs */}
-        <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
+        <div className="flex gap-2 overflow-x-auto pb-1">
           {MODULES.map((m) => (
             <button
               key={m}
@@ -396,7 +491,7 @@ const RemindersPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Table */}
+        {/* Content */}
         {loading ? (
           <div className="flex justify-center py-16"><LoadingSpinner size="lg" text="Loading reminders…" /></div>
         ) : filtered.length === 0 ? (
@@ -405,6 +500,15 @@ const RemindersPage: React.FC = () => {
             <p className="text-slate-500 dark:text-slate-400">No reminders found</p>
             <button onClick={openNew} className="mt-4 btn btn-primary">Add your first reminder</button>
           </div>
+        ) : viewMode === 'kanban' ? (
+          <KanbanBoard
+            reminders={filtered}
+            country={user?.country || 'India'}
+            onEdit={openEdit}
+            onDelete={handleDelete}
+            onToggle={handleToggle}
+            onMovePriority={handleMovePriority}
+          />
         ) : (
           <div className="card overflow-hidden">
             <table className="w-full text-sm">
@@ -422,6 +526,7 @@ const RemindersPage: React.FC = () => {
                   </th>
                   <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Status</th>
                   <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Title</th>
+                  <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400 hidden sm:table-cell">Priority</th>
                   <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400 hidden md:table-cell">Module</th>
                   <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400 hidden lg:table-cell">Due Date</th>
                   <th className="text-right px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Amount</th>
@@ -450,6 +555,9 @@ const RemindersPage: React.FC = () => {
                       <td className="px-4 py-3">
                         <p className={`font-medium text-slate-800 dark:text-white ${r.completed ? 'line-through' : ''}`}>{r.title}</p>
                         {isOverdue && <span className="text-xs text-red-500">Overdue</span>}
+                      </td>
+                      <td className="px-4 py-3 hidden sm:table-cell">
+                        <PriorityBadge dueDate={r.dueDate} completed={r.completed} />
                       </td>
                       <td className="px-4 py-3 hidden md:table-cell"><ModuleTag module={r.module} /></td>
                       <td className="px-4 py-3 text-slate-500 dark:text-slate-400 hidden lg:table-cell">{r.dueDate}</td>

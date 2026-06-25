@@ -5,7 +5,9 @@ export const API_BASE_URL =
 export function resolveAssetUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   if (url.startsWith('http')) return url;
-  return `${API_BASE_URL}${url}`;
+  // Uploads live at /uploads/, not under /api/ — strip the /api suffix for asset paths
+  const serverBase = API_BASE_URL.replace(/\/api$/, '');
+  return `${serverBase}${url}`;
 }
 
 export default API_BASE_URL;
