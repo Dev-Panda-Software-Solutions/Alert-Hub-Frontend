@@ -69,6 +69,7 @@ const TopHeader: React.FC<TopHeaderProps> = ({ title, subtitle }) => {
               onChange={(e) => handleCountryChange(e.target.value)}
               disabled={changing}
               className="bg-transparent focus:outline-none cursor-pointer max-w-28 text-slate-700 dark:text-slate-200 disabled:opacity-60 text-xs"
+              style={{ colorScheme: theme === 'dark' ? 'dark' : 'light' }}
             >
               {countries.map((c) => <option key={c} value={c}>{countryLabel(c)}</option>)}
             </select>
