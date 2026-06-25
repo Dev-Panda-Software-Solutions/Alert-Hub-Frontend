@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { LuPencil, LuTrash2, LuCheck } from 'react-icons/lu';
 import ModuleTag from '../ui/ModuleTag';
-import { getPriority, getDueDateForPriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../../utils/priority';
+import { getPriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../../utils/priority';
 import type { Priority } from '../../utils/priority';
 import type { Reminder } from '../../types';
 import { formatAmount } from '../../utils/currency';

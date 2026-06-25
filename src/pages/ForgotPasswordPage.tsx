@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LuMail, LuArrowLeft, LuCircleCheck } from 'react-icons/lu';
 import { authApi } from '../services/api';
-import { useToast } from '../components/ui/Toast';
 
 const ForgotPasswordPage: React.FC = () => {
-  const { toast } = useToast();
+
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
