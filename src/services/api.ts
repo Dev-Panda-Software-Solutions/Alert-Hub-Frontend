@@ -118,6 +118,7 @@ export type ReminderPayload = {
   recurrence?: string;
   schedule?: number[];
   channels?: string[];
+  priority?: string;
 };
 
 export const reminderApi = {
