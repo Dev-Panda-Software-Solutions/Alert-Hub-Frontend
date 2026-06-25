@@ -48,13 +48,17 @@ const KanbanBoard: React.FC<Props> = ({ reminders, country, onEdit, onDelete, on
   const handleDrop = async (e: React.DragEvent, col: Priority) => {
     e.preventDefault();
     const id = e.dataTransfer.getData('text/plain');
-    const reminder = reminders.find((r) => r.id === id);
-    if (reminder && dragPriority.current !== col) {
-      await onMovePriority(reminder, col);
-    }
+    // Clear drag state immediately so the card stops being greyed out
     setDraggingId(null);
     setOverColumn(null);
     dragPriority.current = null;
+
+    const reminder = reminders.find((r) => r.id === id);
+    if (!reminder) return;
+    // Compute priority from actual data — ref can be stale/null on drop
+    if (getPriority(reminder.dueDate, reminder.completed) === col) return;
+
+    await onMovePriority(reminder, col);
   };
 
   const handleDragEnd = () => {
