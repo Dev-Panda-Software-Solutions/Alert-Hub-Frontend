@@ -180,30 +180,30 @@ const ProfilePage: React.FC = () => {
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Display Name</label>
                   <div className="relative">
-                    <LuUser className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-                    <input value={name} onChange={(e) => setName(e.target.value)} className="input pl-9" placeholder="Your name" required />
+                    <LuUser className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none z-10" />
+                    <input value={name} onChange={(e) => setName(e.target.value)} className="input" style={{ paddingLeft: '2.25rem' }} placeholder="Your name" required />
                   </div>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Email Address</label>
                   <div className="relative">
-                    <LuMail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input pl-9" placeholder="you@example.com" required />
+                    <LuMail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none z-10" />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" style={{ paddingLeft: '2.25rem' }} placeholder="you@example.com" required />
                   </div>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">WhatsApp Number</label>
                   <div className="relative">
-                    <LuPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-                    <input type="tel" value={whatsApp} onChange={(e) => setWhatsApp(e.target.value)} className="input pl-9" placeholder="+91 98765 43210" />
+                    <LuPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none z-10" />
+                    <input type="tel" value={whatsApp} onChange={(e) => setWhatsApp(e.target.value)} className="input" style={{ paddingLeft: '2.25rem' }} placeholder="+91 98765 43210" />
                   </div>
                   <p className="text-xs text-slate-400 mt-1">Include country code (e.g. +91 for India)</p>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Country</label>
                   <div className="relative">
-                    <LuGlobe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-                    <select value={country} onChange={(e) => setCountry(e.target.value)} className="input pl-9">
+                    <LuGlobe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none z-10" />
+                    <select value={country} onChange={(e) => setCountry(e.target.value)} className="input" style={{ paddingLeft: '2.25rem' }}>
                       {countries.map((c) => <option key={c} value={c}>{countryLabel(c)}</option>)}
                     </select>
                   </div>
