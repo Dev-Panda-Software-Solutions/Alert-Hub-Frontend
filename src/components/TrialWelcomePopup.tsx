@@ -60,11 +60,11 @@ function ConfettiCanvas() {
     };
     animate();
 
-    // Stop confetti after 5 s, clear canvas so nothing stays frozen
+    // Stop confetti after 30 s, clear canvas so nothing stays frozen
     const stopTimer = setTimeout(() => {
       running = false;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }, 5000);
+    }, 30000);
     return () => { running = false; clearTimeout(stopTimer); ctx.clearRect(0, 0, canvas.width, canvas.height); };
   }, []);
 
