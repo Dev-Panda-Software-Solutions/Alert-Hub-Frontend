@@ -55,6 +55,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginWithToken = (tok: string, usr: User) => {
+    persistSession(tok, usr);
+  };
+
   const logout = () => {
     clearAuthToken();
     localStorage.removeItem('authUser');
@@ -91,6 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         signup,
         loginSandbox,
+        loginWithToken,
         logout,
         refreshUser,
         updateLocalUser,

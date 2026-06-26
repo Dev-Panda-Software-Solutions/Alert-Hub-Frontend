@@ -99,6 +99,7 @@ export interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string, country: string) => Promise<void>;
   loginSandbox: () => Promise<void>;
+  loginWithToken: (token: string, user: User) => void;
   logout: () => void;
   refreshUser: () => Promise<void>;
   updateLocalUser: (updates: Partial<User>) => void;

@@ -71,6 +71,12 @@ export const authApi = {
 
   verifyOtp: (otp: string, password: string) =>
     http.post<{ ok: boolean; message: string }>('/auth/verify-otp', { otp, password }).then((r) => r.data),
+
+  sendSignupOtp: (data: { name: string; email: string; password: string; country: string }) =>
+    http.post<{ ok: boolean; message: string }>('/auth/send-signup-otp', data).then((r) => r.data),
+
+  verifySignupOtp: (email: string, otp: string) =>
+    http.post<{ token: string; user: User }>('/auth/verify-signup-otp', { email, otp }).then((r) => r.data),
 };
 
 // ─── User ─────────────────────────────────────────────────────────────────────
