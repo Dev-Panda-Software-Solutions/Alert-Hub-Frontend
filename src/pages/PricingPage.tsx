@@ -144,10 +144,15 @@ const PricingPage: React.FC = () => {
         {/* Plan cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {PLANS.map((plan) => {
-            const isCurrent   = user?.plan === plan.id;
-            const isPopular   = plan.badge === 'Popular';
-            const isLocked    = plan.id === 'FAMILY' || plan.id === 'BUSINESS';
-            const isOnTrial   = trialActive && plan.id === 'PERSONAL';
+            const isCurrent        = user?.plan === plan.id;
+            const isPopular        = plan.badge === 'Popular';
+            const isLocked         = plan.id === 'FAMILY' || plan.id === 'BUSINESS';
+            // trial is active and plan is PERSONAL and user hasn't accidentally downgraded
+            const isOnTrial        = trialActive && plan.id === 'PERSONAL' && user?.plan === 'PERSONAL';
+            // trial is active but user downgraded to FREE — Personal card needs a restore button
+            const isTrialDegraded  = trialActive && plan.id === 'PERSONAL' && user?.plan === 'FREE';
+            // FREE card during trial — block downgrade
+            const isFreeBlocked    = trialActive && plan.id === 'FREE';
 
             return (
               <div
@@ -155,8 +160,8 @@ const PricingPage: React.FC = () => {
                 className={`relative card flex flex-col p-6 border-2 transition-shadow
                   ${isLocked ? 'opacity-70 grayscale-30' : 'hover:shadow-lg'}
                   ${plan.color}
-                  ${isOnTrial ? 'ring-2 ring-blue-500 dark:ring-blue-400 shadow-lg shadow-blue-500/10' : ''}
-                  ${isPopular && !isLocked && !isOnTrial ? 'ring-2 ring-purple-400 dark:ring-purple-500' : ''}`}
+                  ${(isOnTrial || isTrialDegraded) ? 'ring-2 ring-blue-500 dark:ring-blue-400 shadow-lg shadow-blue-500/10' : ''}
+                  ${isPopular && !isLocked && !isOnTrial && !isTrialDegraded ? 'ring-2 ring-purple-400 dark:ring-purple-500' : ''}`}
               >
                 {/* Ribbons */}
                 {isLocked && (
@@ -166,14 +171,14 @@ const PricingPage: React.FC = () => {
                     </div>
                   </div>
                 )}
-                {isOnTrial && (
+                {(isOnTrial || isTrialDegraded) && (
                   <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-10">
                     <div className="absolute top-4 -right-8 rotate-45 bg-blue-600 text-white text-[10px] font-bold px-10 py-1 shadow">
                       TRIAL ACTIVE
                     </div>
                   </div>
                 )}
-                {!isLocked && !isOnTrial && plan.badge && (
+                {!isLocked && !isOnTrial && !isTrialDegraded && plan.badge && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-xs font-bold bg-purple-500 text-white">
                     {plan.badge}
                   </span>
@@ -182,15 +187,15 @@ const PricingPage: React.FC = () => {
                 <div className="mb-4">
                   <div className="flex items-center gap-2">
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white">{plan.name}</h3>
-                    {isLocked  && <span className="text-base">🔒</span>}
-                    {isOnTrial && <span className="text-base">🎉</span>}
+                    {isLocked                       && <span className="text-base">🔒</span>}
+                    {(isOnTrial || isTrialDegraded) && <span className="text-base">🎉</span>}
                   </div>
                   <div className="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">
-                    {isOnTrial
+                    {(isOnTrial || isTrialDegraded)
                       ? <span className="text-blue-600 dark:text-blue-400 text-xl font-bold">Free Trial</span>
                       : formatPrice(plan)}
                   </div>
-                  {isOnTrial && trialEndsAt && (
+                  {(isOnTrial || isTrialDegraded) && trialEndsAt && (
                     <p className="text-xs text-blue-500 dark:text-blue-400 mt-0.5 font-medium">
                       Expires {fmtDate(trialEndsAt)} · {days} day{days !== 1 ? 's' : ''} left
                     </p>
@@ -227,8 +232,23 @@ const PricingPage: React.FC = () => {
                     🔒 Coming Soon
                   </button>
                 ) : isOnTrial ? (
+                  // Trial active + already on PERSONAL — show badge, no action needed
                   <button disabled className="w-full py-2.5 rounded-xl font-semibold text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 cursor-default">
                     🎉 Trial Active ✓
+                  </button>
+                ) : isTrialDegraded ? (
+                  // Trial still active but user downgraded to FREE — let them restore
+                  <button
+                    onClick={() => handleUpgrade('PERSONAL')}
+                    disabled={upgrading !== null}
+                    className="w-full py-2.5 rounded-xl font-semibold text-sm bg-blue-600 hover:bg-blue-700 text-white transition-colors disabled:opacity-60"
+                  >
+                    {upgrading === 'PERSONAL' ? 'Restoring…' : '↩ Restore Trial'}
+                  </button>
+                ) : isFreeBlocked ? (
+                  // FREE plan card while trial is running — block downgrade
+                  <button disabled className="w-full py-2.5 rounded-xl font-semibold text-sm bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed" title="Cannot downgrade during active trial">
+                    Trial active — locked
                   </button>
                 ) : (
                   <button
