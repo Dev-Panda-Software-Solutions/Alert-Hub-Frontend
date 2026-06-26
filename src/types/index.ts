@@ -15,6 +15,8 @@ export interface User {
   avatarUrl: string | null;
   whatsApp?: string | null;
   sandbox?: boolean;
+  trialEndsAt: string | null;
+  trialSeen: boolean;
 }
 
 export interface Reminder {

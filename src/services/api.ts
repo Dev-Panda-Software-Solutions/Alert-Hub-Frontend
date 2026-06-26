@@ -104,6 +104,9 @@ export const userApi = {
 
   getCountries: () =>
     http.get<{ countries: string[] }>('/user/countries').then((r) => r.data),
+
+  markTrialSeen: () =>
+    http.patch<{ ok: boolean }>('/user/trial-seen').then((r) => r.data),
 };
 
 // ─── Reminders ────────────────────────────────────────────────────────────────

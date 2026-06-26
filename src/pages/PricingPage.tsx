@@ -62,12 +62,25 @@ const PLANS: PlanTier[] = [
   },
 ];
 
+function fmtDate(iso: string) {
+  return new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function daysLeft(iso: string) {
+  const diff = new Date(iso).getTime() - Date.now();
+  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+}
+
 const PricingPage: React.FC = () => {
   const { user, updateLocalUser } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const isIndia = (user?.country || 'India') === 'India';
   const [upgrading, setUpgrading] = useState<Plan | null>(null);
+
+  const trialActive = Boolean(user?.trialEndsAt && new Date(user.trialEndsAt) > new Date());
+  const trialEndsAt = user?.trialEndsAt ?? null;
+  const days        = trialEndsAt ? daysLeft(trialEndsAt) : 0;
 
   const handleUpgrade = async (planId: Plan) => {
     if (!user) { navigate('/login'); return; }
@@ -78,7 +91,7 @@ const PricingPage: React.FC = () => {
     try {
       await userApi.updatePlan(planId);
       updateLocalUser({ plan: planId });
-      toast(`🎉 Upgraded to ${planId} plan!`, 'success');
+      toast(`Upgraded to ${planId} plan!`, 'success');
     } catch (err: unknown) {
       toast(err instanceof Error ? err.message : 'Failed to upgrade', 'error');
     } finally {
@@ -97,6 +110,23 @@ const PricingPage: React.FC = () => {
       <TopHeader title="Pricing" subtitle="Choose the plan that fits your needs" />
 
       <div className="p-6 max-w-6xl mx-auto">
+        {/* Trial active banner */}
+        {trialActive && trialEndsAt && (
+          <div className="mb-6 flex items-center gap-4 px-5 py-4 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20">
+            <span className="text-3xl">🎉</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-base leading-tight">1-Month Free Trial — Personal Plan Active</p>
+              <p className="text-blue-100 text-sm mt-0.5">
+                Your trial includes all Personal features. Expires on <strong>{fmtDate(trialEndsAt)}</strong>
+                {days > 0 && <span className="ml-1 text-blue-200">({days} day{days !== 1 ? 's' : ''} left)</span>}
+              </p>
+            </div>
+            <div className="shrink-0 bg-white/20 rounded-lg px-3 py-1.5 text-sm font-semibold whitespace-nowrap">
+              ✓ Active
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-10">
           <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Simple, transparent pricing</h2>
@@ -104,7 +134,7 @@ const PricingPage: React.FC = () => {
             Start free, upgrade as you grow.
             {user?.country && ` Prices shown in ${isIndia ? 'INR' : 'USD'} for ${user.country}.`}
           </p>
-          {user?.plan && (
+          {user?.plan && !trialActive && (
             <div className="mt-3 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm font-medium">
               Current plan: <span className="font-bold">{user.plan}</span>
             </div>
@@ -117,13 +147,18 @@ const PricingPage: React.FC = () => {
             const isCurrent   = user?.plan === plan.id;
             const isPopular   = plan.badge === 'Popular';
             const isLocked    = plan.id === 'FAMILY' || plan.id === 'BUSINESS';
+            const isOnTrial   = trialActive && plan.id === 'PERSONAL';
 
             return (
               <div
                 key={plan.id}
-                className={`relative card flex flex-col p-6 border-2 transition-shadow ${isLocked ? 'opacity-70 grayscale-30' : 'hover:shadow-lg'} ${plan.color} ${isPopular && !isLocked ? 'ring-2 ring-purple-400 dark:ring-purple-500' : ''}`}
+                className={`relative card flex flex-col p-6 border-2 transition-shadow
+                  ${isLocked ? 'opacity-70 grayscale-30' : 'hover:shadow-lg'}
+                  ${plan.color}
+                  ${isOnTrial ? 'ring-2 ring-blue-500 dark:ring-blue-400 shadow-lg shadow-blue-500/10' : ''}
+                  ${isPopular && !isLocked && !isOnTrial ? 'ring-2 ring-purple-400 dark:ring-purple-500' : ''}`}
               >
-                {/* Coming Soon ribbon for locked plans */}
+                {/* Ribbons */}
                 {isLocked && (
                   <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-10">
                     <div className="absolute top-4 -right-7 rotate-45 bg-slate-500 dark:bg-slate-600 text-white text-[10px] font-bold px-10 py-1 shadow">
@@ -131,8 +166,14 @@ const PricingPage: React.FC = () => {
                     </div>
                   </div>
                 )}
-
-                {!isLocked && plan.badge && (
+                {isOnTrial && (
+                  <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none z-10">
+                    <div className="absolute top-4 -right-8 rotate-45 bg-blue-600 text-white text-[10px] font-bold px-10 py-1 shadow">
+                      TRIAL ACTIVE
+                    </div>
+                  </div>
+                )}
+                {!isLocked && !isOnTrial && plan.badge && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-xs font-bold bg-purple-500 text-white">
                     {plan.badge}
                   </span>
@@ -141,12 +182,20 @@ const PricingPage: React.FC = () => {
                 <div className="mb-4">
                   <div className="flex items-center gap-2">
                     <h3 className="text-lg font-bold text-slate-800 dark:text-white">{plan.name}</h3>
-                    {isLocked && <span className="text-base">🔒</span>}
+                    {isLocked  && <span className="text-base">🔒</span>}
+                    {isOnTrial && <span className="text-base">🎉</span>}
                   </div>
                   <div className="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">
-                    {formatPrice(plan)}
+                    {isOnTrial
+                      ? <span className="text-blue-600 dark:text-blue-400 text-xl font-bold">Free Trial</span>
+                      : formatPrice(plan)}
                   </div>
-                  {plan.priceINR > 0 && (
+                  {isOnTrial && trialEndsAt && (
+                    <p className="text-xs text-blue-500 dark:text-blue-400 mt-0.5 font-medium">
+                      Expires {fmtDate(trialEndsAt)} · {days} day{days !== 1 ? 's' : ''} left
+                    </p>
+                  )}
+                  {!isOnTrial && plan.priceINR > 0 && (
                     <p className="text-xs text-slate-400 mt-0.5">
                       billed monthly
                       {!isIndia && ` · ₹${plan.priceINR}/mo in INR`}
@@ -172,12 +221,14 @@ const PricingPage: React.FC = () => {
                   </div>
                 </div>
 
+                {/* CTA */}
                 {isLocked ? (
-                  <button
-                    disabled
-                    className="w-full py-2.5 rounded-xl font-semibold text-sm bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
-                  >
+                  <button disabled className="w-full py-2.5 rounded-xl font-semibold text-sm bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed">
                     🔒 Coming Soon
+                  </button>
+                ) : isOnTrial ? (
+                  <button disabled className="w-full py-2.5 rounded-xl font-semibold text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 cursor-default">
+                    🎉 Trial Active ✓
                   </button>
                 ) : (
                   <button
@@ -199,14 +250,18 @@ const PricingPage: React.FC = () => {
           })}
         </div>
 
-        {/* Coming soon note */}
+        {/* Footer notes */}
         <p className="mt-6 text-center text-xs text-slate-400 dark:text-slate-500">
           🔒 Family &amp; Business plans are coming soon — join the waitlist at <span className="text-blue-500">support@alert-guard.app</span>
         </p>
+        {trialActive && trialEndsAt && (
+          <p className="mt-2 text-center text-xs text-blue-500 dark:text-blue-400">
+            Your Personal trial runs until <strong>{fmtDate(trialEndsAt)}</strong>. Payment integration coming soon — we'll notify you before expiry.
+          </p>
+        )}
 
-        {/* FAQ / info */}
-        <div className="mt-10 text-center text-sm text-slate-500 dark:text-slate-400 space-y-2">
-          <p>💳 No credit card required for Free plan. Cancel anytime.</p>
+        <div className="mt-8 text-center text-sm text-slate-500 dark:text-slate-400 space-y-2">
+          <p>💳 No credit card required. Cancel anytime.</p>
           <p>📧 Questions? Contact <span className="text-blue-600 dark:text-blue-400">support@alert-guard.app</span></p>
         </div>
       </div>

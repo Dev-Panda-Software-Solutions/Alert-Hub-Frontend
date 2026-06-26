@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { LayoutProvider, useLayout } from '../../context/LayoutContext';
+import TrialWelcomePopup from '../TrialWelcomePopup';
 
 const AppLayoutInner: React.FC = () => {
   const { mobileOpen, closeMobile } = useLayout();
@@ -17,6 +18,7 @@ const AppLayoutInner: React.FC = () => {
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden min-h-screen">
         <Outlet />
       </main>
+      <TrialWelcomePopup />
     </div>
   );
 };
