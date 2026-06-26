@@ -101,75 +101,65 @@ const ProfilePage: React.FC = () => {
 
       <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
 
-        {/* ── Hero identity banner ─────────────────────────────────────── */}
-        <div className={`card overflow-hidden`}>
-          {/* Gradient strip */}
-          <div className={`h-24 bg-linear-to-r ${PLAN_GRADIENT[user.plan]} relative`}>
-            <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
-          </div>
+        {/* ── Hero identity card ───────────────────────────────────────── */}
+        <div className="card overflow-hidden flex flex-col sm:flex-row">
+          {/* Left colour accent bar */}
+          <div className={`w-full sm:w-2 shrink-0 h-2 sm:h-auto bg-linear-to-b ${PLAN_GRADIENT[user.plan]} rounded-t-2xl sm:rounded-t-none sm:rounded-l-2xl`} />
 
-          <div className="px-6 pb-6">
-            <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-10">
-              {/* Avatar */}
-              <div className="relative shrink-0">
-                <div className="w-20 h-20 rounded-2xl overflow-hidden border-4 border-white dark:border-slate-900 shadow-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-300 text-2xl font-bold">
-                  {user.avatarUrl
-                    ? <img src={resolveAssetUrl(user.avatarUrl)!} alt={user.name} className="w-full h-full object-cover" />
-                    : initials}
-                </div>
-                {uploading && (
-                  <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center">
-                    <LoadingSpinner size="sm" />
-                  </div>
-                )}
-                <input ref={fileRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp" className="hidden" onChange={handleAvatarChange} />
-                {!user.sandbox && (
-                  <button
-                    onClick={() => fileRef.current?.click()}
-                    disabled={uploading}
-                    className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow flex items-center justify-center disabled:opacity-50 transition-colors"
-                    title="Change photo"
-                  >
-                    <LuCamera className="w-3.5 h-3.5" />
-                  </button>
-                )}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 p-5 flex-1 min-w-0">
+            {/* Avatar */}
+            <div className="relative shrink-0">
+              <div className="w-18 h-18 rounded-2xl overflow-hidden bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-300 text-2xl font-bold shadow-md" style={{ width: '4.5rem', height: '4.5rem' }}>
+                {user.avatarUrl
+                  ? <img src={resolveAssetUrl(user.avatarUrl)!} alt={user.name} className="w-full h-full object-cover" />
+                  : initials}
               </div>
+              {uploading && (
+                <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center">
+                  <LoadingSpinner size="sm" />
+                </div>
+              )}
+              <input ref={fileRef} type="file" accept="image/jpeg,image/jpg,image/png,image/webp" className="hidden" onChange={handleAvatarChange} />
+              {!user.sandbox && (
+                <button
+                  onClick={() => fileRef.current?.click()}
+                  disabled={uploading}
+                  className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow flex items-center justify-center disabled:opacity-50 transition-colors"
+                  title="Change photo"
+                >
+                  <LuCamera className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
 
-              {/* Identity */}
-              <div className="flex-1 min-w-0 pb-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-xl font-bold text-slate-900 dark:text-white truncate">{user.name}</h2>
-                  <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${PLAN_BADGE[user.plan]}`}>
-                    {user.plan}
-                  </span>
-                  {trialActive && (
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 font-medium">
-                      🎉 Trial Active
-                    </span>
-                  )}
-                </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{user.email}</p>
-              </div>
-
-              {/* Quick stats */}
-              <div className="flex gap-4 sm:gap-6 pb-1 shrink-0">
-                <div className="text-center">
-                  <p className="text-xs text-slate-400 mb-0.5">Country</p>
-                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{user.country}</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-slate-400 mb-0.5">Sim Balance</p>
-                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{formatAmount(user.simBalance, user.country)}</p>
-                </div>
-                {trialActive && user.trialEndsAt && (
-                  <div className="text-center">
-                    <p className="text-xs text-slate-400 mb-0.5">Trial Ends</p>
-                    <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                      {new Date(user.trialEndsAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
-                    </p>
-                  </div>
+            {/* Name + email + badges */}
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white truncate">{user.name}</h2>
+                <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${PLAN_BADGE[user.plan]}`}>{user.plan}</span>
+                {trialActive && (
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 font-medium">🎉 Trial Active</span>
                 )}
               </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{user.email}</p>
+            </div>
+
+            {/* Stat chips row */}
+            <div className="flex flex-wrap gap-2 shrink-0">
+              {[
+                { label: 'Country',     value: user.country },
+                { label: 'Sim Balance', value: formatAmount(user.simBalance, user.country) },
+                ...(trialActive && user.trialEndsAt ? [{
+                  label: 'Trial Ends',
+                  value: new Date(user.trialEndsAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
+                  highlight: true,
+                }] : []),
+              ].map(({ label, value, highlight }) => (
+                <div key={label} className={`flex flex-col items-center px-4 py-2 rounded-xl text-center min-w-20 ${highlight ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800' : 'bg-slate-50 dark:bg-slate-800/60'}`}>
+                  <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wide mb-0.5">{label}</span>
+                  <span className={`text-sm font-bold ${highlight ? 'text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-200'}`}>{value}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -422,24 +412,30 @@ const ProfilePage: React.FC = () => {
               </button>
             </div>
 
-            {/* Troubleshooting tips */}
-            <div className="rounded-xl bg-slate-50 dark:bg-slate-800/50 p-4 space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
-              <p className="font-semibold text-slate-600 dark:text-slate-300 mb-2">If you don't see the notification:</p>
-              {[
-                ['Windows', 'Start → Settings → System → Notifications → Chrome/Edge must be ON'],
-                ['Chrome',  'Address bar → 🔒 lock icon → Notifications → Allow'],
-                ['Do Not Disturb', 'Windows Focus Assist must be OFF during testing'],
-                ['Background', 'Minimize Chrome/Edge completely, then test again'],
-                ['After restart', 'Always re-run Setup & Test after server restarts'],
-              ].map(([title, detail]) => (
-                <p key={title}><strong>{title}:</strong> {detail}</p>
-              ))}
-              <p className="pt-2 border-t border-slate-200 dark:border-slate-700 font-semibold text-slate-600 dark:text-slate-300">Testing email:</p>
-              <p>Create a reminder → select <strong>Email</strong> channel → cron fires at 8 AM daily → email goes to <strong>{user?.email}</strong></p>
-            </div>
           </div>
 
         </div>
+
+        {/* ── Row 2: Troubleshooting tips — full width ─────────────────── */}
+        <div className="card p-5">
+          <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">Troubleshooting &amp; Tips</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+            {[
+              ['🪟 Windows',        'Start → Settings → System → Notifications → Chrome/Edge must be ON'],
+              ['🌐 Chrome',         'Address bar → 🔒 lock icon → Notifications → Allow'],
+              ['🔕 Do Not Disturb', 'Windows Focus Assist must be OFF during testing'],
+              ['📱 Background',     'Minimize Chrome/Edge completely, then click Setup & Test again'],
+              ['🔄 After restart',  'Always re-run Setup & Test after the server restarts'],
+              ['✉️ Testing email',  `Create a reminder → Email channel → cron fires 8 AM daily → sent to ${user?.email}`],
+            ].map(([title, detail]) => (
+              <div key={title} className="flex items-start gap-2 py-1.5">
+                <span className="font-semibold text-slate-600 dark:text-slate-300 shrink-0">{title}:</span>
+                <span>{detail}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );
