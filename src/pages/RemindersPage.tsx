@@ -65,7 +65,7 @@ const SCHEDULE_OPTIONS = [
 const EMPTY_FORM = {
   title: '', module: 'FINANCE' as ReminderModule, category: 'credit_card',
   amount: '', dueDate: '', recurrence: 'NONE' as Recurrence,
-  channels: [] as string[], schedule: [] as number[],
+  channels: [] as string[], schedule: [] as number[], sendTime: '',
 };
 
 // ── Priority Badge ────────────────────────────────────────────────────────────
@@ -99,7 +99,7 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
         title: editing.title, module: editing.module, category: editing.category,
         amount: String(editing.amount), dueDate: editing.dueDate,
         recurrence: editing.recurrence, channels: editing.channels,
-        schedule: editing.schedule || [],
+        schedule: editing.schedule || [], sendTime: editing.sendTime || '',
       });
     } else {
       const today = new Date().toISOString().split('T')[0];
@@ -131,7 +131,7 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
     }
     setSaving(true);
     try {
-      const payload = { ...form, amount: parseFloat(form.amount) };
+      const payload = { ...form, amount: parseFloat(form.amount), sendTime: form.sendTime || null };
       if (editing) {
         await reminderApi.update(editing.id, payload);
         toast('Reminder updated', 'success');
@@ -274,6 +274,28 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
               ))}
             </div>
           </div>
+
+          {/* Custom email send time — only shown when email channel is selected */}
+          {form.channels.includes('email') && (
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                📧 Email send time
+                <span className="ml-1 text-xs font-normal text-slate-400">(optional — leave blank to use default digest times)</span>
+              </label>
+              <input
+                type="time"
+                value={form.sendTime}
+                onChange={(e) => set('sendTime', e.target.value)}
+                className="input"
+                placeholder="e.g. 09:30"
+              />
+              {form.sendTime && (
+                <p className="mt-1 text-xs text-blue-600 dark:text-blue-400">
+                  Email will be sent at <strong>{form.sendTime}</strong> on scheduled reminder days.
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={onClose} className="flex-1 btn btn-secondary">Cancel</button>

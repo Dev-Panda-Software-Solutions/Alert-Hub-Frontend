@@ -31,6 +31,7 @@ export interface Reminder {
   schedule: number[];
   channels: NotificationChannel[];
   priority: string | null;   // manual override; null = auto-computed from dueDate
+  sendTime: string | null;   // "HH:MM" 24h — custom email send time; null = use default cron
   completed: boolean;
   completedAt: string | null;
   createdAt: string;
