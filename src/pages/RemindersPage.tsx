@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { LuLayoutList, LuLayoutGrid } from 'react-icons/lu';
+import { 
+  LuLayoutList, LuLayoutGrid, LuSearch, LuMic, LuFilter, 
+  LuBell, LuCalendar, LuClock, LuCircleCheck,
+  LuBriefcase, LuUsers, LuWallet,
+  LuScanLine, LuRefreshCw, LuPlus, LuCalendarPlus
+} from 'react-icons/lu';
 import TopHeader from '../components/layout/TopHeader';
 import ModuleTag from '../components/ui/ModuleTag';
 import StatusDot from '../components/ui/StatusDot';
@@ -10,9 +15,10 @@ import KanbanBoard from '../components/reminders/KanbanBoard';
 import { reminderApi } from '../services/api';
 import { useAuth } from '../context/useAuth';
 import { formatAmount } from '../utils/currency';
-import { getPriority, getEffectivePriority, PRIORITY_CONFIG, PRIORITY_ORDER } from '../utils/priority';
+import { getPriority, getEffectivePriority, PRIORITY_CONFIG } from '../utils/priority';
 import type { Priority } from '../utils/priority';
 import type { Reminder, ReminderModule, Recurrence } from '../types';
+import emptyRemindersSvg from '../assets/dashboard-empty.svg';
 
 // ── Category map ──────────────────────────────────────────────────────────────
 const CATEGORIES: Record<ReminderModule, { value: string; label: string }[]> = {
@@ -169,7 +175,6 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* BUSINESS plan gate */}
           {form.module === 'BUSINESS' && plan !== 'BUSINESS' && (
             <div className="flex gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50">
               <span className="text-xl shrink-0">🔒</span>
@@ -305,8 +310,43 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
   );
 };
 
+// ── Components for new UI ──────────────────────────────────────────────────────
+const StatCard = ({ title, value, subtitle, Icon, iconBg, iconColor, accent }: any) => (
+  <div className={`bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-5 shadow-sm flex items-center gap-4 relative overflow-hidden hover-lift animate-fade-in-up ${accent ?? ''}`}>
+    <div className={`w-13 h-13 rounded-2xl flex items-center justify-center shrink-0 ${iconBg}`} style={{width:'3.25rem',height:'3.25rem'}}>
+      <Icon className={`w-6 h-6 ${iconColor}`} />
+    </div>
+    <div className="flex-1 z-10">
+      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{title}</p>
+      <p className="text-3xl font-black text-slate-800 dark:text-white leading-none tracking-tight mb-1">{value}</p>
+      <p className="text-[10px] text-slate-400 font-medium">{subtitle}</p>
+    </div>
+    <svg className="absolute bottom-0 right-0 w-24 h-16 opacity-[0.07] text-slate-400 dark:text-slate-600" viewBox="0 0 100 50" preserveAspectRatio="none" fill="currentColor">
+      <path d="M0 50 Q 25 25 50 50 T 100 50 L 100 100 L 0 100 Z" />
+    </svg>
+  </div>
+);
+
+const QuickAction = ({ title, desc, Icon, bg, color }: any) => (
+  <button className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 flex items-center gap-3 hover:shadow-md transition-shadow text-left group">
+    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 ${bg}`}>
+      <Icon className={`w-5 h-5 ${color}`} />
+    </div>
+    <div>
+      <p className="text-sm font-bold text-slate-800 dark:text-white leading-tight">{title}</p>
+      <p className="text-xs text-slate-500 mt-0.5">{desc}</p>
+    </div>
+  </button>
+);
+
+
 // ── Main page ──────────────────────────────────────────────────────────────────
-const MODULES: (ReminderModule | 'ALL')[] = ['ALL', 'BUSINESS', 'FAMILY', 'FINANCE'];
+const MODULES = [
+  { id: 'ALL', label: 'All', icon: <LuLayoutGrid className="w-4 h-4" /> },
+  { id: 'BUSINESS', label: 'Business', icon: <LuBriefcase className="w-4 h-4" /> },
+  { id: 'FAMILY', label: 'Family', icon: <LuUsers className="w-4 h-4" /> },
+  { id: 'FINANCE', label: 'Finance', icon: <LuWallet className="w-4 h-4" /> },
+];
 type ViewMode = 'list' | 'kanban';
 
 const RemindersPage: React.FC = () => {
@@ -406,194 +446,231 @@ const RemindersPage: React.FC = () => {
   };
 
   const today = new Date().toISOString().split('T')[0];
+  const next7Days = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+  const activeCount = reminders.filter(r => !r.completed).length;
+  const dueTodayCount = reminders.filter(r => !r.completed && r.dueDate === today).length;
+  const upcomingCount = reminders.filter(r => !r.completed && r.dueDate > today && r.dueDate <= next7Days).length;
+  const completedCount = reminders.filter(r => r.completed).length;
+
   const filtered = reminders.filter((r) =>
     r.title.toLowerCase().includes(search.toLowerCase()) ||
     r.category.includes(search.toLowerCase())
   );
 
-  // Priority summary counts (pending only)
-  const pending = reminders.filter((r) => !r.completed);
-  const priorityCounts = PRIORITY_ORDER.reduce<Record<Priority, number>>((acc, p) => {
-    acc[p] = pending.filter((r) => getEffectivePriority(r) === p).length;
-    return acc;
-  }, { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0 });
-
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-slate-950">
       <TopHeader title="Reminders" subtitle="Manage all your payment reminders" />
 
-      <div className="p-6 max-w-7xl mx-auto space-y-5">
-        {/* Priority Summary Bar */}
-        {pending.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {PRIORITY_ORDER.map((p) => {
-              const cfg = PRIORITY_CONFIG[p];
-              const count = priorityCounts[p];
-              return (
-                <div
-                  key={p}
-                  className={`relative overflow-hidden rounded-xl border px-4 py-3 flex items-center gap-3 ${cfg.bg} ${cfg.border}`}
-                >
-                  <span className="text-2xl">{cfg.emoji}</span>
-                  <div>
-                    <p className={`text-xs font-medium ${cfg.text}`}>{cfg.label}</p>
-                    <p className={`text-2xl font-bold ${cfg.text}`}>{count}</p>
-                  </div>
-                  {count > 0 && (
-                    <div
-                      className="absolute inset-y-0 right-0 w-1.5 rounded-r-xl"
-                      style={{ background: cfg.color }}
-                    />
-                  )}
-                </div>
-              );
-            })}
+      <div className="p-6 max-w-7xl mx-auto space-y-6">
+        
+        {/* Search & Actions Row */}
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="flex items-center w-full md:w-auto flex-1 max-w-2xl gap-3">
+            <div className="relative flex-1">
+              <LuSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+              <input
+                value={search} onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search reminders..."
+                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-shadow"
+              />
+              <button className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-500 transition-colors">
+                <LuMic className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <button className="p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-colors shadow-sm">
+              <LuFilter className="w-5 h-5" />
+            </button>
+            
+            <div className="hidden sm:flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-600 dark:text-slate-400 cursor-pointer hover:bg-slate-50 transition-colors shadow-sm">
+              <span>Sort by: Newest</span>
+              <span className="text-xs">▼</span>
+            </div>
           </div>
-        )}
-
-        {/* Controls row */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <input
-            value={search} onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search reminders…"
-            className="input flex-1"
-          />
-          {selectedIds.size > 0 && viewMode === 'list' && (
-            <button onClick={handleBulkDelete} className="btn whitespace-nowrap bg-red-600 hover:bg-red-700 text-white">
-              Delete {selectedIds.size} selected
-            </button>
-          )}
-
-          {/* View toggle */}
-          <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-xl p-1 shrink-0">
-            <button
-              onClick={() => setViewMode('list')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                viewMode === 'list'
-                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-              }`}
-            >
-              <LuLayoutList className="w-4 h-4" /> List
-            </button>
-            <button
-              onClick={() => setViewMode('kanban')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                viewMode === 'kanban'
-                  ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-              }`}
-            >
-              <LuLayoutGrid className="w-4 h-4" /> Kanban
-            </button>
-          </div>
-
-          <button onClick={openNew} className="btn btn-primary whitespace-nowrap">+ New Reminder</button>
+          
+          <button onClick={openNew} className="w-full md:w-auto bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-2.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+            <LuPlus className="w-5 h-5" /> New Reminder
+          </button>
         </div>
 
-        {/* Module tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        {/* 4 Stats Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard title="Active Reminders" value={activeCount}   subtitle="Stay on track!"    Icon={LuBell}        iconBg="bg-purple-100 dark:bg-purple-900/40" iconColor="text-purple-600 dark:text-purple-400" accent="kpi-accent-purple stagger-1" />
+          <StatCard title="Due Today"        value={dueTodayCount} subtitle="No payments today" Icon={LuCalendar}    iconBg="bg-blue-100 dark:bg-blue-900/40"   iconColor="text-blue-600 dark:text-blue-400"   accent="kpi-accent-blue stagger-2" />
+          <StatCard title="Upcoming"         value={upcomingCount} subtitle="Next 7 days"       Icon={LuClock}      iconBg="bg-orange-100 dark:bg-orange-900/40" iconColor="text-orange-600 dark:text-orange-400" accent="kpi-accent-orange stagger-3" />
+          <StatCard title="Completed"        value={completedCount}subtitle="All done!"         Icon={LuCircleCheck} iconBg="bg-emerald-100 dark:bg-emerald-900/40" iconColor="text-emerald-600 dark:text-emerald-400" accent="kpi-accent-emerald stagger-4" />
+        </div>
+
+        {/* Module Filter Pills */}
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2 sm:mx-0 sm:px-0 scrollbar-hide">
           {MODULES.map((m) => (
             <button
-              key={m}
-              onClick={() => setActiveModule(m)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                activeModule === m
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              key={m.id}
+              onClick={() => setActiveModule(m.id as any)}
+              className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all shadow-sm ${
+                activeModule === m.id
+                  ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-indigo-200'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 border border-slate-100 dark:border-slate-800'
               }`}
             >
-              {m === 'ALL' ? 'All' : m}
+              {m.icon} {m.label}
             </button>
           ))}
         </div>
 
-        {/* Content */}
-        {loading ? (
-          <div className="flex justify-center py-16"><LoadingSpinner size="lg" text="Loading reminders…" /></div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-4xl mb-3">📭</p>
-            <p className="text-slate-500 dark:text-slate-400">No reminders found</p>
-            <button onClick={openNew} className="mt-4 btn btn-primary">Add your first reminder</button>
-          </div>
-        ) : viewMode === 'kanban' ? (
-          <KanbanBoard
-            reminders={filtered}
-            country={user?.country || 'India'}
-            onEdit={openEdit}
-            onDelete={handleDelete}
-            onToggle={handleToggle}
-            onMovePriority={handleMovePriority}
-          />
-        ) : (
-          <div className="card overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-                <tr>
-                  <th className="px-4 py-3 w-8">
-                    <input
-                      type="checkbox"
-                      checked={filtered.length > 0 && selectedIds.size === filtered.length}
-                      onChange={() => setSelectedIds(
-                        selectedIds.size === filtered.length ? new Set() : new Set(filtered.map((r) => r.id))
-                      )}
-                      className="rounded border-slate-300 dark:border-slate-600"
-                    />
-                  </th>
-                  <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Status</th>
-                  <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Title</th>
-                  <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400 hidden sm:table-cell">Priority</th>
-                  <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400 hidden md:table-cell">Module</th>
-                  <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400 hidden lg:table-cell">Due Date</th>
-                  <th className="text-right px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Amount</th>
-                  <th className="text-right px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {filtered.map((r) => {
-                  const isOverdue = !r.completed && r.dueDate < today;
-                  const isSelected = selectedIds.has(r.id);
-                  return (
-                    <tr key={r.id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${r.completed ? 'opacity-60' : ''} ${isSelected ? 'bg-blue-50 dark:bg-blue-900/10' : ''}`}>
-                      <td className="px-4 py-3 w-8">
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => toggleSelect(r.id)}
-                          className="rounded border-slate-300 dark:border-slate-600"
-                        />
-                      </td>
-                      <td className="px-4 py-3">
-                        <button onClick={() => handleToggle(r)} title="Toggle complete">
-                          <StatusDot completed={r.completed} overdue={isOverdue} />
-                        </button>
-                      </td>
-                      <td className="px-4 py-3">
-                        <p className={`font-medium text-slate-800 dark:text-white ${r.completed ? 'line-through' : ''}`}>{r.title}</p>
-                        {isOverdue && <span className="text-xs text-red-500">Overdue</span>}
-                      </td>
-                      <td className="px-4 py-3 hidden sm:table-cell">
-                        <PriorityBadge reminder={r} />
-                      </td>
-                      <td className="px-4 py-3 hidden md:table-cell"><ModuleTag module={r.module} /></td>
-                      <td className="px-4 py-3 text-slate-500 dark:text-slate-400 hidden lg:table-cell">{r.dueDate}</td>
-                      <td className="px-4 py-3 text-right font-semibold text-slate-800 dark:text-white">
-                        {formatAmount(r.amount, user?.country || 'India')}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => openEdit(r)} className="text-xs text-blue-600 dark:text-blue-400 hover:underline">Edit</button>
-                          <button onClick={() => handleDelete(r.id)} className="text-xs text-red-500 hover:underline">Delete</button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+        {/* Content Area */}
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-10 shadow-sm border border-slate-100 dark:border-slate-800/80 min-h-[400px] flex flex-col relative animate-fade-in-up stagger-5">
+          
+          {loading ? (
+             <div className="flex-1 flex justify-center items-center"><LoadingSpinner size="lg" text="Loading reminders…" /></div>
+          ) : filtered.length === 0 ? (
+            // Empty State
+            <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
+              <div className="mb-6 relative">
+                 <img src={emptyRemindersSvg} alt="No reminders" className="w-56 h-48 object-contain hover:scale-105 transition-transform duration-500" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">You don't have any reminders yet</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 max-w-sm">Add your first reminder and never miss a payment again.</p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                <button onClick={openNew} className="bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                  <LuPlus className="w-5 h-5" /> Create your first reminder
+                </button>
+                <button className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm">
+                  <LuCalendarPlus className="w-5 h-5" /> Import from Calendar
+                </button>
+              </div>
+            </div>
+          ) : (
+             <div className="flex-1 flex flex-col">
+                <div className="mb-4 flex justify-between items-center">
+                  <h3 className="font-bold text-slate-800 dark:text-white">All Reminders</h3>
+                  <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-xl p-1 shrink-0">
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        viewMode === 'list'
+                          ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
+                          : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                      }`}
+                    >
+                      <LuLayoutList className="w-4 h-4" /> List
+                    </button>
+                    <button
+                      onClick={() => setViewMode('kanban')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        viewMode === 'kanban'
+                          ? 'bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm'
+                          : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                      }`}
+                    >
+                      <LuLayoutGrid className="w-4 h-4" /> Kanban
+                    </button>
+                  </div>
+                </div>
+                
+                {selectedIds.size > 0 && viewMode === 'list' && (
+                  <div className="mb-4">
+                    <button onClick={handleBulkDelete} className="btn text-sm whitespace-nowrap bg-red-600 hover:bg-red-700 text-white py-1.5">
+                      Delete {selectedIds.size} selected
+                    </button>
+                  </div>
+                )}
+                
+                {viewMode === 'kanban' ? (
+                  <KanbanBoard
+                    reminders={filtered}
+                    country={user?.country || 'India'}
+                    onEdit={openEdit}
+                    onDelete={handleDelete}
+                    onToggle={handleToggle}
+                    onMovePriority={handleMovePriority}
+                  />
+                ) : (
+                  <div className="overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800">
+                    <table className="w-full text-sm">
+                      <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-800">
+                        <tr>
+                          <th className="px-4 py-3 w-8">
+                            <input
+                              type="checkbox"
+                              checked={filtered.length > 0 && selectedIds.size === filtered.length}
+                              onChange={() => setSelectedIds(
+                                selectedIds.size === filtered.length ? new Set() : new Set(filtered.map((r) => r.id))
+                              )}
+                              className="rounded border-slate-300 dark:border-slate-600"
+                            />
+                          </th>
+                          <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Status</th>
+                          <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Title</th>
+                          <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400 hidden sm:table-cell">Priority</th>
+                          <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400 hidden md:table-cell">Module</th>
+                          <th className="text-left px-4 py-3 font-medium text-slate-600 dark:text-slate-400 hidden lg:table-cell">Due Date</th>
+                          <th className="text-right px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Amount</th>
+                          <th className="text-right px-4 py-3 font-medium text-slate-600 dark:text-slate-400">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-50 dark:divide-slate-800/50">
+                        {filtered.map((r) => {
+                          const isOverdue = !r.completed && r.dueDate < today;
+                          const isSelected = selectedIds.has(r.id);
+                          return (
+                            <tr key={r.id} className={`hover:bg-indigo-50/30 dark:hover:bg-slate-800/50 transition-colors ${r.completed ? 'opacity-60' : ''} ${isSelected ? 'bg-indigo-50/50 dark:bg-indigo-900/10' : ''} group`}>
+                              <td className="px-4 py-3.5 w-8">
+                                <input
+                                  type="checkbox"
+                                  checked={isSelected}
+                                  onChange={() => toggleSelect(r.id)}
+                                  className="rounded border-slate-300 dark:border-slate-600"
+                                />
+                              </td>
+                              <td className="px-4 py-3">
+                                <button onClick={() => handleToggle(r)} title="Toggle complete">
+                                  <StatusDot completed={r.completed} overdue={isOverdue} />
+                                </button>
+                              </td>
+                              <td className="px-4 py-3">
+                                <p className={`font-semibold text-slate-800 dark:text-white ${r.completed ? 'line-through' : ''}`}>{r.title}</p>
+                                {isOverdue && <span className="text-xs text-red-500 font-medium">Overdue</span>}
+                              </td>
+                              <td className="px-4 py-3 hidden sm:table-cell">
+                                <PriorityBadge reminder={r} />
+                              </td>
+                              <td className="px-4 py-3 hidden md:table-cell"><ModuleTag module={r.module} /></td>
+                              <td className="px-4 py-3 text-slate-500 dark:text-slate-400 hidden lg:table-cell">{r.dueDate}</td>
+                              <td className="px-4 py-3 text-right font-bold text-slate-800 dark:text-white">
+                                {formatAmount(r.amount, user?.country || 'India')}
+                              </td>
+                              <td className="px-4 py-3">
+                                <div className="flex items-center justify-end gap-3">
+                                  <button onClick={() => openEdit(r)} className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Edit</button>
+                                  <button onClick={() => handleDelete(r.id)} className="text-xs font-semibold text-red-500 hover:underline">Delete</button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+             </div>
+          )}
+        </div>
+
+        {/* Quick Actions (always visible at bottom) */}
+        <div className="mt-8 mb-4">
+           <h3 className="font-bold text-slate-800 dark:text-white text-lg mb-1">Quick Actions</h3>
+           <p className="text-xs text-slate-500 mb-4">Create reminders faster with smart tools</p>
+           
+           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+             <QuickAction title="Scan Bill" desc="Extract details" Icon={LuScanLine} bg="bg-emerald-50 dark:bg-emerald-900/30" color="text-emerald-600 dark:text-emerald-400" />
+             <QuickAction title="Voice Reminder" desc="Speak & create" Icon={LuMic} bg="bg-purple-50 dark:bg-purple-900/30" color="text-purple-600 dark:text-purple-400" />
+             <QuickAction title="Calendar Sync" desc="Connect calendar" Icon={LuCalendar} bg="bg-orange-50 dark:bg-orange-900/30" color="text-orange-600 dark:text-orange-400" />
+             <QuickAction title="Recurring Reminder" desc="Set auto reminders" Icon={LuRefreshCw} bg="bg-blue-50 dark:bg-blue-900/30" color="text-blue-600 dark:text-blue-400" />
+           </div>
+        </div>
       </div>
 
       {showModal && <ReminderModal editing={editing} defaultDate={defaultDate} onClose={closeModal} onSaved={onSaved} />}

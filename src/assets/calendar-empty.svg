@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 240" fill="none">
+  <defs>
+    <radialGradient id="cal-bg" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#EEF0FF"/>
+      <stop offset="100%" stop-color="#F8F9FD" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cal-header-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#818CF8"/>
+    </linearGradient>
+    <linearGradient id="cal-check-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+    <linearGradient id="cal-plant-stem" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <filter id="cal-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#6366F1" flood-opacity="0.16"/>
+    </filter>
+    <filter id="cal-badge-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#7C3AED" flood-opacity="0.38"/>
+    </filter>
+  </defs>
+
+  <ellipse cx="140" cy="118" rx="108" ry="90" fill="url(#cal-bg)"/>
+
+  <!-- Yellow sparkle top-left -->
+  <path d="M210 58 L211.6 63 L217 65 L211.6 67 L210 72 L208.4 67 L203 65 L208.4 63 Z" fill="#FCD34D" opacity="0.9"/>
+
+  <!-- Right-side lavender circles -->
+  <circle cx="238" cy="108" r="13" fill="#C4B5FD" opacity="0.36"/>
+  <circle cx="248" cy="135" r="7"  fill="#A5B4FC" opacity="0.26"/>
+
+  <!-- Plant (bottom-left) -->
+  <g transform="translate(36, 142)">
+    <!-- Pot -->
+    <rect x="3" y="22" width="22" height="17" rx="4" fill="#D1FAE5" stroke="#A7F3D0" stroke-width="1.2"/>
+    <rect x="1" y="18" width="26" height="6"  rx="3" fill="#A7F3D0"/>
+    <!-- Stem -->
+    <path d="M14 18 Q14 10 11 4" stroke="url(#cal-plant-stem)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- Branches -->
+    <path d="M14 14 Q18 9 24 7"  stroke="url(#cal-plant-stem)" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M14 11 Q10 5  5  5"  stroke="url(#cal-plant-stem)" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <!-- Leaves -->
+    <ellipse cx="10" cy="3.5" rx="6" ry="4" fill="#34D399" opacity="0.9"  transform="rotate(-25 10 3.5)"/>
+    <ellipse cx="24" cy="7"   rx="5" ry="3.5" fill="#10B981" opacity="0.85" transform="rotate(15 24 7)"/>
+    <ellipse cx="5"  cy="5"   rx="5" ry="3.5" fill="#34D399" opacity="0.85" transform="rotate(-40 5 5)"/>
+  </g>
+
+  <!-- Calendar card -->
+  <rect x="72" y="58" width="150" height="122" rx="20" fill="white" filter="url(#cal-shadow)"/>
+  <rect x="72" y="58" width="150" height="52"  rx="20" fill="url(#cal-header-grad)"/>
+  <rect x="72" y="86" width="150" height="24"  fill="url(#cal-header-grad)"/>
+
+  <!-- Calendar pins -->
+  <rect x="105" y="45" width="13" height="24" rx="6.5" fill="#C7D2FE"/>
+  <rect x="107" y="45" width="9"  height="16" rx="4.5" fill="#A5B4FC"/>
+  <rect x="176" y="45" width="13" height="24" rx="6.5" fill="#C7D2FE"/>
+  <rect x="178" y="45" width="9"  height="16" rx="4.5" fill="#A5B4FC"/>
+
+  <!-- Grid cells row 1 -->
+  <rect x="88"  y="122" width="28" height="22" rx="6" fill="#EEF2FF"/>
+  <rect x="124" y="122" width="28" height="22" rx="6" fill="#E0E7FF"/>
+  <rect x="160" y="122" width="28" height="22" rx="6" fill="#EEF2FF"/>
+  <!-- Grid cells row 2 -->
+  <rect x="88"  y="151" width="28" height="22" rx="6" fill="#EEF2FF"/>
+  <rect x="124" y="151" width="28" height="22" rx="6" fill="#EEF2FF"/>
+  <rect x="160" y="151" width="28" height="22" rx="6" fill="#EEF2FF"/>
+
+  <!-- Checkmark badge -->
+  <circle cx="192" cy="166" r="27" fill="url(#cal-check-grad)" filter="url(#cal-badge-shadow)"/>
+  <path d="M180 166 L189 175 L205 158" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

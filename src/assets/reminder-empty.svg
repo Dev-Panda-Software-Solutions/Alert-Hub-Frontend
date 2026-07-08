@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 240" fill="none">
+  <defs>
+    <radialGradient id="rem-bg" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#EEF0FF"/>
+      <stop offset="100%" stop-color="#F8F9FD" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rem-cal-header" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#818CF8"/>
+    </linearGradient>
+    <linearGradient id="rem-check-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+    <filter id="rem-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#6366F1" flood-opacity="0.16"/>
+    </filter>
+    <filter id="rem-badge-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#7C3AED" flood-opacity="0.38"/>
+    </filter>
+  </defs>
+
+  <ellipse cx="140" cy="118" rx="108" ry="90" fill="url(#rem-bg)"/>
+
+  <!-- Decorative floaters -->
+  <circle cx="46" cy="88" r="9" fill="#A5B4FC" opacity="0.45"/>
+  <circle cx="234" cy="102" r="14" fill="#C4B5FD" opacity="0.38"/>
+  <circle cx="248" cy="132" r="7" fill="#A5B4FC" opacity="0.28"/>
+  <circle cx="38" cy="162" r="7" fill="#6366F1" opacity="0.14"/>
+  <path d="M66 62 L67.8 67.6 L74 70 L67.8 72.4 L66 78 L64.2 72.4 L58 70 L64.2 67.6 Z" fill="#FCD34D" opacity="0.95"/>
+  <path d="M56 50 L57 53.8 L61 55 L57 56.2 L56 60 L55 56.2 L51 55 L55 53.8 Z" fill="#FCD34D" opacity="0.55"/>
+  <rect x="40" y="152" width="14" height="14" rx="3" fill="#FBBF24" opacity="0.65" transform="rotate(25 47 159)"/>
+
+  <!-- Calendar card -->
+  <rect x="68" y="60" width="148" height="120" rx="20" fill="white" filter="url(#rem-shadow)"/>
+  <rect x="68" y="60" width="148" height="52" rx="20" fill="url(#rem-cal-header)"/>
+  <rect x="68" y="88" width="148" height="24" fill="url(#rem-cal-header)"/>
+
+  <!-- Calendar pins -->
+  <rect x="102" y="47" width="13" height="24" rx="6.5" fill="#C7D2FE"/>
+  <rect x="104" y="47" width="9" height="16" rx="4.5" fill="#A5B4FC"/>
+  <rect x="169" y="47" width="13" height="24" rx="6.5" fill="#C7D2FE"/>
+  <rect x="171" y="47" width="9" height="16" rx="4.5" fill="#A5B4FC"/>
+
+  <!-- Grid cells row 1 -->
+  <rect x="84"  y="124" width="28" height="23" rx="6" fill="#EEF2FF"/>
+  <rect x="120" y="124" width="28" height="23" rx="6" fill="#E0E7FF"/>
+  <rect x="156" y="124" width="28" height="23" rx="6" fill="#EEF2FF"/>
+  <!-- Grid cells row 2 -->
+  <rect x="84"  y="153" width="28" height="23" rx="6" fill="#EEF2FF"/>
+  <rect x="120" y="153" width="28" height="23" rx="6" fill="#EEF2FF"/>
+  <rect x="156" y="153" width="28" height="23" rx="6" fill="#EEF2FF"/>
+
+  <!-- Checkmark badge -->
+  <circle cx="188" cy="168" r="28" fill="url(#rem-check-grad)" filter="url(#rem-badge-shadow)"/>
+  <path d="M176 168 L184.5 177 L200 160" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

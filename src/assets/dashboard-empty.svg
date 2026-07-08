@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 220" fill="none">
+  <defs>
+    <radialGradient id="db-bg" cx="50%" cy="48%" r="52%">
+      <stop offset="0%" stop-color="#EEF0FF"/>
+      <stop offset="100%" stop-color="#F8F9FD" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="db-clip-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F0F4FF"/>
+      <stop offset="100%" stop-color="#E8EEFF"/>
+    </linearGradient>
+    <linearGradient id="db-clip-bar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#818CF8"/>
+    </linearGradient>
+    <linearGradient id="db-mag-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+    <linearGradient id="db-bell-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+    <linearGradient id="db-plant-stem" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <filter id="db-card-shadow" x="-12%" y="-12%" width="124%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#6366F1" flood-opacity="0.13"/>
+    </filter>
+    <filter id="db-bell-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#6366F1" flood-opacity="0.28"/>
+    </filter>
+    <filter id="db-mag-shadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#7C3AED" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Background soft ellipse -->
+  <ellipse cx="140" cy="108" rx="118" ry="94" fill="url(#db-bg)"/>
+
+  <!-- Clipboard card -->
+  <rect x="82" y="38" width="114" height="140" rx="14" fill="url(#db-clip-grad)" filter="url(#db-card-shadow)"/>
+  <!-- Clip tab at top -->
+  <rect x="112" y="30" width="54" height="20" rx="8" fill="#C7D2FE"/>
+  <rect x="116" y="30" width="46" height="14" rx="6" fill="#A5B4FC"/>
+  <rect x="125" y="27" width="28" height="14" rx="7" fill="#6366F1"/>
+  <rect x="128" y="27" width="22" height="9"  rx="4" fill="#818CF8"/>
+
+  <!-- Lines on clipboard -->
+  <!-- Line 1 with indigo check -->
+  <rect x="100" y="68" width="60" height="8" rx="4" fill="#E0E7FF"/>
+  <circle cx="94" cy="72" r="7" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1.5"/>
+  <path d="M90 72 L93 75.5 L98 68.5" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Line 2 with check -->
+  <rect x="100" y="90" width="60" height="8" rx="4" fill="#E0E7FF"/>
+  <circle cx="94" cy="94" r="7" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1.5"/>
+  <path d="M90 94 L93 97.5 L98 90.5" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Line 3 with check -->
+  <rect x="100" y="112" width="55" height="8" rx="4" fill="#E0E7FF"/>
+  <circle cx="94" cy="116" r="7" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1.5"/>
+  <path d="M90 116 L93 119.5 L98 112.5" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Line 4 (empty / pending) -->
+  <rect x="100" y="134" width="48" height="8" rx="4" fill="#EEF2FF"/>
+  <circle cx="94" cy="138" r="7" fill="#F5F3FF" stroke="#DDD6FE" stroke-width="1.5"/>
+
+  <!-- Bell (bottom-left) -->
+  <g transform="translate(44, 126)" filter="url(#db-bell-shadow)">
+    <!-- Bell body -->
+    <path d="M22 4 C22 4 30 8 30 20 L30 26 L14 26 L14 20 C14 8 22 4 22 4 Z" fill="url(#db-bell-grad)"/>
+    <!-- Bell top knob -->
+    <circle cx="22" cy="4" r="3.5" fill="#818CF8"/>
+    <!-- Bell bottom rim / clapper base -->
+    <rect x="12" y="25" width="20" height="4" rx="2" fill="#6366F1"/>
+    <!-- Clapper -->
+    <circle cx="22" cy="31" r="3.5" fill="#6366F1"/>
+    <!-- Bell shine highlight -->
+    <ellipse cx="19" cy="13" rx="2.5" ry="5" fill="white" opacity="0.22" transform="rotate(-10 19 13)"/>
+  </g>
+
+  <!-- Magnifying glass (bottom-right, overlapping clipboard) -->
+  <g transform="translate(162, 120)" filter="url(#db-mag-shadow)">
+    <!-- Glass circle -->
+    <circle cx="18" cy="18" r="17" fill="white" stroke="#C4B5FD" stroke-width="2.5"/>
+    <circle cx="18" cy="18" r="13" fill="url(#db-mag-grad)" opacity="0.18"/>
+    <!-- Handle -->
+    <line x1="30" y1="30" x2="44" y2="46" stroke="#7C3AED" stroke-width="7" stroke-linecap="round"/>
+    <line x1="30" y1="30" x2="44" y2="46" stroke="#A78BFA" stroke-width="4" stroke-linecap="round"/>
+    <!-- Inner lens highlight -->
+    <circle cx="14" cy="14" r="4" fill="white" opacity="0.35"/>
+  </g>
+
+  <!-- Plant (bottom-right corner) -->
+  <g transform="translate(202, 140)">
+    <!-- Pot -->
+    <rect x="2" y="20" width="22" height="16" rx="4" fill="#D1FAE5" stroke="#A7F3D0" stroke-width="1.2"/>
+    <rect x="0" y="17" width="26" height="5"  rx="2.5" fill="#A7F3D0"/>
+    <!-- Stem -->
+    <path d="M13 17 Q13 10 10 4" stroke="url(#db-plant-stem)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- Branches -->
+    <path d="M13 13 Q17 8 23 6"  stroke="url(#db-plant-stem)" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M13 10 Q9  4  4  4"  stroke="url(#db-plant-stem)" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <!-- Leaves -->
+    <ellipse cx="9"  cy="3.5" rx="6" ry="4"   fill="#34D399" opacity="0.9"  transform="rotate(-25 9 3.5)"/>
+    <ellipse cx="23" cy="6"   rx="5" ry="3.5"  fill="#10B981" opacity="0.85" transform="rotate(15 23 6)"/>
+    <ellipse cx="4"  cy="4"   rx="5" ry="3.5"  fill="#34D399" opacity="0.85" transform="rotate(-40 4 4)"/>
+  </g>
+
+  <!-- Sparkle dots -->
+  <path d="M62 38 L63.4 43 L69 45 L63.4 47 L62 52 L60.6 47 L55 45 L60.6 43 Z" fill="#FCD34D" opacity="0.85"/>
+  <path d="M212 35 L213 38.5 L217 40 L213 41.5 L212 45 L211 41.5 L207 40 L211 38.5 Z" fill="#FCD34D" opacity="0.7"/>
+  <circle cx="234" cy="80" r="9" fill="#C4B5FD" opacity="0.32"/>
+  <circle cx="48"  cy="90" r="7" fill="#A5B4FC" opacity="0.38"/>
+</svg>

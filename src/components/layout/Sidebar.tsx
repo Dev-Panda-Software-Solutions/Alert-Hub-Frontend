@@ -10,19 +10,19 @@ import { useLayout } from '../../context/LayoutContext';
 import type { Plan } from '../../types';
 
 const PLAN_BADGE: Record<Plan, { bg: string; text: string; label: string }> = {
-  FREE:     { bg: 'bg-slate-100 dark:bg-slate-800',        text: 'text-slate-600 dark:text-slate-300',   label: 'Free' },
-  PERSONAL: { bg: 'bg-blue-100 dark:bg-blue-900/40',       text: 'text-blue-700 dark:text-blue-300',     label: 'Personal' },
-  FAMILY:   { bg: 'bg-purple-100 dark:bg-purple-900/40',   text: 'text-purple-700 dark:text-purple-300', label: 'Family' },
-  BUSINESS: { bg: 'bg-amber-100 dark:bg-amber-900/40',     text: 'text-amber-700 dark:text-amber-300',   label: 'Business' },
+  FREE: { bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-600 dark:text-slate-300', label: 'Free' },
+  PERSONAL: { bg: 'bg-blue-100 dark:bg-blue-900/40', text: 'text-blue-700 dark:text-blue-300', label: 'Personal' },
+  FAMILY: { bg: 'bg-purple-100 dark:bg-purple-900/40', text: 'text-purple-700 dark:text-purple-300', label: 'Family' },
+  BUSINESS: { bg: 'bg-amber-100 dark:bg-amber-900/40', text: 'text-amber-700 dark:text-amber-300', label: 'Business' },
 };
 
 const NAV = [
-  { to: '/dashboard', label: 'Dashboard',   Icon: LuLayoutDashboard },
-  { to: '/reminders', label: 'Reminders',   Icon: LuBell },
-  { to: '/calendar',  label: 'Calendar',    Icon: LuCalendar },
-  { to: '/insights',  label: 'AI Insights', Icon: LuSparkles, badge: 'AI' },
-  { to: '/pricing',   label: 'Upgrade',     Icon: LuZap },
-  { to: '/profile',   label: 'Profile',     Icon: LuUser },
+  { to: '/dashboard', label: 'Dashboard', Icon: LuLayoutDashboard },
+  { to: '/reminders', label: 'Reminders', Icon: LuBell },
+  { to: '/calendar', label: 'Calendar', Icon: LuCalendar },
+  { to: '/insights', label: 'AI Insights', Icon: LuSparkles, badge: 'AI' },
+  { to: '/pricing', label: 'Upgrade', Icon: LuZap },
+  { to: '/profile', label: 'Profile', Icon: LuUser },
 ];
 
 const Sidebar: React.FC = () => {

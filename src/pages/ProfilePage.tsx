@@ -7,25 +7,13 @@ import { userApi } from '../services/api';
 import { formatAmount, countryLabel, sortCountriesForIndia } from '../utils/currency';
 import { API_BASE_URL, resolveAssetUrl } from '../config/api.config';
 import { authApi } from '../services/api';
-import type { Plan } from '../types';
+
 import {
   LuUser, LuMail, LuPhone, LuGlobe, LuShield, LuBell,
   LuBadgeCheck, LuWallet, LuCamera,
 } from 'react-icons/lu';
 
-const PLAN_BADGE: Record<Plan, string> = {
-  FREE:     'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300',
-  PERSONAL: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200',
-  FAMILY:   'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200',
-  BUSINESS: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-200',
-};
 
-const PLAN_GRADIENT: Record<Plan, string> = {
-  FREE:     'from-slate-500 to-slate-600',
-  PERSONAL: 'from-blue-500 to-indigo-600',
-  FAMILY:   'from-purple-500 to-violet-600',
-  BUSINESS: 'from-amber-500 to-orange-600',
-};
 
 const ProfilePage: React.FC = () => {
   const { user, updateLocalUser } = useAuth();
@@ -101,21 +89,17 @@ const ProfilePage: React.FC = () => {
 
       <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
 
-        {/* ── Hero identity card ───────────────────────────────────────── */}
-        <div className="card overflow-hidden flex flex-col sm:flex-row">
-          {/* Left colour accent bar */}
-          <div className={`w-full sm:w-2 shrink-0 h-2 sm:h-auto bg-linear-to-b ${PLAN_GRADIENT[user.plan]} rounded-t-2xl sm:rounded-t-none sm:rounded-l-2xl`} />
-
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 p-5 flex-1 min-w-0">
-            {/* Avatar */}
-            <div className="relative shrink-0">
-              <div className="w-18 h-18 rounded-2xl overflow-hidden bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-300 text-2xl font-bold shadow-md" style={{ width: '4.5rem', height: '4.5rem' }}>
-                {user.avatarUrl
-                  ? <img src={resolveAssetUrl(user.avatarUrl)!} alt={user.name} className="w-full h-full object-cover" />
-                  : initials}
+        {/* ── Hero identity card ───────────────────────────────────────────── */}
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden animate-fade-in-down">
+          {/* Subtle mesh gradient overlay */}
+          <div className="absolute inset-0 pointer-events-none opacity-30 dark:opacity-20" style={{background: 'radial-gradient(ellipse at 0% 0%, rgba(99,102,241,0.15) 0%, transparent 60%), radial-gradient(ellipse at 100% 100%, rgba(59,130,246,0.1) 0%, transparent 50%)'}} />
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-white text-3xl font-bold shadow-md overflow-hidden">
+                {user.avatarUrl ? <img src={resolveAssetUrl(user.avatarUrl)!} alt={user.name} className="w-full h-full object-cover" /> : initials}
               </div>
               {uploading && (
-                <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center">
                   <LoadingSpinner size="sm" />
                 </div>
               )}
@@ -124,138 +108,160 @@ const ProfilePage: React.FC = () => {
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow flex items-center justify-center disabled:opacity-50 transition-colors"
+                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:text-slate-700 dark:hover:text-white shadow-sm flex items-center justify-center disabled:opacity-50 transition-colors"
                   title="Change photo"
                 >
-                  <LuCamera className="w-3.5 h-3.5" />
+                  <LuCamera className="w-4 h-4" />
                 </button>
               )}
             </div>
-
-            {/* Name + email + badges */}
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white truncate">{user.name}</h2>
-                <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${PLAN_BADGE[user.plan]}`}>{user.plan}</span>
+            
+            <div className="flex flex-col items-center sm:items-start pt-2">
+              <div className="flex items-center gap-3 mb-1">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{user.name}</h2>
+                <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">{user.plan}</span>
                 {trialActive && (
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 font-medium">🎉 Trial Active</span>
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 font-medium">🎉 Trial Active</span>
                 )}
               </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400">{user.email}</p>
+              <p className="text-slate-500 dark:text-slate-400 font-medium">{user.email}</p>
             </div>
+          </div>
 
-            {/* Stat chips row */}
-            <div className="flex flex-wrap gap-2 shrink-0">
-              {[
-                { label: 'Country',     value: user.country },
-                { label: 'Sim Balance', value: formatAmount(user.simBalance, user.country) },
-                ...(trialActive && user.trialEndsAt ? [{
-                  label: 'Trial Ends',
-                  value: new Date(user.trialEndsAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
-                  highlight: true,
-                }] : []),
-              ].map(({ label, value, highlight }) => (
-                <div key={label} className={`flex flex-col items-center px-4 py-2 rounded-xl text-center min-w-20 ${highlight ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800' : 'bg-slate-50 dark:bg-slate-800/60'}`}>
-                  <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wide mb-0.5">{label}</span>
-                  <span className={`text-sm font-bold ${highlight ? 'text-blue-600 dark:text-blue-400' : 'text-slate-700 dark:text-slate-200'}`}>{value}</span>
+          {/* Right side stats */}
+          <div className="flex items-center gap-8 border-t sm:border-t-0 sm:border-l border-slate-100 dark:border-slate-800 pt-6 sm:pt-0 sm:pl-8 w-full sm:w-auto justify-center sm:justify-start">
+            <div className="flex flex-col items-center sm:items-start">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-8">Country</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                  <LuGlobe className="w-5 h-5 text-blue-500 dark:text-blue-400" />
                 </div>
-              ))}
+                <span className="text-lg font-bold text-slate-800 dark:text-white">{user.country}</span>
+              </div>
+            </div>
+            <div className="w-px h-12 bg-slate-100 dark:bg-slate-800 hidden sm:block"></div>
+            <div className="flex flex-col items-center sm:items-start">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-8">Sim Balance</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                  <LuWallet className="w-5 h-5 text-blue-500 dark:text-blue-400" />
+                </div>
+                <span className="text-lg font-bold text-slate-800 dark:text-white">{formatAmount(user.simBalance, user.country)}</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* ── 3-column responsive grid ─────────────────────────────────── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
           {/* ── Col 1: Edit Profile ──────────────────────────────────────── */}
           {!user.sandbox ? (
-            <div className="card p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-                  <LuUser className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <div className="lg:col-span-3 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm animate-fade-in-left stagger-2 hover-lift">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                  <LuUser className="w-5 h-5 text-blue-500 dark:text-blue-400" />
                 </div>
-                <h2 className="font-semibold text-slate-800 dark:text-white">Edit Profile</h2>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Edit Profile</h2>
               </div>
               <form onSubmit={handleSave} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Display Name</label>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Display Name</label>
                   <div className="relative">
-                    <LuUser className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none z-10" />
-                    <input value={name} onChange={(e) => setName(e.target.value)} className="input" style={{ paddingLeft: '2.25rem' }} placeholder="Your name" required />
+                    <LuUser className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10" />
+                    <input value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow" placeholder="Your name" required />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Email Address</label>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Email Address</label>
                   <div className="relative">
-                    <LuMail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none z-10" />
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" style={{ paddingLeft: '2.25rem' }} placeholder="you@example.com" required />
+                    <LuMail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10" />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow" placeholder="you@example.com" required />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">WhatsApp Number</label>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">WhatsApp Number</label>
                   <div className="relative">
-                    <LuPhone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none z-10" />
-                    <input type="tel" value={whatsApp} onChange={(e) => setWhatsApp(e.target.value)} className="input" style={{ paddingLeft: '2.25rem' }} placeholder="+91 98765 43210" />
+                    <LuPhone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10" />
+                    <input type="tel" value={whatsApp} onChange={(e) => setWhatsApp(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow" placeholder="+91 98765 43210" />
                   </div>
                   <p className="text-xs text-slate-400 mt-1">Include country code (e.g. +91 for India)</p>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Country</label>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">Country</label>
                   <div className="relative">
-                    <LuGlobe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none z-10" />
-                    <select value={country} onChange={(e) => setCountry(e.target.value)} className="input" style={{ paddingLeft: '2.25rem' }}>
+                    <LuGlobe className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10" />
+                    <select value={country} onChange={(e) => setCountry(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-11 pr-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow appearance-none">
                       {countries.map((c) => <option key={c} value={c}>{countryLabel(c)}</option>)}
                     </select>
                   </div>
                 </div>
-                <button type="submit" disabled={saving} className="w-full btn btn-primary disabled:opacity-60 mt-1">
+                <button type="submit" disabled={saving} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all mt-4 disabled:opacity-60">
                   {saving ? 'Saving…' : 'Save Changes'}
                 </button>
               </form>
             </div>
           ) : (
-            <div className="card p-6 flex items-center justify-center text-slate-400 dark:text-slate-500 text-sm min-h-40">
-              Profile editing not available in Sandbox mode.
+            <div className="lg:col-span-3 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center text-center h-full min-h-[400px] animate-fade-in-left animate-fade-in-left stagger-2 hover-lift">
+              <div className="relative mb-6">
+                <div className="w-48 h-48 rounded-full flex items-center justify-center">
+                  <svg width="200" height="200" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M40 85 C40 75 55 65 70 70 C85 60 110 65 115 80 C125 80 135 90 130 105 C135 120 120 130 110 125 C100 135 70 140 55 125 C40 130 25 120 30 105 C20 95 30 85 40 85 Z" fill="#EBF4FF" className="dark:fill-slate-800" />
+                    <path d="M30 60 L35 70 L45 75 L35 80 L30 90 L25 80 L15 75 L25 70 Z" fill="#BFDBFE" className="dark:fill-blue-900" />
+                    <path d="M120 50 L122 56 L128 58 L122 60 L120 66 L118 60 L112 58 L118 56 Z" fill="#BFDBFE" className="dark:fill-blue-900" />
+                    <circle cx="80" cy="80" r="24" fill="#93C5FD" className="dark:fill-blue-500/50" />
+                    <path d="M45 140 C45 115 65 110 80 110 C95 110 115 115 115 140 C115 150 45 150 45 140 Z" fill="#93C5FD" className="dark:fill-blue-500/50" />
+                    <g filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.15))">
+                      <path d="M80 100 L105 110 L105 130 C105 145 90 155 80 160 C70 155 55 145 55 130 L55 110 L80 100 Z" fill="#3B82F6" className="dark:fill-blue-600" />
+                      <rect x="73" y="120" width="14" height="20" rx="5" fill="white" />
+                      <circle cx="80" cy="118" r="5" stroke="white" strokeWidth="3" fill="none" />
+                      <circle cx="80" cy="131" r="2" fill="#3B82F6" className="dark:fill-blue-600" />
+                    </g>
+                  </svg>
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Profile Editing Disabled</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-[200px]">Profile editing is not available in Sandbox mode.</p>
             </div>
           )}
 
           {/* ── Col 2: Account Info + Change Password ────────────────────── */}
-          <div className="space-y-5">
+          <div className="lg:col-span-4 space-y-6 animate-fade-in-up stagger-3">
 
             {/* Account Info */}
-            <div className="card p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-                  <LuBadgeCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover-lift animate-fade-in-up">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                  <LuUser className="w-5 h-5 text-blue-500 dark:text-blue-400" />
                 </div>
-                <h2 className="font-semibold text-slate-800 dark:text-white">Account Info</h2>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Account Information</h2>
               </div>
-              <dl className="space-y-3">
+              <dl className="space-y-0">
                 {[
-                  { icon: <LuMail className="w-3.5 h-3.5" />, label: 'Email', value: user.email },
-                  { icon: <LuGlobe className="w-3.5 h-3.5" />, label: 'Country', value: user.country },
-                  { icon: <LuWallet className="w-3.5 h-3.5" />, label: 'Sim Balance', value: formatAmount(user.simBalance, user.country) },
+                  { icon: <LuMail className="w-4 h-4" />, label: 'Email', value: user.email },
+                  { icon: <LuGlobe className="w-4 h-4" />, label: 'Country', value: user.country },
+                  { icon: <LuWallet className="w-4 h-4" />, label: 'Sim Balance', value: formatAmount(user.simBalance, user.country) },
                 ].map(({ icon, label, value }) => (
-                  <div key={label} className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
-                    <dt className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                      <span className="text-slate-400">{icon}</span>{label}
+                  <div key={label} className="flex items-center justify-between py-4 border-b border-slate-100 dark:border-slate-800/80">
+                    <dt className="flex items-center gap-3 text-sm font-medium text-slate-500 dark:text-slate-400">
+                      {icon} {label}
                     </dt>
-                    <dd className="text-sm font-medium text-slate-800 dark:text-white">{value}</dd>
+                    <dd className="text-sm font-bold text-slate-800 dark:text-white">{value}</dd>
                   </div>
                 ))}
-                <div className="flex items-center justify-between py-2">
-                  <dt className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                    <LuBadgeCheck className="w-3.5 h-3.5 text-slate-400" />Plan
+                <div className="flex items-center justify-between pt-4">
+                  <dt className="flex items-center gap-3 text-sm font-medium text-slate-500 dark:text-slate-400">
+                    <LuBadgeCheck className="w-4 h-4" /> Plan
                   </dt>
                   <dd>
-                    <span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${PLAN_BADGE[user.plan]}`}>
+                    <span className="text-xs px-3 py-1 rounded-full font-bold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                       {user.plan}
                     </span>
                   </dd>
                 </div>
                 {trialActive && user.trialEndsAt && (
-                  <div className="mt-2 px-3 py-2.5 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
-                    <p className="text-xs text-blue-700 dark:text-blue-300 font-medium">
+                  <div className="mt-4 px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
+                    <p className="text-xs text-blue-700 dark:text-blue-300 font-medium text-center">
                       🎉 Free trial expires{' '}
                       <strong>{new Date(user.trialEndsAt).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
                     </p>
@@ -263,54 +269,82 @@ const ProfilePage: React.FC = () => {
                 )}
               </dl>
             </div>
+            
+            {/* Secure & Private Card */}
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex items-start gap-4 hover-lift animate-fade-in-up">
+              <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center shrink-0 shadow-md">
+                <LuShield className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">Secure & Private</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-2">Your data is safe with us. We never share your information with anyone.</p>
+                <a href="#" className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center gap-1">Learn More →</a>
+              </div>
+            </div>
 
             {/* Change Password */}
             {!user.sandbox && <ChangePasswordCard />}
           </div>
 
-          {/* ── Col 3: Push Notifications ────────────────────────────────── */}
-          <div className="card p-6 md:col-span-2 xl:col-span-1">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
-                <LuBell className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+          {/* ── Col 3: Push Notifications ─────────────────────────────────────────── */}
+          <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 border border-slate-200 dark:border-slate-700 shadow-sm animate-fade-in-right stagger-4 hover-lift">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center shrink-0">
+                <LuBell className="w-6 h-6 text-purple-500 dark:text-purple-400" />
               </div>
-              <h2 className="font-semibold text-slate-800 dark:text-white">Push Notifications</h2>
+              <div className="pt-0.5">
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-1">Push Notifications</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed pr-4">
+                  Works in Chrome / Edge even when the tab is closed.
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-5 ml-10">
-              Works in Chrome / Edge even when the tab is closed.
-            </p>
 
             {/* Step tracker */}
             {(() => {
               const steps = [
-                { key: 'sw',   label: 'Service Worker',         desc: 'Background script that receives pushes',   status: pushSteps.sw },
-                { key: 'perm', label: 'Notification Permission', desc: 'Browser must be allowed to show notifications', status: pushSteps.perm === 'ok' ? 'ok' : pushSteps.perm === 'denied' ? 'error' : pushSteps.perm === 'default' ? 'warn' : 'idle' },
-                { key: 'sub',  label: 'Push Subscription',      desc: 'Device registered with push server',       status: pushSteps.sub },
-                { key: 'send', label: 'Test Notification Sent', desc: 'Server dispatched push to your device',    status: pushSteps.send },
+                { key: 'sw',   icon: <LuUser />, iconBg: 'bg-blue-50 text-blue-500 dark:bg-blue-900/20 dark:text-blue-400', label: 'Service Worker',         desc: 'Background script that receives pushes',   status: pushSteps.sw },
+                { key: 'perm', icon: <LuShield />, iconBg: 'bg-amber-50 text-amber-500 dark:bg-amber-900/20 dark:text-amber-400', label: 'Notification Permission', desc: 'Browser must be allowed to show notifications', status: pushSteps.perm === 'ok' ? 'ok' : pushSteps.perm === 'denied' ? 'error' : pushSteps.perm === 'default' ? 'warn' : 'idle' },
+                { key: 'sub',  icon: <LuPhone />, iconBg: 'bg-blue-50 text-blue-500 dark:bg-blue-900/20 dark:text-blue-400', label: 'Push Subscription',      desc: 'Device registered with push server',       status: pushSteps.sub },
+                { key: 'send', icon: <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>, iconBg: 'bg-blue-50 text-blue-500 dark:bg-blue-900/20 dark:text-blue-400', label: 'Test Notification Sent', desc: 'Server dispatched push to your device',    status: pushSteps.send },
               ] as const;
 
-              const DOT:         Record<string, string> = { idle: 'bg-slate-200 dark:bg-slate-700', ok: 'bg-emerald-500', error: 'bg-red-500', warn: 'bg-amber-400' };
-              const LABEL:       Record<string, string> = { idle: 'text-slate-400', ok: 'text-emerald-600 dark:text-emerald-400', error: 'text-red-500', warn: 'text-amber-500' };
-              const STATUS_TEXT: Record<string, string> = { idle: '—', ok: '✓ Done', error: '✗ Failed', warn: '⚠ Blocked' };
+              const BADGE_CLASS: Record<string, string> = { 
+                idle: 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400', 
+                ok: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400', 
+                error: 'bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400', 
+                warn: 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400' 
+              };
+              const STATUS_TEXT: Record<string, string> = { idle: 'Not Tested', ok: 'Active', error: 'Failed', warn: 'Not Allowed', sub: 'Subscribed' };
 
               return (
-                <div className="space-y-2.5 mb-5 bg-slate-50 dark:bg-slate-800/40 rounded-xl p-4">
-                  {steps.map((s) => (
-                    <div key={s.key} className="flex items-center gap-3">
-                      <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${DOT[s.status]}`} />
-                      <div className="flex-1 min-w-0">
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{s.label}</span>
-                        <span className="text-xs text-slate-400 ml-1.5 hidden sm:inline">{s.desc}</span>
+                <div className="space-y-0 mb-6 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden bg-slate-50/50 dark:bg-slate-800/20">
+                  {steps.map((s, i) => {
+                     let displayStatus = STATUS_TEXT[s.status];
+                     if (s.key === 'sub' && s.status === 'ok') displayStatus = 'Subscribed';
+
+                     return (
+                      <div key={s.key} className={`flex items-center gap-4 p-4 bg-white dark:bg-slate-900 animate-fade-in-up ${i !== steps.length - 1 ? 'border-b border-slate-200 dark:border-slate-700' : ''}`} style={{animationDelay: `${0.4 + i * 0.08}s`}}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${s.iconBg}`}>
+                          {React.cloneElement(s.icon, { className: "w-4 h-4" })}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight mb-1">{s.label}</p>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight pr-2">{s.desc}</p>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${BADGE_CLASS[s.status]}`}>{displayStatus}</span>
+                          <span className="text-slate-300 dark:text-slate-600 text-xs font-bold">›</span>
+                        </div>
                       </div>
-                      <span className={`text-xs font-semibold shrink-0 ${LABEL[s.status]}`}>{STATUS_TEXT[s.status]}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               );
             })()}
 
             {/* Action buttons */}
-            <div className="flex flex-col sm:flex-row gap-2 mb-5">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 disabled={testingEmail}
                 onClick={async () => {
@@ -324,9 +358,9 @@ const ProfilePage: React.FC = () => {
                   } catch { toast('Could not reach server', 'error'); }
                   setTestingEmail(false);
                 }}
-                className="btn btn-secondary text-sm disabled:opacity-60 flex-1"
+                className="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                {testingEmail ? 'Sending…' : '✉️ Send Test Email'}
+                <LuMail className="w-4 h-4" /> {testingEmail ? 'Sending…' : 'Send Test Email'}
               </button>
 
               <button
@@ -406,19 +440,18 @@ const ProfilePage: React.FC = () => {
                   }
                   setSetupRunning(false);
                 }}
-                className="btn btn-primary text-sm disabled:opacity-60 flex-1"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                {setupRunning ? 'Running…' : '🔔 Setup & Test Push'}
+                <LuBell className="w-4 h-4" /> {setupRunning ? 'Running…' : 'Setup & Test Push'}
               </button>
             </div>
-
           </div>
 
         </div>
 
         {/* ── Row 2: Troubleshooting tips — full width ─────────────────── */}
-        <div className="card p-5">
-          <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">Troubleshooting &amp; Tips</p>
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm mt-5 animate-fade-in-up stagger-5">
+          <p className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4">Troubleshooting &amp; Tips</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
             {[
               ['🪟 Windows',        'Start → Settings → System → Notifications → Chrome/Edge must be ON'],
@@ -480,14 +513,14 @@ const ChangePasswordCard: React.FC = () => {
   };
 
   return (
-    <div className="card p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center">
-          <LuShield className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+    <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm mt-6">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-900/20 flex items-center justify-center">
+          <LuShield className="w-5 h-5 text-rose-600 dark:text-rose-400" />
         </div>
         <div>
-          <h2 className="font-semibold text-slate-800 dark:text-white text-sm leading-tight">Change Password</h2>
-          <p className="text-xs text-slate-400">OTP sent to your email</p>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">Change Password</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Manage your account security</p>
         </div>
       </div>
 
