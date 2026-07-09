@@ -87,3 +87,12 @@ html.dark ::-webkit-scrollbar-thumb:hover {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+@keyframes aiQuestionMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-ai-question-marquee {
+  animation: aiQuestionMarquee 36s linear infinite;
+}

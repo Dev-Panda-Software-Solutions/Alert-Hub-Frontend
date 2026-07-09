@@ -245,14 +245,34 @@ function renderMarkdown(text: string): string {
 }
 
 // ── NLP Chat Panel ────────────────────────────────────────────────────────────
-const ALL_SUGGESTIONS = [
-  "My subscriptions",
-  "Upcoming bills",
-  "Cash flow next week",
-  "Saving tips",
-  "Overdue payments",
-  "Largest expenses",
+const AI_QUESTIONS = [
+  'What is due today?',
+  'What is due tomorrow?',
+  'What is due this week?',
+  'What is due this month?',
+  'Show overdue payments',
+  'Can I afford this month?',
+  'What is my largest upcoming expense?',
+  'List my subscriptions',
+  'Show EMI and loan payments',
+  'Show tax and GST payments',
+  'Show investment reminders',
+  'How many pending reminders do I have?',
+  'Which module costs the most?',
+  'What should I pay first?',
+  'What is due in the next 30 days?',
+  'Show credit card payments',
+  'Show insurance payments',
+  'Show family bills',
+  'Show business payments',
+  'Show finance payments',
+  'How much cash will remain after this month?',
+  'Give me saving tips',
 ];
+
+function shuffleQuestions() {
+  return [...AI_QUESTIONS].sort(() => Math.random() - 0.5);
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySpeechRecognition = any;
@@ -270,7 +290,12 @@ const ChatPanel: React.FC = () => {
   const recognitionRef = useRef<AnySpeechRecognition>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const [visibleSuggestions] = useState(() => [...ALL_SUGGESTIONS].slice(0, 4));
+  const [suggestions, setSuggestions] = useState(shuffleQuestions);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setSuggestions(shuffleQuestions()), 18000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const send = async (text: string) => {
     if (!text.trim()) return;
@@ -385,13 +410,31 @@ const ChatPanel: React.FC = () => {
           </form>
           
           {messages.length === 0 && (
-            <div className="flex items-center gap-2 sm:gap-3 mt-3 sm:mt-4 overflow-x-auto scrollbar-hide pb-1">
-              <span className="text-indigo-200/80 text-[10px] sm:text-xs shrink-0 font-medium">Try:</span>
-              {visibleSuggestions.map((s) => (
-                <button key={s} onClick={() => send(s)} className="shrink-0 px-3.5 py-1.5 rounded-full bg-white/5 text-white text-[11px] font-medium border border-white/10 hover:bg-white/15 transition-colors">
-                  {s}
+            <div className="mt-3 sm:mt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-indigo-200/80 text-[10px] sm:text-xs shrink-0 font-medium">Try one of 22 questions:</span>
+                <button
+                  type="button"
+                  onClick={() => setSuggestions(shuffleQuestions())}
+                  className="text-[10px] text-indigo-100/80 hover:text-white font-semibold transition-colors"
+                >
+                  Shuffle
                 </button>
-              ))}
+              </div>
+              <div className="overflow-hidden -mx-1 px-1 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+                <div className="flex w-max gap-2 animate-ai-question-marquee hover:[animation-play-state:paused]">
+                  {[...suggestions, ...suggestions].map((s, idx) => (
+                    <button
+                      key={`${s}-${idx}`}
+                      type="button"
+                      onClick={() => send(s)}
+                      className="shrink-0 px-3.5 py-1.5 rounded-full bg-white/5 text-white text-[11px] font-medium border border-white/10 hover:bg-white/15 transition-colors"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
