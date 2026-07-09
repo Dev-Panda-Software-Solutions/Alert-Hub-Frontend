@@ -124,32 +124,32 @@ const CalendarPage: React.FC = () => {
     <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-slate-950">
       <TopHeader title="Calendar" subtitle={`${MONTH_NAMES[month - 1]} ${year} — payment schedule`} />
 
-      <div className="p-4 md:p-6 max-w-7xl mx-auto">
+      <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto">
         
         {/* 2 Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 flex items-center gap-4 shadow-sm relative overflow-hidden kpi-accent-indigo hover-lift animate-fade-in-up stagger-1">
-             <div className="w-13 h-13 rounded-2xl bg-indigo-50 dark:bg-indigo-900/40 flex items-center justify-center shrink-0" style={{width:'3.25rem',height:'3.25rem'}}>
-               <LuCreditCard className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
+           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-3 sm:p-5 flex items-center gap-3 sm:gap-4 shadow-sm relative overflow-hidden kpi-accent-indigo hover-lift animate-fade-in-up stagger-1">
+             <div className="w-10 h-10 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl bg-indigo-50 dark:bg-indigo-900/40 flex items-center justify-center shrink-0">
+               <LuCreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400" />
              </div>
              <div className="z-10">
-               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">This month pending</p>
-               <p className="text-3xl font-black text-slate-800 dark:text-white leading-none tracking-tight mb-1">{formatAmount(totalMonth, user?.country || 'India')}</p>
-               <p className="text-[10px] text-slate-400 font-medium">Total amount due</p>
+               <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 sm:mb-1">This month pending</p>
+               <p className="text-xl sm:text-3xl font-extrabold text-slate-800 dark:text-white leading-none tracking-tight mb-0.5 sm:mb-1">{formatAmount(totalMonth, user?.country || 'India')}</p>
+               <p className="text-[9px] sm:text-[10px] text-slate-400 font-medium hidden sm:block">Total amount due</p>
              </div>
              <svg className="absolute -bottom-4 -right-4 w-28 h-28 text-indigo-50 dark:text-indigo-900/20 opacity-70" viewBox="0 0 100 100" fill="currentColor">
                <circle cx="50" cy="50" r="50" />
              </svg>
            </div>
            
-           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 flex items-center gap-4 shadow-sm relative overflow-hidden kpi-accent-blue hover-lift animate-fade-in-up stagger-2">
-             <div className="w-13 h-13 rounded-2xl bg-blue-50 dark:bg-blue-900/40 flex items-center justify-center shrink-0" style={{width:'3.25rem',height:'3.25rem'}}>
-               <LuCalendar className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-3 sm:p-5 flex items-center gap-3 sm:gap-4 shadow-sm relative overflow-hidden kpi-accent-blue hover-lift animate-fade-in-up stagger-2">
+             <div className="w-10 h-10 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl bg-blue-50 dark:bg-blue-900/40 flex items-center justify-center shrink-0">
+               <LuCalendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:blue-400" />
              </div>
              <div className="z-10">
-               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Days with reminders</p>
-               <p className="text-3xl font-black text-slate-800 dark:text-white leading-none tracking-tight mb-1">{Object.keys(calDays).length}</p>
-               <p className="text-[10px] text-slate-400 font-medium">Active days this month</p>
+               <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 sm:mb-1">Days with reminders</p>
+               <p className="text-xl sm:text-3xl font-extrabold text-slate-800 dark:text-white leading-none tracking-tight mb-0.5 sm:mb-1">{Object.keys(calDays).length}</p>
+               <p className="text-[9px] sm:text-[10px] text-slate-400 font-medium hidden sm:block">Active days this month</p>
              </div>
              <svg className="absolute -bottom-4 -right-4 w-28 h-28 text-blue-50 dark:text-blue-900/20 opacity-70" viewBox="0 0 100 100" fill="currentColor">
                <circle cx="50" cy="50" r="50" />
@@ -158,36 +158,36 @@ const CalendarPage: React.FC = () => {
         </div>
 
         {/* Main Grid: Left Calendar (col-span-2) + Right Sidebar (col-span-1) */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
           
           {/* LEFT: Calendar Grid */}
-          <div className="xl:col-span-2 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm animate-fade-in-left stagger-3" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)'}}>
+          <div className="xl:col-span-2 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 p-3 sm:p-6 md:p-8 shadow-sm animate-fade-in-left stagger-3" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)'}}>
             
             {/* Calendar Header Row */}
-            <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-              <button onClick={prevMonth} className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-indigo-50 hover:border-indigo-200 dark:hover:bg-indigo-900/30 text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition-all shadow-sm shrink-0">
-                <LuChevronLeft className="w-5 h-5" />
+            <div className="flex items-center justify-between mb-4 sm:mb-8 gap-2 sm:gap-4">
+              <button onClick={prevMonth} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg sm:rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-indigo-50 hover:border-indigo-200 dark:hover:bg-indigo-900/30 text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition-all shadow-sm shrink-0">
+                <LuChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
               
               <div className="text-center">
-                <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{MONTH_NAMES[month - 1]}</h2>
-                <p className="text-sm text-slate-400 font-semibold">{year}</p>
+                <h2 className="text-base sm:text-2xl font-black text-slate-800 dark:text-white tracking-tight">{MONTH_NAMES[month - 1]}</h2>
+                <p className="text-[10px] sm:text-sm text-slate-400 font-semibold">{year}</p>
               </div>
               
               <div className="flex items-center gap-2 shrink-0">
-                <button onClick={nextMonth} className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-indigo-50 hover:border-indigo-200 dark:hover:bg-indigo-900/30 text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition-all shadow-sm">
-                  <LuChevronRight className="w-5 h-5" />
+                <button onClick={nextMonth} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg sm:rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-indigo-50 hover:border-indigo-200 dark:hover:bg-indigo-900/30 text-slate-600 dark:text-slate-300 hover:text-indigo-600 transition-all shadow-sm">
+                  <LuChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
-                <button onClick={() => { setYear(now.getFullYear()); setMonth(now.getMonth() + 1); }} className="px-4 py-2 flex items-center justify-center rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition-all shadow-md gap-2 hover:shadow-lg hover:-translate-y-0.5">
-                  <LuCalendar className="w-4 h-4" /> Today
+                <button onClick={() => { setYear(now.getFullYear()); setMonth(now.getMonth() + 1); }} className="px-2.5 sm:px-4 py-1.5 sm:py-2 flex items-center justify-center rounded-lg sm:rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm transition-all shadow-md gap-1.5 sm:gap-2 hover:shadow-lg hover:-translate-y-0.5">
+                  <LuCalendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Today
                 </button>
               </div>
             </div>
 
             {/* Days of week */}
-            <div className="grid grid-cols-7 mb-3">
+            <div className="grid grid-cols-7 mb-2 sm:mb-3">
               {DAYS_OF_WEEK.map((d) => (
-                <div key={d} className="text-center text-[10px] font-black text-slate-400 dark:text-slate-500 pb-3 tracking-widest uppercase">{d}</div>
+                <div key={d} className="text-center text-[9px] sm:text-[10px] font-black text-slate-400 dark:text-slate-500 pb-2 sm:pb-3 tracking-widest uppercase">{d}</div>
               ))}
             </div>
 
@@ -195,7 +195,7 @@ const CalendarPage: React.FC = () => {
             {loading ? (
               <div className="flex justify-center py-20"><LoadingSpinner size="lg" /></div>
             ) : (
-              <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
+              <div className="grid grid-cols-7 gap-1 sm:gap-1.5 md:gap-2">
                 {cells.map((cell, idx) => {
                   const { day, isCurrentMonth } = cell;
                   const dateStr  = isCurrentMonth ? `${year}-${pad(month)}-${pad(day)}` : '';
@@ -212,7 +212,7 @@ const CalendarPage: React.FC = () => {
                       disabled={!isCurrentMonth}
                       onClick={() => isCurrentMonth && selectDate(dateStr)}
                       className={[
-                        'relative flex flex-col items-center justify-center rounded-2xl text-sm font-bold transition-all duration-200 aspect-square mx-auto w-9 h-9 sm:w-12 sm:h-12',
+                        'relative flex flex-col items-center justify-center rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 aspect-square mx-auto w-10 h-10 sm:w-12 sm:h-12',
                         !isCurrentMonth ? 'text-slate-200 dark:text-slate-700 cursor-default' :
                         isSelected  ? 'text-white shadow-lg scale-110 z-10' :
                         isToday     ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 ring-2 ring-indigo-400 ring-offset-1' :
@@ -240,7 +240,7 @@ const CalendarPage: React.FC = () => {
             )}
             
             {/* Legend */}
-            <div className="flex flex-wrap items-center justify-center gap-2 mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-6 pt-3 sm:pt-5 border-t border-slate-100 dark:border-slate-800">
                {LEGEND.map(({ color, label }) => (
                  <span key={label} className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 px-2.5 py-1 rounded-full border border-slate-100 dark:border-slate-700">
                    <span className={`w-2 h-2 rounded-full shrink-0 ${color}`} />
@@ -252,10 +252,10 @@ const CalendarPage: React.FC = () => {
           </div>
 
           {/* RIGHT: Side Panel */}
-          <div className="flex flex-col gap-6 animate-fade-in-right stagger-4">
+          <div className="flex flex-col gap-4 sm:gap-6 animate-fade-in-right stagger-4">
             
             {/* Upper Card: Details or Empty State */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col shadow-sm min-h-[320px]" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)'}}>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 flex flex-col shadow-sm min-h-[240px] sm:min-h-[320px]" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)'}}>
               {selectedDate ? (
                 <div className="flex-1 flex flex-col">
                   <div className="flex items-start justify-between mb-4 gap-2">
@@ -335,7 +335,7 @@ const CalendarPage: React.FC = () => {
             </div>
 
             {/* Upcoming Card */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07)'}}>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07)'}}>
               <div className="flex items-center justify-between mb-4 cursor-pointer group">
                  <div className="flex items-center gap-2">
                    <div className="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
@@ -357,7 +357,7 @@ const CalendarPage: React.FC = () => {
             </div>
 
             {/* Quick Actions Card */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07)'}}>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07)'}}>
               <h3 className="font-bold text-sm text-slate-800 dark:text-white mb-4">Quick Actions</h3>
               
               <div className="flex flex-col gap-2">

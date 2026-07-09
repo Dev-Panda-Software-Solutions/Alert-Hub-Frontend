@@ -63,9 +63,9 @@ const DashboardPage: React.FC = () => {
         subtitle={new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
       />
 
-      <div className="p-6 space-y-6 max-w-7xl mx-auto">
+      <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 max-w-7xl mx-auto">
         {/* KPI Cards Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {[
             {
               label: 'Total Reminders',
@@ -106,17 +106,18 @@ const DashboardPage: React.FC = () => {
               sparklineColor: '#10B981'
             },
           ].map((kpi) => (
-            <div key={kpi.label} className={`bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-5 flex items-center justify-between hover:shadow-md transition-all hover-lift animate-fade-in-up stagger-${['1','2','3','4'][['Total Reminders','Due This Month','Overdue','Completed'].indexOf(kpi.label)] || '1'} ${kpi.accent}`}>
-              <div className="flex items-center gap-4">
-                <div className={`w-13 h-13 rounded-2xl flex items-center justify-center shrink-0 ${kpi.bg}`} style={{ width: '3.25rem', height: '3.25rem' }}>
-                  <kpi.Icon className={`w-6 h-6 ${kpi.color}`} />
+            <div key={kpi.label} className={`bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-3 sm:p-5 flex items-center justify-between hover:shadow-md transition-all hover-lift animate-fade-in-up stagger-${['1','2','3','4'][['Total Reminders','Due This Month','Overdue','Completed'].indexOf(kpi.label)] || '1'} ${kpi.accent}`}>
+              <div className="flex items-center gap-2.5 sm:gap-4">
+                <div className={`w-10 h-10 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 ${kpi.bg}`} style={{ width: undefined, height: undefined }}>
+                  <kpi.Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${kpi.color}`} />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase mb-1">{kpi.label}</p>
-                  <span className={`text-3xl font-black mt-0.5 block leading-none tracking-tight ${kpi.valColor || 'text-slate-800 dark:text-white'}`}>{kpi.value}</span>
+                  <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase mb-0.5 sm:mb-1">{kpi.label}</p>
+                  <span className={`text-xl sm:text-3xl font-extrabold mt-0.5 block leading-none tracking-tight ${kpi.valColor || 'text-slate-800 dark:text-white'}`}>{kpi.value}</span>
                 </div>
               </div>
-              <div className="w-20 h-10 shrink-0">
+              {/* Sparkline — hidden on mobile for cleaner look */}
+              <div className="w-20 h-10 shrink-0 hidden sm:block">
                 <svg className="w-full h-full overflow-visible" viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <defs>
                     <linearGradient id={`grad-${kpi.label.replace(/\s+/g, '')}`} x1="0" y1="0" x2="0" y2="40" gradientUnits="userSpaceOnUse">
@@ -142,51 +143,51 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up stagger-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 animate-fade-in-up stagger-4">
           {/* Upcoming Section */}
-          <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-6 shadow-sm flex flex-col justify-between">
+          <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-4 sm:p-6 shadow-sm flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center">
-                    <LuCalendar className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center">
+                    <LuCalendar className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-400" />
                   </div>
-                  <h2 className="font-bold text-lg text-slate-800 dark:text-white">Upcoming (next 30 days)</h2>
+                  <h2 className="font-bold text-sm sm:text-lg text-slate-800 dark:text-white">Upcoming (next 30 days)</h2>
                 </div>
-                <Link to="/reminders" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 hover:underline flex items-center gap-1">
-                  View all <LuArrowRight className="w-3.5 h-3.5" />
+                <Link to="/reminders" className="text-xs sm:text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 hover:underline flex items-center gap-1">
+                  View all <LuArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </Link>
               </div>
 
               {upcoming.length === 0 ? (
-                <div className="py-14 flex flex-col items-center justify-center text-center">
-                  <div className="w-48 h-44 mb-4 flex items-center justify-center">
+                <div className="py-8 sm:py-14 flex flex-col items-center justify-center text-center">
+                  <div className="w-32 h-28 sm:w-48 sm:h-44 mb-4 flex items-center justify-center">
                     <img src={reminderEmptySvg} alt="No reminders" className="w-full h-full object-contain hover:scale-105 transition-transform duration-500 drop-shadow-sm" />
                   </div>
-                  <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1">No upcoming reminders</h3>
-                  <p className="text-sm text-slate-400 dark:text-slate-500 mb-6">You are all caught up! Great job 🎉</p>
-                  <Link to="/reminders" className="inline-flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 hover:bg-indigo-50 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/40 px-5 py-2.5 rounded-xl border border-dashed border-indigo-200 dark:border-indigo-800/80 transition-all">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-800 dark:text-white mb-1">No upcoming reminders</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 dark:text-slate-500 mb-4 sm:mb-6">You are all caught up! Great job 🎉</p>
+                  <Link to="/reminders" className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 hover:bg-indigo-50 dark:bg-indigo-950/20 dark:hover:bg-indigo-950/40 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-dashed border-indigo-200 dark:border-indigo-800/80 transition-all">
                     <LuPlus className="w-4 h-4" /> Create Reminder
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {upcoming.slice(0, 5).map((r) => {
                     const priority = getEffectivePriority(r);
                     const pcfg = PRIORITY_CONFIG[priority];
                     return (
-                      <div key={r.id} className="flex items-center gap-4 p-3 rounded-xl border border-transparent hover:border-slate-100 dark:hover:border-slate-800 hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-all group">
+                      <div key={r.id} className="flex items-center gap-2 sm:gap-4 p-2 sm:p-3 rounded-xl border border-transparent hover:border-slate-100 dark:hover:border-slate-800 hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-all group">
                         <div className={`w-1 self-stretch rounded-full shrink-0 ${r.completed ? 'bg-emerald-400' : new Date(r.dueDate) < new Date(today) ? 'bg-red-400' : 'bg-blue-400'}`} />
                         <StatusDot completed={r.completed} overdue={r.dueDate < today && !r.completed} />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{r.title}</p>
-                          <p className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-0.5">{r.dueDate}</p>
+                          <p className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{r.title}</p>
+                          <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-medium mt-0.5">{r.dueDate}</p>
                         </div>
                         <span className={`hidden sm:inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${pcfg.bg} ${pcfg.text}`}>
                           {pcfg.emoji} {pcfg.label}
                         </span>
-                        <ModuleTag module={r.module} />
-                        <span className="text-sm font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap pl-2">
+                        <span className="hidden sm:block"><ModuleTag module={r.module} /></span>
+                        <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">
                           {fmt(r.amount)}
                         </span>
                       </div>
@@ -198,18 +199,18 @@ const DashboardPage: React.FC = () => {
           </div>
 
           {/* Right Column: Channels + AI Insights */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Notification Channels */}
             {channels && (
-              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-6 shadow-sm">
-                <div className="flex items-center justify-between mb-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center">
-                      <LuSend className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-4 sm:p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-4 sm:mb-5">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center">
+                      <LuSend className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-400" />
                     </div>
-                    <h3 className="font-bold text-slate-800 dark:text-white">Notification Channels</h3>
+                    <h3 className="font-bold text-sm sm:text-base text-slate-800 dark:text-white">Notification Channels</h3>
                   </div>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">Active</span>
+                  <span className="text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">Active</span>
                 </div>
                 <div className="space-y-1">
                   {(Object.entries(channels) as [string, { enabled: boolean; locked: boolean }][]).map(([ch, status]) => {
@@ -221,16 +222,16 @@ const DashboardPage: React.FC = () => {
                     };
                     const cs = CHANNEL_STYLE[ch] ?? { icon: '📣', color: 'text-slate-500', bg: 'bg-slate-100' };
                     return (
-                      <div key={ch} className="flex items-center justify-between py-2.5 px-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-base ${cs.bg}`}>
+                      <div key={ch} className="flex items-center justify-between py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center text-sm sm:text-base ${cs.bg}`}>
                             {cs.icon}
                           </div>
-                          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 capitalize">{ch}</span>
+                          <span className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 capitalize">{ch}</span>
                         </div>
                         {status.locked ? (
-                          <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 font-semibold text-xs bg-slate-50 dark:bg-slate-800/60 px-2.5 py-1 rounded-full">
-                            <LuCrown className="w-3.5 h-3.5 text-amber-500" />
+                          <div className="flex items-center gap-1 sm:gap-1.5 text-slate-400 dark:text-slate-500 font-semibold text-[10px] sm:text-xs bg-slate-50 dark:bg-slate-800/60 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">
+                            <LuCrown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-500" />
                             <span>Upgrade</span>
                           </div>
                         ) : (
@@ -243,7 +244,7 @@ const DashboardPage: React.FC = () => {
                   })}
                 </div>
                 {user?.plan === 'FREE' && (
-                  <Link to="/pricing" className="mt-5 block text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 hover:underline">
+                  <Link to="/pricing" className="mt-4 sm:mt-5 block text-[10px] sm:text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 hover:underline">
                     Upgrade to unlock more channels →
                   </Link>
                 )}
@@ -251,11 +252,11 @@ const DashboardPage: React.FC = () => {
             )}
 
             {/* AI Insights Card */}
-            <div className="bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-900 rounded-2xl p-6 shadow-md relative overflow-hidden group min-h-[175px] flex flex-col justify-between border-0">
+            <div className="bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-900 rounded-2xl p-4 sm:p-6 shadow-md relative overflow-hidden group min-h-[150px] sm:min-h-[175px] flex flex-col justify-between border-0">
               {/* Star effects */}
               <div className="absolute inset-0 opacity-30 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-300/40 via-transparent to-transparent" />
 
-              <div className="absolute top-0 right-0 w-36 h-36 transform translate-x-2 -translate-y-2 opacity-80 group-hover:scale-105 transition-transform duration-500 z-10 pointer-events-none">
+              <div className="absolute top-0 right-0 w-28 h-28 sm:w-36 sm:h-36 transform translate-x-2 -translate-y-2 opacity-80 group-hover:scale-105 transition-transform duration-500 z-10 pointer-events-none">
                 <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-lg">
                   <circle cx="100" cy="100" r="70" fill="#818CF8" fillOpacity="0.15" filter="blur(20px)" />
                   <rect x="40" y="60" width="120" height="90" rx="30" fill="url(#botGrad)" />
@@ -277,16 +278,16 @@ const DashboardPage: React.FC = () => {
                 </svg>
               </div>
 
-              <div className="relative z-10 w-2/3">
-                <div className="flex items-center gap-2 mb-2">
-                  <LuSparkles className="w-4.5 h-4.5 text-indigo-300" />
-                  <h3 className="font-bold text-white text-lg">AI Insights</h3>
+              <div className="relative z-10 w-3/4 sm:w-2/3">
+                <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                  <LuSparkles className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-indigo-300" />
+                  <h3 className="font-bold text-white text-base sm:text-lg">AI Insights</h3>
                 </div>
-                <p className="text-xs text-indigo-200/90 leading-relaxed mb-5">
+                <p className="text-[10px] sm:text-xs text-indigo-200/90 leading-relaxed mb-3 sm:mb-5">
                   Get intelligent analysis of your finances, overdue alerts, and spending patterns.
                 </p>
-                <Link to="/insights" className="inline-flex items-center gap-1.5 text-xs font-bold bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl backdrop-blur-md transition-all border border-white/10">
-                  View insights <LuArrowRight className="w-3.5 h-3.5" />
+                <Link to="/insights" className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-bold bg-white/10 hover:bg-white/20 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl backdrop-blur-md transition-all border border-white/10">
+                  View insights <LuArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </Link>
               </div>
             </div>
@@ -294,7 +295,7 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Quick Actions Row */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
           {[
             {
               title: 'Add Reminder',
@@ -329,17 +330,17 @@ const DashboardPage: React.FC = () => {
               color: 'text-amber-600 dark:text-amber-400'
             }
           ].map((act) => (
-            <Link key={act.title} to={act.to} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform ${act.bg}`}>
-                  <act.Icon className={`w-5.5 h-5.5 ${act.color}`} />
+            <Link key={act.title} to={act.to} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-3 sm:p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group flex items-center justify-between">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform ${act.bg}`}>
+                  <act.Icon className={`w-4 h-4 sm:w-5.5 sm:h-5.5 ${act.color}`} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-slate-800 dark:text-white leading-tight">{act.title}</p>
-                  <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500 mt-0.5">{act.desc}</p>
+                  <p className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white leading-tight">{act.title}</p>
+                  <p className="text-[9px] sm:text-[10px] font-medium text-slate-400 dark:text-slate-500 mt-0.5 hidden sm:block">{act.desc}</p>
                 </div>
               </div>
-              <LuArrowRight className="w-4 h-4 text-slate-300 group-hover:text-slate-600 dark:group-hover:text-slate-400 transition-colors" />
+              <LuArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-300 group-hover:text-slate-600 dark:group-hover:text-slate-400 transition-colors hidden sm:block" />
             </Link>
           ))}
         </div>

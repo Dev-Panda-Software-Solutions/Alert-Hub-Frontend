@@ -36,13 +36,14 @@ const Sidebar: React.FC = () => {
   return (
     <aside
       className={[
-        'flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800',
+        'flex flex-col bg-white dark:bg-slate-900',
         'transition-all duration-300 ease-in-out',
-        /* Mobile: fixed drawer; Desktop: sticky full-height, never scrolls */
-        'fixed inset-y-0 left-0 z-50 md:sticky md:top-0 md:z-auto',
+        /* Desktop: sticky full-height with border right */
+        'md:flex md:sticky md:top-0 md:border-r md:border-slate-200 md:dark:border-slate-800',
         'h-screen overflow-hidden',
-        mobileOpen ? 'translate-x-0 shadow-2xl shadow-black/20' : '-translate-x-full md:translate-x-0',
-        collapsed ? 'w-16' : 'w-64',
+        /* Mobile: off-canvas drawer from right (since icon is on right) */
+        mobileOpen ? 'fixed inset-y-0 right-0 z-50 shadow-2xl border-l border-slate-200 dark:border-slate-800' : 'hidden',
+        collapsed && !mobileOpen ? 'w-16' : 'w-64',
       ].join(' ')}
     >
       {/* Logo row */}

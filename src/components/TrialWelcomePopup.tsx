@@ -119,7 +119,7 @@ const TrialWelcomePopup: React.FC = () => {
         <ConfettiCanvas />
 
         {/* Gradient header */}
-        <div className="relative px-8 pt-10 pb-6 text-center bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700">
+        <div className="relative px-5 sm:px-8 pt-8 sm:pt-10 pb-5 sm:pb-6 text-center bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700">
           <div className="text-6xl mb-3">🎉</div>
           <h2 className="text-2xl font-extrabold text-white leading-tight">
             You've got a free month!
@@ -128,7 +128,7 @@ const TrialWelcomePopup: React.FC = () => {
         </div>
 
         {/* Body */}
-        <div className="relative px-8 py-6">
+        <div className="relative px-5 sm:px-8 py-5 sm:py-6">
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl px-4 py-3 mb-5 text-center">
             <p className="text-xs text-blue-600 dark:text-blue-400 font-semibold uppercase tracking-widest mb-0.5">Trial expires on</p>
             <p className="text-lg font-bold text-blue-800 dark:text-blue-200">

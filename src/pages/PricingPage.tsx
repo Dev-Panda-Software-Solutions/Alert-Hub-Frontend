@@ -163,11 +163,11 @@ const PricingPage: React.FC = () => {
 
       <TopHeader title="Pricing" subtitle="Choose the perfect plan for your financial peace of mind" />
 
-      <div className="p-4 md:p-8 max-w-[1200px] mx-auto relative z-10">
+      <div className="p-3 sm:p-4 md:p-8 max-w-[1200px] mx-auto relative z-10">
         
         {/* Trial active banner */}
         {trialActive && trialEndsAt && (
-          <div className="mb-8 flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20 max-w-4xl mx-auto">
+          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20 max-w-4xl mx-auto">
             <span className="text-3xl hidden sm:block">🎉</span>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-lg leading-tight">1-Month Free Trial — Personal Plan Active</p>
@@ -183,15 +183,15 @@ const PricingPage: React.FC = () => {
         )}
 
         {/* Header Section */}
-        <div className="text-center mb-12 animate-fade-in-down">
+        <div className="text-center mb-8 sm:mb-12 animate-fade-in-down">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 text-xs font-bold tracking-widest uppercase mb-6">
             <LuSparkles className="w-3.5 h-3.5" />
             Flexible Pricing
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white mb-4 tracking-tight">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-800 dark:text-white mb-3 sm:mb-4 tracking-tight">
             Plans that <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-purple-500 to-blue-500">grow</span> with you
           </h2>
-          <p className="text-slate-500 dark:text-slate-400 font-medium max-w-xl mx-auto mb-8 text-lg">
+          <p className="text-slate-500 dark:text-slate-400 font-medium max-w-xl mx-auto mb-6 sm:mb-8 text-sm sm:text-lg px-4">
             Start free, upgrade anytime.
             {user?.country && ` All prices are in ${isIndia ? 'INR' : 'USD'} for ${user.country}.`}
           </p>
@@ -226,7 +226,7 @@ const PricingPage: React.FC = () => {
         </div>
 
         {/* Plan cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-7xl mx-auto pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 max-w-7xl mx-auto pb-8 sm:pb-12">
           {PLANS.map((plan) => {
             const isCurrent        = user?.plan === plan.id;
             const isOnTrial        = trialActive && plan.id === 'PERSONAL' && user?.plan === 'PERSONAL';
@@ -236,9 +236,10 @@ const PricingPage: React.FC = () => {
             return (
               <div
                 key={plan.id}
-                className={`relative bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 flex flex-col border-2 transition-all duration-300 overflow-hidden hover-lift animate-scale-in-spring
+                className={`relative bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 flex flex-col border-2 transition-all duration-300 overflow-hidden hover-lift animate-scale-in-spring
                   stagger-${(['FREE','PERSONAL','FAMILY','BUSINESS'].indexOf(plan.id) + 1) || 1}
-                  ${plan.color}
+                  ${plan.color.replace('scale-105 ', '')}
+                  ${plan.id === 'PERSONAL' ? 'sm:scale-105' : ''}
                   ${plan.locked ? 'opacity-90 grayscale-[20%]' : ''}`}
               >
                 {/* Premium header gradient for popular plan */}
@@ -277,7 +278,7 @@ const PricingPage: React.FC = () => {
                   <h3 className="text-xl font-black text-slate-800 dark:text-white leading-tight tracking-tight">{plan.name}</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">{plan.subtitle}</p>
                   
-                  <div className="mb-2 h-10 flex items-end">
+                  <div className="mb-2 h-8 sm:h-10 flex items-end">
                     {(isOnTrial || isTrialDegraded)
                       ? <span className="text-indigo-600 dark:text-indigo-400 text-2xl font-bold">Free Trial</span>
                       : plan.priceINR === 0
@@ -359,7 +360,7 @@ const PricingPage: React.FC = () => {
         </div>
         
         {/* Compare Features Table */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 max-w-7xl mx-auto shadow-sm mb-8 overflow-hidden" style={{boxShadow:'0 2px 20px rgba(99,102,241,0.07)'}}>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 max-w-7xl mx-auto shadow-sm mb-6 sm:mb-8 overflow-hidden" style={{boxShadow:'0 2px 20px rgba(99,102,241,0.07)'}}>
            <div className="flex items-center gap-3 mb-6">
              <div className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center">
                <LuSparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
@@ -430,39 +431,39 @@ const PricingPage: React.FC = () => {
         </div>
 
         {/* Footer Trust Badges */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 sm:p-10 max-w-7xl mx-auto shadow-sm" style={{boxShadow:'0 2px 20px rgba(99,102,241,0.07)'}}>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 max-w-7xl mx-auto shadow-sm" style={{boxShadow:'0 2px 20px rgba(99,102,241,0.07)'}}>
           <div className="text-center mb-8">
             <h3 className="text-xl font-black text-slate-800 dark:text-white tracking-tight">Why choose Alert Guard?</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Trusted by thousands of users across India</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-             <div className="flex flex-col items-center text-center p-5 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50 hover-lift animate-fade-in-up stagger-1">
-               <div className="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/25">
-                 <LuShieldCheck className="w-7 h-7" />
+          <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6">
+             <div className="flex flex-col items-center text-center p-3 sm:p-5 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50 hover-lift animate-fade-in-up stagger-1">
+               <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-indigo-600 text-white flex items-center justify-center mb-3 sm:mb-4 shadow-lg shadow-indigo-500/25">
+                 <LuShieldCheck className="w-5 h-5 sm:w-7 sm:h-7" />
                </div>
-               <h4 className="font-black text-slate-800 dark:text-white mb-1">Secure & Private</h4>
-               <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Your data is always encrypted and safe</p>
+               <h4 className="font-black text-sm sm:text-base text-slate-800 dark:text-white mb-1">Secure & Private</h4>
+               <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400">Your data is always encrypted and safe</p>
              </div>
-             <div className="flex flex-col items-center text-center p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 hover-lift animate-fade-in-up stagger-2">
-               <div className="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center mb-4 shadow-lg shadow-emerald-500/25">
-                 <LuRefreshCw className="w-7 h-7" />
+             <div className="flex flex-col items-center text-center p-3 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 hover-lift animate-fade-in-up stagger-2">
+               <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-emerald-500 text-white flex items-center justify-center mb-3 sm:mb-4 shadow-lg shadow-emerald-500/25">
+                 <LuRefreshCw className="w-5 h-5 sm:w-7 sm:h-7" />
                </div>
-               <h4 className="font-black text-slate-800 dark:text-white mb-1">Cancel Anytime</h4>
-               <p className="text-xs font-medium text-slate-500 dark:text-slate-400">No hidden fees. Cancel anytime, no questions asked.</p>
+               <h4 className="font-black text-sm sm:text-base text-slate-800 dark:text-white mb-1">Cancel Anytime</h4>
+               <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400">No hidden fees. Cancel anytime.</p>
              </div>
-             <div className="flex flex-col items-center text-center p-5 rounded-2xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/50 hover-lift animate-fade-in-up stagger-3">
-               <div className="w-14 h-14 rounded-2xl bg-purple-600 text-white flex items-center justify-center mb-4 shadow-lg shadow-purple-500/25">
-                 <LuHeadphones className="w-7 h-7" />
+             <div className="flex flex-col items-center text-center p-3 sm:p-5 rounded-2xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/50 hover-lift animate-fade-in-up stagger-3">
+               <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-purple-600 text-white flex items-center justify-center mb-3 sm:mb-4 shadow-lg shadow-purple-500/25">
+                 <LuHeadphones className="w-5 h-5 sm:w-7 sm:h-7" />
                </div>
-               <h4 className="font-black text-slate-800 dark:text-white mb-1">24/7 Support</h4>
-               <p className="text-xs font-medium text-slate-500 dark:text-slate-400">We're here to help you, always.</p>
+               <h4 className="font-black text-sm sm:text-base text-slate-800 dark:text-white mb-1">24/7 Support</h4>
+               <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400">We're here to help you, always.</p>
              </div>
-             <div className="flex flex-col items-center text-center p-5 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 hover-lift animate-fade-in-up stagger-4">
-               <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center mb-4 shadow-lg shadow-blue-500/25">
-                 <LuUsers className="w-7 h-7" />
+             <div className="flex flex-col items-center text-center p-3 sm:p-5 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 hover-lift animate-fade-in-up stagger-4">
+               <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-blue-600 text-white flex items-center justify-center mb-3 sm:mb-4 shadow-lg shadow-blue-500/25">
+                 <LuUsers className="w-5 h-5 sm:w-7 sm:h-7" />
                </div>
-               <h4 className="font-black text-slate-800 dark:text-white mb-1">Trusted by Users</h4>
-               <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Join thousands of happy users across India.</p>
+               <h4 className="font-black text-sm sm:text-base text-slate-800 dark:text-white mb-1">Trusted by Users</h4>
+               <p className="text-[10px] sm:text-xs font-medium text-slate-500 dark:text-slate-400">Join thousands of happy users.</p>
              </div>
           </div>
         </div>

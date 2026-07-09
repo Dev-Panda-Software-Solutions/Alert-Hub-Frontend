@@ -87,15 +87,15 @@ const ProfilePage: React.FC = () => {
     <div className="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950">
       <TopHeader title="Profile" subtitle="Manage your account settings" />
 
-      <div className="p-4 md:p-6 space-y-5 max-w-7xl mx-auto">
+      <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-5 max-w-7xl mx-auto">
 
         {/* ── Hero identity card ───────────────────────────────────────────── */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden animate-fade-in-down">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 relative overflow-hidden animate-fade-in-down">
           {/* Subtle mesh gradient overlay */}
           <div className="absolute inset-0 pointer-events-none opacity-30 dark:opacity-20" style={{background: 'radial-gradient(ellipse at 0% 0%, rgba(99,102,241,0.15) 0%, transparent 60%), radial-gradient(ellipse at 100% 100%, rgba(59,130,246,0.1) 0%, transparent 50%)'}} />
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             <div className="relative">
-              <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-white text-3xl font-bold shadow-md overflow-hidden">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl sm:text-3xl font-bold shadow-md overflow-hidden">
                 {user.avatarUrl ? <img src={resolveAssetUrl(user.avatarUrl)!} alt={user.name} className="w-full h-full object-cover" /> : initials}
               </div>
               {uploading && (
@@ -118,7 +118,7 @@ const ProfilePage: React.FC = () => {
             
             <div className="flex flex-col items-center sm:items-start pt-2">
               <div className="flex items-center gap-3 mb-1">
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{user.name}</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">{user.name}</h2>
                 <span className="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">{user.plan}</span>
                 {trialActive && (
                   <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300 font-medium">🎉 Trial Active</span>
@@ -129,35 +129,35 @@ const ProfilePage: React.FC = () => {
           </div>
 
           {/* Right side stats */}
-          <div className="flex items-center gap-8 border-t sm:border-t-0 sm:border-l border-slate-100 dark:border-slate-800 pt-6 sm:pt-0 sm:pl-8 w-full sm:w-auto justify-center sm:justify-start">
+          <div className="flex items-center gap-4 sm:gap-8 border-t sm:border-t-0 sm:border-l border-slate-100 dark:border-slate-800 pt-4 sm:pt-0 sm:pl-8 w-full sm:w-auto justify-center sm:justify-start">
             <div className="flex flex-col items-center sm:items-start">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-8">Country</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 sm:mb-1.5 sm:ml-8">Country</p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                   <LuGlobe className="w-5 h-5 text-blue-500 dark:text-blue-400" />
                 </div>
-                <span className="text-lg font-bold text-slate-800 dark:text-white">{user.country}</span>
+                <span className="text-sm sm:text-lg font-bold text-slate-800 dark:text-white">{user.country}</span>
               </div>
             </div>
             <div className="w-px h-12 bg-slate-100 dark:bg-slate-800 hidden sm:block"></div>
             <div className="flex flex-col items-center sm:items-start">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-8">Sim Balance</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 sm:mb-1.5 sm:ml-8">Sim Balance</p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                   <LuWallet className="w-5 h-5 text-blue-500 dark:text-blue-400" />
                 </div>
-                <span className="text-lg font-bold text-slate-800 dark:text-white">{formatAmount(user.simBalance, user.country)}</span>
+                <span className="text-sm sm:text-lg font-bold text-slate-800 dark:text-white">{formatAmount(user.simBalance, user.country)}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* ── 3-column responsive grid ─────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
 
           {/* ── Col 1: Edit Profile ──────────────────────────────────────── */}
           {!user.sandbox ? (
-            <div className="lg:col-span-3 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm animate-fade-in-left stagger-2 hover-lift">
+            <div className="lg:col-span-3 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700 shadow-sm animate-fade-in-left stagger-2 hover-lift">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                   <LuUser className="w-5 h-5 text-blue-500 dark:text-blue-400" />
@@ -226,10 +226,10 @@ const ProfilePage: React.FC = () => {
           )}
 
           {/* ── Col 2: Account Info + Change Password ────────────────────── */}
-          <div className="lg:col-span-4 space-y-6 animate-fade-in-up stagger-3">
+          <div className="lg:col-span-4 space-y-4 sm:space-y-6 animate-fade-in-up stagger-3">
 
             {/* Account Info */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover-lift animate-fade-in-up">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700 shadow-sm hover-lift animate-fade-in-up">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                   <LuUser className="w-5 h-5 text-blue-500 dark:text-blue-400" />
@@ -271,7 +271,7 @@ const ProfilePage: React.FC = () => {
             </div>
             
             {/* Secure & Private Card */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex items-start gap-4 hover-lift animate-fade-in-up">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex items-start gap-3 sm:gap-4 hover-lift animate-fade-in-up">
               <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center shrink-0 shadow-md">
                 <LuShield className="w-6 h-6 text-white" />
               </div>
@@ -287,7 +287,7 @@ const ProfilePage: React.FC = () => {
           </div>
 
           {/* ── Col 3: Push Notifications ─────────────────────────────────────────── */}
-          <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 border border-slate-200 dark:border-slate-700 shadow-sm animate-fade-in-right stagger-4 hover-lift">
+          <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-slate-200 dark:border-slate-700 shadow-sm animate-fade-in-right stagger-4 hover-lift">
             <div className="flex items-start gap-4 mb-6">
               <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center shrink-0">
                 <LuBell className="w-6 h-6 text-purple-500 dark:text-purple-400" />
@@ -324,7 +324,7 @@ const ProfilePage: React.FC = () => {
                      if (s.key === 'sub' && s.status === 'ok') displayStatus = 'Subscribed';
 
                      return (
-                      <div key={s.key} className={`flex items-center gap-4 p-4 bg-white dark:bg-slate-900 animate-fade-in-up ${i !== steps.length - 1 ? 'border-b border-slate-200 dark:border-slate-700' : ''}`} style={{animationDelay: `${0.4 + i * 0.08}s`}}>
+                      <div key={s.key} className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-white dark:bg-slate-900 animate-fade-in-up ${i !== steps.length - 1 ? 'border-b border-slate-200 dark:border-slate-700' : ''}`} style={{animationDelay: `${0.4 + i * 0.08}s`}}>
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${s.iconBg}`}>
                           {React.cloneElement(s.icon, { className: "w-4 h-4" })}
                         </div>
@@ -450,9 +450,9 @@ const ProfilePage: React.FC = () => {
         </div>
 
         {/* ── Row 2: Troubleshooting tips — full width ─────────────────── */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm mt-5 animate-fade-in-up stagger-5">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-200 dark:border-slate-700 shadow-sm mt-4 sm:mt-5 animate-fade-in-up stagger-5">
           <p className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-4">Troubleshooting &amp; Tips</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 sm:gap-x-8 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
             {[
               ['🪟 Windows',        'Start → Settings → System → Notifications → Chrome/Edge must be ON'],
               ['🌐 Chrome',         'Address bar → 🔒 lock icon → Notifications → Allow'],

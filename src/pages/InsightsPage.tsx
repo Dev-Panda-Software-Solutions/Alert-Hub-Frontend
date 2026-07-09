@@ -84,8 +84,8 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
   return (
     <div className="flex flex-col">
       {/* Summary chips */}
-      <div className="flex flex-wrap gap-4 mb-6 pt-2">
-        <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-3 shadow-sm min-w-[140px] animate-fade-in-up stagger-1">
+      <div className="flex flex-wrap gap-2 sm:gap-4 mb-4 sm:mb-6 pt-2">
+        <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl flex items-center gap-2 sm:gap-3 shadow-sm min-w-[120px] sm:min-w-[140px] animate-fade-in-up stagger-1">
           <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-500 flex items-center justify-center shrink-0">
             <LuTrendingDown className="w-4 h-4" />
           </div>
@@ -95,7 +95,7 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
           </div>
         </div>
         
-        <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-3 shadow-sm min-w-[140px] animate-fade-in-up stagger-2">
+        <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl flex items-center gap-2 sm:gap-3 shadow-sm min-w-[120px] sm:min-w-[140px] animate-fade-in-up stagger-2">
           <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center shrink-0">
             <LuTrendingUp className="w-4 h-4" />
           </div>
@@ -105,7 +105,7 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
           </div>
         </div>
         
-        <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-4 py-2.5 rounded-xl flex items-center gap-3 shadow-sm min-w-[140px] animate-fade-in-up stagger-3">
+        <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl flex items-center gap-2 sm:gap-3 shadow-sm min-w-[120px] sm:min-w-[140px] animate-fade-in-up stagger-3">
           <div className="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-500 flex items-center justify-center shrink-0">
             <LuActivity className="w-4 h-4" />
           </div>
@@ -310,7 +310,7 @@ const ChatPanel: React.FC = () => {
   };
 
   return (
-    <div className="rounded-3xl p-6 relative overflow-hidden bg-gradient-to-br from-[#1b1744] via-[#241e5e] to-[#362783] shadow-lg flex flex-col h-[320px]">
+    <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 relative overflow-hidden bg-gradient-to-br from-[#1b1744] via-[#241e5e] to-[#362783] shadow-lg flex flex-col h-[280px] sm:h-[320px]">
       {/* Animated Stars Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <svg width="100%" height="100%">
@@ -367,7 +367,7 @@ const ChatPanel: React.FC = () => {
         </div>
         
         <div className="mt-auto">
-          <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="bg-white rounded-2xl p-1.5 pl-4 flex items-center gap-2 shadow-2xl">
+          <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="bg-white rounded-xl sm:rounded-2xl p-1 sm:p-1.5 pl-3 sm:pl-4 flex items-center gap-1 sm:gap-2 shadow-2xl">
              <input 
                value={input} onChange={(e) => setInput(e.target.value)}
                placeholder={listening ? 'Listening...' : 'What are my subscriptions?'} 
@@ -385,8 +385,8 @@ const ChatPanel: React.FC = () => {
           </form>
           
           {messages.length === 0 && (
-            <div className="flex items-center gap-3 mt-4 overflow-x-auto scrollbar-hide pb-1">
-              <span className="text-indigo-200/80 text-xs shrink-0 font-medium">Try asking:</span>
+            <div className="flex items-center gap-2 sm:gap-3 mt-3 sm:mt-4 overflow-x-auto scrollbar-hide pb-1">
+              <span className="text-indigo-200/80 text-[10px] sm:text-xs shrink-0 font-medium">Try:</span>
               {visibleSuggestions.map((s) => (
                 <button key={s} onClick={() => send(s)} className="shrink-0 px-3.5 py-1.5 rounded-full bg-white/5 text-white text-[11px] font-medium border border-white/10 hover:bg-white/15 transition-colors">
                   {s}
@@ -399,7 +399,7 @@ const ChatPanel: React.FC = () => {
       
       {/* Robot SVG - hidden when chat is active */}
       {messages.length === 0 && (
-        <div className="absolute -right-4 -bottom-4 w-56 h-56 pointer-events-none opacity-90 transition-opacity">
+        <div className="absolute -right-4 -bottom-4 w-40 h-40 sm:w-56 sm:h-56 pointer-events-none opacity-90 transition-opacity hidden sm:block">
           <svg viewBox="0 0 200 200" fill="none">
             <g filter="drop-shadow(0 10px 15px rgba(99,102,241,0.4))">
               <rect x="60" y="70" width="80" height="60" rx="25" fill="url(#botGrad)"/>
@@ -449,7 +449,7 @@ const BalanceSimulator: React.FC = () => {
   };
 
   return (
-    <div className="card p-6 h-[320px] flex flex-col justify-between">
+    <div className="card p-4 sm:p-6 h-[280px] sm:h-[320px] flex flex-col justify-between">
       <div>
         <h3 className="font-bold text-slate-800 dark:text-white text-[15px] mb-1">Balance Simulator</h3>
         <p className="text-[11px] text-slate-400 mb-5">Set a simulated bank balance to test affordability insights</p>
@@ -482,7 +482,7 @@ const BalanceSimulator: React.FC = () => {
         </div>
       </div>
       
-      <div className="grid grid-cols-3 gap-3 border-t border-slate-100 dark:border-slate-800 pt-5">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 border-t border-slate-100 dark:border-slate-800 pt-3 sm:pt-5">
         <div>
           <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Predicted Balance</p>
           <p className="font-bold text-slate-800 dark:text-white text-sm mt-1">₹{(parseFloat(balance) - 56570).toLocaleString('en-IN')}</p>
@@ -590,11 +590,11 @@ const InsightsPage: React.FC = () => {
     <div className="flex-1 overflow-y-auto bg-[#F8FAFC] dark:bg-slate-950">
       <TopHeader title="AI Insights ✨" subtitle="Intelligent analysis of your financial health" />
 
-      <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
+      <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-6">
         
         {/* Top Section */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          <div className="xl:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm relative overflow-hidden animate-fade-in-left stagger-1" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)'}}>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+          <div className="xl:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm relative overflow-hidden animate-fade-in-left stagger-1" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)'}}>
             {/* Top accent strip */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-t-2xl" />
             <div className="flex items-center justify-between mb-2 z-10 relative mt-2">
@@ -644,7 +644,7 @@ const InsightsPage: React.FC = () => {
             {insights.map((ins, i) => {
               const s = SEV_STYLE[ins.severity];
               return (
-                <div key={i} className={`bg-white dark:bg-slate-900 rounded-2xl p-5 min-w-[320px] sm:min-w-[380px] max-w-[420px] flex-shrink-0 snap-start border shadow-sm relative overflow-hidden group hover-lift transition-all ${s.border} animate-fade-in-up`} style={{animationDelay: `${i * 0.08}s`}}>
+                <div key={i} className={`bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 min-w-[270px] sm:min-w-[380px] max-w-[420px] flex-shrink-0 snap-start border shadow-sm relative overflow-hidden group hover-lift transition-all ${s.border} animate-fade-in-up`} style={{animationDelay: `${i * 0.08}s`}}>
                   {/* Colored top gradient strip */}
                   <div className={`absolute top-0 left-0 right-0 h-1.5 ${s.strip}`} />
                   
@@ -674,7 +674,7 @@ const InsightsPage: React.FC = () => {
         </div>
 
         {/* Bottom row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up stagger-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 animate-fade-in-up stagger-5">
           <div className="lg:col-span-2">
             <ChatPanel />
           </div>
