@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { 
   LuLayoutList, LuLayoutGrid, LuSearch, LuMic, LuFilter, 
   LuBell, LuCalendar, LuClock, LuCircleCheck,
-  LuBriefcase, LuUsers, LuWallet,
+  LuBriefcase, LuUsers,
   LuScanLine, LuRefreshCw, LuPlus, LuCalendarPlus, LuChevronDown
 } from 'react-icons/lu';
 import TopHeader from '../components/layout/TopHeader';
@@ -140,7 +140,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ value, onChange, options, c
               className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                 o.value === value
                   ? 'bg-indigo-600 text-white font-bold'
-                  : 'text-slate-700 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-slate-850'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               {o.label}
@@ -486,8 +486,7 @@ const MobileReminderCard: React.FC<{
 const MODULES = [
   { id: 'ALL', label: 'All', icon: <LuLayoutGrid className="w-4 h-4" /> },
   { id: 'BUSINESS', label: 'Business', icon: <LuBriefcase className="w-4 h-4" /> },
-  { id: 'FAMILY', label: 'Family', icon: <LuUsers className="w-4 h-4" /> },
-  { id: 'FINANCE', label: 'Finance', icon: <LuWallet className="w-4 h-4" /> },
+  { id: 'PERSONAL_FAMILY', label: 'Personal & Family', icon: <LuUsers className="w-4 h-4" /> },
 ];
 type ViewMode = 'list' | 'kanban';
 
@@ -498,7 +497,7 @@ const RemindersPage: React.FC = () => {
 
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading]     = useState(true);
-  const [activeModule, setActiveModule] = useState<ReminderModule | 'ALL'>('ALL');
+  const [activeModule, setActiveModule] = useState<'ALL' | 'BUSINESS' | 'PERSONAL_FAMILY'>('ALL');
   const [viewMode, setViewMode]   = useState<ViewMode>('list');
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing]     = useState<Reminder | null>(null);
@@ -510,9 +509,15 @@ const RemindersPage: React.FC = () => {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const params = activeModule !== 'ALL' ? { module: activeModule } : undefined;
+      const params = (activeModule !== 'ALL' && activeModule !== 'PERSONAL_FAMILY')
+        ? { module: activeModule }
+        : undefined;
       const data = await reminderApi.list(params);
-      setReminders(data.items);
+      if (activeModule === 'PERSONAL_FAMILY') {
+        setReminders(data.items.filter((item) => item.module === 'FAMILY' || item.module === 'FINANCE'));
+      } else {
+        setReminders(data.items);
+      }
     } finally {
       setLoading(false);
     }
