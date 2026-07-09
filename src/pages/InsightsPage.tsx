@@ -274,6 +274,31 @@ function shuffleQuestions() {
   return [...AI_QUESTIONS].sort(() => Math.random() - 0.5);
 }
 
+const QuestionChips: React.FC<{
+  suggestions: string[];
+  onPick: (question: string) => void;
+  marquee?: boolean;
+}> = ({ suggestions, onPick, marquee = false }) => {
+  const items = marquee ? [...suggestions, ...suggestions] : suggestions;
+
+  return (
+    <div className={marquee ? 'overflow-hidden -mx-1 px-1 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]' : 'overflow-x-auto scrollbar-hide pb-1'}>
+      <div className={`flex gap-2 ${marquee ? 'w-max animate-ai-question-marquee hover:[animation-play-state:paused]' : 'w-max'}`}>
+        {items.map((s, idx) => (
+          <button
+            key={`${s}-${idx}`}
+            type="button"
+            onClick={() => onPick(s)}
+            className="shrink-0 px-3.5 py-1.5 rounded-full bg-white/5 text-white text-[11px] font-medium border border-white/10 hover:bg-white/15 transition-colors"
+          >
+            {s}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySpeechRecognition = any;
 const SR: (new () => AnySpeechRecognition) | undefined =
@@ -335,7 +360,7 @@ const ChatPanel: React.FC = () => {
   };
 
   return (
-    <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 relative overflow-hidden bg-gradient-to-br from-[#1b1744] via-[#241e5e] to-[#362783] shadow-lg flex flex-col h-[280px] sm:h-[320px]">
+    <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 relative overflow-hidden bg-gradient-to-br from-[#1b1744] via-[#241e5e] to-[#362783] shadow-lg flex flex-col h-[390px] sm:h-[430px]">
       {/* Animated Stars Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <svg width="100%" height="100%">
@@ -356,9 +381,28 @@ const ChatPanel: React.FC = () => {
           </div>
         </div>
         
-        <div className="flex-1 overflow-y-auto mb-4 scrollbar-hide flex flex-col">
+        {messages.length === 0 && (
+          <div className="mb-4 rounded-2xl bg-white/5 border border-white/10 p-3">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="text-indigo-100 text-xs font-semibold">Pick a question</span>
+              <button
+                type="button"
+                onClick={() => setSuggestions(shuffleQuestions())}
+                className="text-[10px] text-indigo-100/80 hover:text-white font-semibold transition-colors"
+              >
+                Shuffle
+              </button>
+            </div>
+            <QuestionChips suggestions={suggestions} onPick={send} marquee />
+          </div>
+        )}
+
+        <div className="flex-1 overflow-y-auto mb-3 scrollbar-hide flex flex-col min-h-0">
            {messages.length === 0 ? (
-              <div className="m-auto opacity-0" />
+              <div className="m-auto text-center px-4">
+                <p className="text-sm font-semibold text-white">Select a suggestion to ask AI</p>
+                <p className="text-xs text-indigo-200/80 mt-1">You can also type your own question below.</p>
+              </div>
            ) : (
               <div className="space-y-3 pb-2 flex-1 pt-4">
                 {messages.map((m, i) => (
@@ -392,6 +436,22 @@ const ChatPanel: React.FC = () => {
         </div>
         
         <div className="mt-auto">
+          {messages.length > 0 && (
+            <div className="mb-3 rounded-2xl bg-white/5 border border-white/10 p-3">
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <span className="text-indigo-100 text-xs font-semibold">Suggested questions</span>
+                <button
+                  type="button"
+                  onClick={() => setSuggestions(shuffleQuestions())}
+                  className="text-[10px] text-indigo-100/80 hover:text-white font-semibold transition-colors"
+                >
+                  Shuffle
+                </button>
+              </div>
+              <QuestionChips suggestions={suggestions.slice(0, 8)} onPick={send} />
+            </div>
+          )}
+
           <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="bg-white rounded-xl sm:rounded-2xl p-1 sm:p-1.5 pl-3 sm:pl-4 flex items-center gap-1 sm:gap-2 shadow-2xl">
              <input 
                value={input} onChange={(e) => setInput(e.target.value)}
@@ -408,35 +468,6 @@ const ChatPanel: React.FC = () => {
                <LuSend className="w-4 h-4" />
              </button>
           </form>
-          
-          {messages.length === 0 && (
-            <div className="mt-3 sm:mt-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-indigo-200/80 text-[10px] sm:text-xs shrink-0 font-medium">Try one of 22 questions:</span>
-                <button
-                  type="button"
-                  onClick={() => setSuggestions(shuffleQuestions())}
-                  className="text-[10px] text-indigo-100/80 hover:text-white font-semibold transition-colors"
-                >
-                  Shuffle
-                </button>
-              </div>
-              <div className="overflow-hidden -mx-1 px-1 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-                <div className="flex w-max gap-2 animate-ai-question-marquee hover:[animation-play-state:paused]">
-                  {[...suggestions, ...suggestions].map((s, idx) => (
-                    <button
-                      key={`${s}-${idx}`}
-                      type="button"
-                      onClick={() => send(s)}
-                      className="shrink-0 px-3.5 py-1.5 rounded-full bg-white/5 text-white text-[11px] font-medium border border-white/10 hover:bg-white/15 transition-colors"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
       
