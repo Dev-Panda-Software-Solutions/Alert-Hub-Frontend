@@ -77,6 +77,7 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -89,10 +90,19 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 }
 
 @keyframes aiQuestionMarquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-ai-question-marquee {
-  animation: aiQuestionMarquee 36s linear infinite;
+  animation: aiQuestionMarquee 50s linear infinite;
+}
+
+.animate-ai-question-marquee:hover {
+  animation-play-state: paused;
 }

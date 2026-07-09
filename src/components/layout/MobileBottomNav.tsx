@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  LuLayoutDashboard, LuBell, LuCalendar, LuSparkles, LuLayoutGrid
+  LuLayoutDashboard, LuBell, LuCalendar, LuSparkles, LuMenu
 } from 'react-icons/lu';
 import { useLayout } from '../../context/LayoutContext';
 
@@ -54,7 +54,7 @@ const MobileBottomNav: React.FC = () => {
         className="flex flex-col items-center justify-center gap-0.5 flex-1 py-1 rounded-xl transition-colors text-slate-400 dark:text-slate-500 active:text-slate-600 dark:active:text-slate-300"
       >
         <div className="relative flex items-center justify-center w-8 h-8 rounded-xl transition-colors">
-          <LuLayoutGrid className="w-5 h-5 transition-transform" />
+          <LuMenu className="w-5 h-5 transition-transform" />
         </div>
         <span className="text-[10px] font-semibold leading-none">
           Menu
