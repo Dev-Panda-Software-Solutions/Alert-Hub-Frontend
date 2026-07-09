@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  LuLayoutDashboard, LuBell, LuCalendar, LuSparkles, LuUser, LuLayoutGrid
+  LuLayoutDashboard, LuBell, LuCalendar, LuSparkles, LuLayoutGrid
 } from 'react-icons/lu';
 import { useLayout } from '../../context/LayoutContext';
 
