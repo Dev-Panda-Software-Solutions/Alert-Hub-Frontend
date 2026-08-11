@@ -3,7 +3,7 @@ import type { AxiosInstance } from 'axios';
 import { API_BASE_URL } from '../config/api.config';
 import type {
   User, Reminder, DashboardStats, ChannelsResponse,
-  CalendarMonthResponse, Insight, CashflowPoint,
+  CalendarMonthResponse, Insight, CashflowPoint, CustomTemplateDomain,
 } from '../types';
 
 // ─── Axios instance ───────────────────────────────────────────────────────────
@@ -128,11 +128,16 @@ export type ReminderPayload = {
   schedule?: number[];
   channels?: string[];
   priority?: string;
+  sendTime?: string | null;
+  customTemplateKey?: string | null;
 };
 
 export const reminderApi = {
   list: (params?: ReminderListQuery) =>
     http.get<{ total: number; page: number; limit: number; items: Reminder[] }>('/reminders', { params }).then((r) => r.data),
+
+  customTemplates: () =>
+    http.get<{ domains: CustomTemplateDomain[] }>('/reminders/custom-templates').then((r) => r.data),
 
   get: (id: string) =>
     http.get<Reminder>(`/reminders/${id}`).then((r) => r.data),

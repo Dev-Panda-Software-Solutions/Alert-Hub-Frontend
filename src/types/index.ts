@@ -32,10 +32,24 @@ export interface Reminder {
   channels: NotificationChannel[];
   priority: string | null;   // manual override; null = auto-computed from dueDate
   sendTime: string | null;   // "HH:MM" 24h — custom email send time; null = use default cron
+  customTemplateKey: string | null; // "domain.type" key into the custom email template catalog; null = default digest email
   completed: boolean;
   completedAt: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+// ─── Custom email templates ───────────────────────────────────────────────────
+
+export interface CustomTemplateOption {
+  key: string;   // "domain.type" — stored on Reminder.customTemplateKey
+  label: string;
+}
+
+export interface CustomTemplateDomain {
+  key: string;
+  label: string;
+  types: CustomTemplateOption[];
 }
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────

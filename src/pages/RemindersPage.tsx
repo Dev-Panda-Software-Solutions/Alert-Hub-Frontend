@@ -17,7 +17,7 @@ import { useAuth } from '../context/useAuth';
 import { formatAmount } from '../utils/currency';
 import { getPriority, getEffectivePriority, PRIORITY_CONFIG } from '../utils/priority';
 import type { Priority } from '../utils/priority';
-import type { Reminder, ReminderModule, Recurrence } from '../types';
+import type { Reminder, ReminderModule, Recurrence, CustomTemplateDomain } from '../types';
 import emptyRemindersSvg from '../assets/dashboard-empty.svg';
 
 // ── Category map ──────────────────────────────────────────────────────────────
@@ -72,6 +72,7 @@ const EMPTY_FORM = {
   title: '', module: 'FINANCE' as ReminderModule, category: 'credit_card',
   amount: '', dueDate: '', recurrence: 'NONE' as Recurrence,
   channels: [] as string[], schedule: [] as number[], sendTime: '',
+  customTemplateKey: '',
 };
 
 // ── Priority Badge ────────────────────────────────────────────────────────────
@@ -157,6 +158,12 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
   const { user } = useAuth();
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [templateCatalog, setTemplateCatalog] = useState<CustomTemplateDomain[]>([]);
+  const [templateDomainKey, setTemplateDomainKey] = useState('');
+
+  useEffect(() => {
+    reminderApi.customTemplates().then((d) => setTemplateCatalog(d.domains)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (editing) {
@@ -165,10 +172,13 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
         amount: String(editing.amount), dueDate: editing.dueDate,
         recurrence: editing.recurrence, channels: editing.channels,
         schedule: editing.schedule || [], sendTime: editing.sendTime || '',
+        customTemplateKey: editing.customTemplateKey || '',
       });
+      setTemplateDomainKey(editing.customTemplateKey ? editing.customTemplateKey.split('.')[0] : '');
     } else {
       const today = new Date().toISOString().split('T')[0];
       setForm({ ...EMPTY_FORM, dueDate: defaultDate || today });
+      setTemplateDomainKey('');
     }
   }, [editing, defaultDate]);
 
@@ -196,7 +206,12 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
     }
     setSaving(true);
     try {
-      const payload = { ...form, amount: parseFloat(form.amount), sendTime: form.sendTime || null };
+      const payload = {
+        ...form,
+        amount: parseFloat(form.amount),
+        sendTime: form.sendTime || null,
+        customTemplateKey: form.customTemplateKey || null,
+      };
       if (editing) {
         await reminderApi.update(editing.id, payload);
         toast('Reminder updated', 'success');
@@ -392,6 +407,39 @@ const ReminderModal: React.FC<ModalProps> = ({ editing, defaultDate, onClose, on
               {form.sendTime
                 ? `Notifications will be sent at ${form.sendTime} on each scheduled reminder day.`
                 : 'Leave blank to use system default times (8:00 AM daily digest, etc.)'}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              ✉️ Custom email template
+              <span className="ml-1 text-[10px] sm:text-xs font-normal text-slate-400">(optional)</span>
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <CustomSelect
+                value={templateDomainKey}
+                onChange={(val) => {
+                  setTemplateDomainKey(val);
+                  set('customTemplateKey', '');
+                }}
+                options={[
+                  { value: '', label: '— No business type —' },
+                  ...templateCatalog.map((d) => ({ value: d.key, label: d.label })),
+                ]}
+              />
+              <CustomSelect
+                value={form.customTemplateKey}
+                onChange={(val) => set('customTemplateKey', val)}
+                options={[
+                  { value: '', label: templateDomainKey ? '— Select type —' : 'Pick a business type first' },
+                  ...(templateCatalog.find((d) => d.key === templateDomainKey)?.types || []).map((t) => ({ value: t.key, label: t.label })),
+                ]}
+              />
+            </div>
+            <p className="mt-1 text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
+              {form.customTemplateKey
+                ? 'This reminder will use its own tailored email content instead of the default digest.'
+                : 'Pick a business type + reminder type to send a purpose-built email instead of the default digest.'}
             </p>
           </div>
 
