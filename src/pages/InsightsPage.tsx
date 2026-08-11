@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { 
-  LuTrendingDown, LuTrendingUp, LuActivity, LuInfo, 
-  LuMic, LuPaperclip, LuSend, LuChevronRight, LuShieldAlert, LuCircleCheck 
+import {
+  LuTrendingDown, LuTrendingUp, LuActivity, LuInfo,
+  LuSend, LuChevronRight, LuShieldAlert, LuCircleCheck
 } from 'react-icons/lu';
 import TopHeader from '../components/layout/TopHeader';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
@@ -13,10 +13,10 @@ import type { Insight, CashflowPoint, InsightSeverity } from '../types';
 
 // ── Severity styling ───────────────────────────────────────────────────────────
 const SEV_STYLE: Record<InsightSeverity, { border: string; bg: string; icon: string; badge: string; strip: string }> = {
-  info:     { border: 'border-blue-100 dark:border-blue-900/50',    bg: 'bg-blue-50 dark:bg-blue-900/20',    icon: 'ℹ️', badge: 'border border-blue-200 text-blue-600 bg-blue-50 dark:bg-blue-900/30', strip: 'bg-gradient-to-r from-blue-500 to-sky-400' },
-  warning:  { border: 'border-orange-100 dark:border-orange-900/50',  bg: 'bg-orange-50 dark:bg-orange-900/20',  icon: '⚠️', badge: 'border border-orange-200 text-orange-600 bg-orange-50 dark:bg-orange-900/30', strip: 'bg-gradient-to-r from-orange-500 to-amber-400' },
-  critical: { border: 'border-red-100 dark:border-red-900/50',      bg: 'bg-red-50 dark:bg-red-900/20',      icon: '🚨', badge: 'border border-red-200 text-red-600 bg-red-50 dark:bg-red-900/30', strip: 'bg-gradient-to-r from-red-500 to-rose-400' },
-  success:  { border: 'border-emerald-100 dark:border-emerald-900/50', bg: 'bg-emerald-50 dark:bg-emerald-900/20', icon: '✅', badge: 'border border-emerald-200 text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30', strip: 'bg-gradient-to-r from-emerald-500 to-teal-400' },
+  info: { border: 'border-blue-100 dark:border-blue-900/50', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: 'ℹ️', badge: 'border border-blue-200 text-blue-600 bg-blue-50 dark:bg-blue-900/30', strip: 'bg-gradient-to-r from-blue-500 to-sky-400' },
+  warning: { border: 'border-orange-100 dark:border-orange-900/50', bg: 'bg-orange-50 dark:bg-orange-900/20', icon: '⚠️', badge: 'border border-orange-200 text-orange-600 bg-orange-50 dark:bg-orange-900/30', strip: 'bg-gradient-to-r from-orange-500 to-amber-400' },
+  critical: { border: 'border-red-100 dark:border-red-900/50', bg: 'bg-red-50 dark:bg-red-900/20', icon: '🚨', badge: 'border border-red-200 text-red-600 bg-red-50 dark:bg-red-900/30', strip: 'bg-gradient-to-r from-red-500 to-rose-400' },
+  success: { border: 'border-emerald-100 dark:border-emerald-900/50', bg: 'bg-emerald-50 dark:bg-emerald-900/20', icon: '✅', badge: 'border border-emerald-200 text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30', strip: 'bg-gradient-to-r from-emerald-500 to-teal-400' },
 };
 
 // ── SVG Cashflow Chart with live-draw animation ───────────────────────────────
@@ -31,33 +31,33 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
   const toY = (v: number) => H - PAD - ((v / maxVal) * (H - PAD * 2));
 
   const outflowPath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${toX(i)} ${toY(p.outflow)}`).join(' ');
-  const paidPath    = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${toX(i)} ${toY(p.paid)}`).join(' ');
-  const areaPath    = `${outflowPath} L ${toX(points.length - 1)} ${H - PAD} L ${PAD} ${H - PAD} Z`;
+  const paidPath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${toX(i)} ${toY(p.paid)}`).join(' ');
+  const areaPath = `${outflowPath} L ${toX(points.length - 1)} ${H - PAD} L ${PAD} ${H - PAD} Z`;
 
-  const today    = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split('T')[0];
   const todayIdx = points.findIndex(p => p.date === today);
 
   const totalOutflow = points.reduce((s, p) => s + p.outflow, 0);
-  const totalPaid    = points.reduce((s, p) => s + p.paid, 0);
-  const netFlow      = totalPaid - totalOutflow;
+  const totalPaid = points.reduce((s, p) => s + p.paid, 0);
+  const netFlow = totalPaid - totalOutflow;
 
   // Refs for animated paths
   const outflowRef = useRef<SVGPathElement>(null);
-  const paidRef    = useRef<SVGPathElement>(null);
-  const areaRef    = useRef<SVGPathElement>(null);
+  const paidRef = useRef<SVGPathElement>(null);
+  const areaRef = useRef<SVGPathElement>(null);
 
   useEffect(() => {
     const outflowEl = outflowRef.current;
-    const paidEl    = paidRef.current;
-    const areaEl    = areaRef.current;
+    const paidEl = paidRef.current;
+    const areaEl = areaRef.current;
     if (!outflowEl || !paidEl || !areaEl) return;
 
     // Get actual path lengths
     const outflowLen = outflowEl.getTotalLength();
-    const paidLen    = paidEl.getTotalLength();
+    const paidLen = paidEl.getTotalLength();
 
     // --- Outflow line: draw from left to right ---
-    outflowEl.style.strokeDasharray  = `${outflowLen}`;
+    outflowEl.style.strokeDasharray = `${outflowLen}`;
     outflowEl.style.strokeDashoffset = `${outflowLen}`;
     outflowEl.style.transition = 'none';
     // Force reflow
@@ -66,7 +66,7 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
     outflowEl.style.strokeDashoffset = '0';
 
     // --- Paid line: draw slightly after outflow ---
-    paidEl.style.strokeDasharray  = `${paidLen}`;
+    paidEl.style.strokeDasharray = `${paidLen}`;
     paidEl.style.strokeDashoffset = `${paidLen}`;
     paidEl.style.transition = 'none';
     void paidEl.getBoundingClientRect();
@@ -94,7 +94,7 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
             <p className="text-sm font-bold text-slate-800 dark:text-white">₹{totalOutflow.toLocaleString('en-IN')}</p>
           </div>
         </div>
-        
+
         <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl flex items-center gap-2 sm:gap-3 shadow-sm min-w-[120px] sm:min-w-[140px] animate-fade-in-up stagger-2">
           <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 flex items-center justify-center shrink-0">
             <LuTrendingUp className="w-4 h-4" />
@@ -104,7 +104,7 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
             <p className="text-sm font-bold text-slate-800 dark:text-white">₹{totalPaid.toLocaleString('en-IN')}</p>
           </div>
         </div>
-        
+
         <div className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl flex items-center gap-2 sm:gap-3 shadow-sm min-w-[120px] sm:min-w-[140px] animate-fade-in-up stagger-3">
           <div className="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-900/30 text-purple-500 flex items-center justify-center shrink-0">
             <LuActivity className="w-4 h-4" />
@@ -121,7 +121,7 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full overflow-visible" aria-label="Cashflow chart">
         <defs>
           <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stopColor="#3b82f6" stopOpacity="0.18" />
+            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.18" />
             <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
           </linearGradient>
           {/* Glow filter for outflow line */}
@@ -138,7 +138,7 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
         {[0, 0.25, 0.5, 0.75, 1].map((frac) => {
           const y = H - PAD - frac * (H - PAD * 2);
           return (
-            <g key={frac} style={{opacity: 0, animation: `fadeIn 0.5s ease ${frac * 0.1 + 0.1}s both`}}>
+            <g key={frac} style={{ opacity: 0, animation: `fadeIn 0.5s ease ${frac * 0.1 + 0.1}s both` }}>
               <line x1={PAD} y1={y} x2={W - PAD} y2={y}
                 stroke="currentColor" strokeOpacity="0.06" strokeDasharray="4 4" />
               <text x={PAD - 8} y={y + 3} textAnchor="end" fontSize="9"
@@ -151,7 +151,7 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
 
         {/* Today vertical line */}
         {todayIdx >= 0 && (
-          <g style={{opacity: 0, animation: 'fadeIn 0.4s ease 1.4s both'}}>
+          <g style={{ opacity: 0, animation: 'fadeIn 0.4s ease 1.4s both' }}>
             <line
               x1={toX(todayIdx)} y1={10} x2={toX(todayIdx)} y2={H - PAD}
               stroke="#6366f1" strokeWidth="1.5" strokeDasharray="4 4" strokeOpacity="0.6"
@@ -164,7 +164,7 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
         )}
 
         {/* Area fill — animated via ref */}
-        <path ref={areaRef} d={areaPath} fill="url(#areaGrad)" style={{opacity: 0}} />
+        <path ref={areaRef} d={areaPath} fill="url(#areaGrad)" style={{ opacity: 0 }} />
 
         {/* Paid line (dashed green) — animated via ref */}
         <path
@@ -224,7 +224,7 @@ const CashflowChart: React.FC<{ points: CashflowPoint[] }> = ({ points }) => {
             x={toX(i)} y={H - 5}
             textAnchor="middle" fontSize="10" fontWeight="600"
             fill="currentColor" fillOpacity="0.5"
-            style={{opacity: 0, animation: `fadeIn 0.4s ease ${1.5 + i * 0.04}s both`}}
+            style={{ opacity: 0, animation: `fadeIn 0.4s ease ${1.5 + i * 0.04}s both` }}
           >
             {p.date.slice(5)}
           </text>
@@ -299,20 +299,10 @@ const QuestionChips: React.FC<{
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnySpeechRecognition = any;
-const SR: (new () => AnySpeechRecognition) | undefined =
-  typeof window !== 'undefined'
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ? ((window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition)
-    : undefined;
-
 const ChatPanel: React.FC = () => {
-  const [input, setInput]       = useState('');
+  const [input, setInput] = useState('');
   const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>([]);
   const [thinking, setThinking] = useState(false);
-  const [listening, setListening]     = useState(false);
-  const recognitionRef = useRef<AnySpeechRecognition>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const [suggestions, setSuggestions] = useState(shuffleQuestions);
@@ -338,40 +328,19 @@ const ChatPanel: React.FC = () => {
     }
   };
 
-  const startListening = () => {
-    if (!SR) return;
-    const recognition = new SR();
-    recognition.lang = 'en-IN';
-    recognition.interimResults = false;
-    recognition.onresult = (e: AnySpeechRecognition) => {
-      const text = e.results[0][0].transcript;
-      setInput(text);
-    };
-    recognition.onend = () => setListening(false);
-    recognition.onerror = () => setListening(false);
-    recognitionRef.current = recognition;
-    recognition.start();
-    setListening(true);
-  };
-
-  const stopListening = () => {
-    recognitionRef.current?.stop();
-    setListening(false);
-  };
-
   return (
     <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 relative overflow-hidden bg-gradient-to-br from-[#1b1744] via-[#241e5e] to-[#362783] shadow-lg flex flex-col h-[390px] sm:h-[430px]">
       {/* Animated Stars Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <svg width="100%" height="100%">
-          <circle cx="80%" cy="20%" r="1" fill="#fff" opacity="0.8" className="animate-pulse"/>
-          <circle cx="60%" cy="40%" r="2" fill="#fff" opacity="0.6" className="animate-pulse" style={{ animationDelay: '1s'}}/>
-          <circle cx="90%" cy="60%" r="1.5" fill="#fff" opacity="0.9" className="animate-pulse" style={{ animationDelay: '2s'}}/>
-          <circle cx="20%" cy="30%" r="1" fill="#fff" opacity="0.5" className="animate-pulse" style={{ animationDelay: '0.5s'}}/>
-          <circle cx="40%" cy="80%" r="2" fill="#fff" opacity="0.7" className="animate-pulse" style={{ animationDelay: '1.5s'}}/>
+          <circle cx="80%" cy="20%" r="1" fill="#fff" opacity="0.8" className="animate-pulse" />
+          <circle cx="60%" cy="40%" r="2" fill="#fff" opacity="0.6" className="animate-pulse" style={{ animationDelay: '1s' }} />
+          <circle cx="90%" cy="60%" r="1.5" fill="#fff" opacity="0.9" className="animate-pulse" style={{ animationDelay: '2s' }} />
+          <circle cx="20%" cy="30%" r="1" fill="#fff" opacity="0.5" className="animate-pulse" style={{ animationDelay: '0.5s' }} />
+          <circle cx="40%" cy="80%" r="2" fill="#fff" opacity="0.7" className="animate-pulse" style={{ animationDelay: '1.5s' }} />
         </svg>
       </div>
-      
+
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white font-bold backdrop-blur-md border border-white/10">AI</div>
@@ -380,7 +349,7 @@ const ChatPanel: React.FC = () => {
             <p className="text-indigo-200 text-xs mt-0.5">Get instant answers to your financial questions</p>
           </div>
         </div>
-        
+
         {messages.length === 0 && (
           <div className="mb-4 rounded-2xl bg-white/5 border border-white/10 p-3">
             <div className="flex items-center justify-between gap-2 mb-2">
@@ -398,43 +367,42 @@ const ChatPanel: React.FC = () => {
         )}
 
         <div className="flex-1 overflow-y-auto mb-3 scrollbar-hide flex flex-col min-h-0">
-           {messages.length === 0 ? (
-              <div className="m-auto text-center px-4">
-                <p className="text-sm font-semibold text-white">Select a suggestion to ask AI</p>
-                <p className="text-xs text-indigo-200/80 mt-1">You can also type your own question below.</p>
-              </div>
-           ) : (
-              <div className="space-y-3 pb-2 flex-1 pt-4">
-                {messages.map((m, i) => (
-                  <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed backdrop-blur-sm border ${
-                      m.role === 'user'
-                        ? 'bg-indigo-600/90 text-white border-indigo-500 rounded-br-sm'
-                        : 'bg-white/10 text-indigo-50 border-white/10 rounded-bl-sm shadow-xl'
+          {messages.length === 0 ? (
+            <div className="m-auto text-center px-4">
+              <p className="text-sm font-semibold text-white">Select a suggestion to ask AI</p>
+              <p className="text-xs text-indigo-200/80 mt-1">You can also type your own question below.</p>
+            </div>
+          ) : (
+            <div className="space-y-3 pb-2 flex-1 pt-4">
+              {messages.map((m, i) => (
+                <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed backdrop-blur-sm border ${m.role === 'user'
+                      ? 'bg-indigo-600/90 text-white border-indigo-500 rounded-br-sm'
+                      : 'bg-white/10 text-indigo-50 border-white/10 rounded-bl-sm shadow-xl'
                     }`}>
-                      {m.role === 'ai'
-                        ? <span dangerouslySetInnerHTML={{ __html: renderMarkdown(m.text) }} />
-                        : m.text
-                      }
+                    {m.role === 'ai'
+                      ? <span dangerouslySetInnerHTML={{ __html: renderMarkdown(m.text) }} />
+                      : m.text
+                    }
+                  </div>
+                </div>
+              ))}
+              {thinking && (
+                <div className="flex justify-start">
+                  <div className="px-4 py-2.5 rounded-2xl bg-white/10 border border-white/10 text-indigo-200 text-sm rounded-bl-sm flex items-center gap-2">
+                    <div className="flex gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 animate-bounce" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 animate-bounce" style={{ animationDelay: '0.1s' }} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 animate-bounce" style={{ animationDelay: '0.2s' }} />
                     </div>
                   </div>
-                ))}
-                {thinking && (
-                  <div className="flex justify-start">
-                    <div className="px-4 py-2.5 rounded-2xl bg-white/10 border border-white/10 text-indigo-200 text-sm rounded-bl-sm flex items-center gap-2">
-                      <div className="flex gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 animate-bounce" />
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 animate-bounce" style={{animationDelay: '0.1s'}} />
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 animate-bounce" style={{animationDelay: '0.2s'}} />
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div ref={bottomRef} />
-              </div>
-           )}
+                </div>
+              )}
+              <div ref={bottomRef} />
+            </div>
+          )}
         </div>
-        
+
         <div className="mt-auto">
           {messages.length > 0 && (
             <div className="mb-3 rounded-2xl bg-white/5 border border-white/10 p-3">
@@ -453,46 +421,40 @@ const ChatPanel: React.FC = () => {
           )}
 
           <form onSubmit={(e) => { e.preventDefault(); send(input); }} className="bg-white rounded-xl sm:rounded-2xl p-1 sm:p-1.5 pl-3 sm:pl-4 flex items-center gap-1 sm:gap-2 shadow-2xl">
-             <input 
-               value={input} onChange={(e) => setInput(e.target.value)}
-               placeholder={listening ? 'Listening...' : 'What are my subscriptions?'} 
-               className="flex-1 bg-transparent border-none outline-none text-slate-800 text-sm font-medium placeholder:text-slate-400" 
-             />
-             <button type="button" onClick={listening ? stopListening : startListening} className={`p-2 rounded-xl transition-colors ${listening ? 'text-red-500 bg-red-50' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'}`}>
-               <LuMic className="w-4 h-4" />
-             </button>
-             <button type="button" className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors">
-               <LuPaperclip className="w-4 h-4" />
-             </button>
-             <button type="submit" disabled={thinking} className="bg-indigo-600 p-2.5 rounded-xl text-white shadow-md hover:bg-indigo-700 transition-colors disabled:opacity-50">
-               <LuSend className="w-4 h-4" />
-             </button>
+            <input
+              value={input} onChange={(e) => setInput(e.target.value)}
+              placeholder="What are my subscriptions?"
+              className="flex-1 bg-transparent border-none outline-none text-slate-800 text-sm font-medium placeholder:text-slate-400"
+            />
+            <button type="submit" disabled={thinking} className="bg-indigo-600 p-2.5 rounded-xl text-white shadow-md hover:bg-indigo-700 transition-colors disabled:opacity-50">
+              <LuSend className="w-4 h-4" />
+            </button>
           </form>
         </div>
       </div>
-      
+
       {/* Robot SVG - hidden when chat is active */}
       {messages.length === 0 && (
         <div className="absolute -right-4 -bottom-4 w-40 h-40 sm:w-56 sm:h-56 pointer-events-none opacity-90 transition-opacity hidden sm:block">
           <svg viewBox="0 0 200 200" fill="none">
             <g filter="drop-shadow(0 10px 15px rgba(99,102,241,0.4))">
-              <rect x="60" y="70" width="80" height="60" rx="25" fill="url(#botGrad)"/>
-              <rect x="70" y="85" width="60" height="25" rx="10" fill="#0f0c29" stroke="#312E81" strokeWidth="2"/>
-              <circle cx="85" cy="97" r="4" fill="#60A5FA" filter="drop-shadow(0 0 6px #60A5FA)"/>
-              <circle cx="115" cy="97" r="4" fill="#60A5FA" filter="drop-shadow(0 0 6px #60A5FA)"/>
-              <path d="M100 70 V 45" stroke="url(#botGrad)" strokeWidth="3" strokeLinecap="round"/>
-              <circle cx="100" cy="40" r="5" fill="#60A5FA" filter="drop-shadow(0 0 8px #60A5FA)"/>
-              <rect x="50" y="90" width="10" height="20" rx="5" fill="url(#botGrad)"/>
-              <rect x="140" y="90" width="10" height="20" rx="5" fill="url(#botGrad)"/>
-              
+              <rect x="60" y="70" width="80" height="60" rx="25" fill="url(#botGrad)" />
+              <rect x="70" y="85" width="60" height="25" rx="10" fill="#0f0c29" stroke="#312E81" strokeWidth="2" />
+              <circle cx="85" cy="97" r="4" fill="#60A5FA" filter="drop-shadow(0 0 6px #60A5FA)" />
+              <circle cx="115" cy="97" r="4" fill="#60A5FA" filter="drop-shadow(0 0 6px #60A5FA)" />
+              <path d="M100 70 V 45" stroke="url(#botGrad)" strokeWidth="3" strokeLinecap="round" />
+              <circle cx="100" cy="40" r="5" fill="#60A5FA" filter="drop-shadow(0 0 8px #60A5FA)" />
+              <rect x="50" y="90" width="10" height="20" rx="5" fill="url(#botGrad)" />
+              <rect x="140" y="90" width="10" height="20" rx="5" fill="url(#botGrad)" />
+
               {/* Sparkles around robot */}
-              <path d="M40 50 L42 55 L47 57 L42 59 L40 64 L38 59 L33 57 L38 55 Z" fill="#C4B5FD"/>
-              <path d="M150 40 L151.5 45 L156.5 46.5 L151.5 48 L150 53 L148.5 48 L143.5 46.5 L148.5 45 Z" fill="#FDE047"/>
+              <path d="M40 50 L42 55 L47 57 L42 59 L40 64 L38 59 L33 57 L38 55 Z" fill="#C4B5FD" />
+              <path d="M150 40 L151.5 45 L156.5 46.5 L151.5 48 L150 53 L148.5 48 L143.5 46.5 L148.5 45 Z" fill="#FDE047" />
             </g>
             <defs>
               <linearGradient id="botGrad" x1="60" y1="70" x2="140" y2="130">
-                <stop offset="0%" stopColor="#818CF8"/>
-                <stop offset="100%" stopColor="#4F46E5"/>
+                <stop offset="0%" stopColor="#818CF8" />
+                <stop offset="100%" stopColor="#4F46E5" />
               </linearGradient>
             </defs>
           </svg>
@@ -507,7 +469,7 @@ const BalanceSimulator: React.FC = () => {
   const { user, updateLocalUser } = useAuth();
   const { toast } = useToast();
   const [balance, setBalance] = useState(String(user?.simBalance ?? 75000));
-  const [saving, setSaving]   = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const save = async () => {
     setSaving(true);
@@ -527,7 +489,7 @@ const BalanceSimulator: React.FC = () => {
       <div>
         <h3 className="font-bold text-slate-800 dark:text-white text-[15px] mb-1">Balance Simulator</h3>
         <p className="text-[11px] text-slate-400 mb-5">Set a simulated bank balance to test affordability insights</p>
-        
+
         <div className="flex gap-3 mb-5">
           <div className="relative flex-1">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
@@ -541,13 +503,13 @@ const BalanceSimulator: React.FC = () => {
             {saving ? '...' : 'Update'}
           </button>
         </div>
-        
+
         <div className="mb-2">
-          <input 
-            type="range" 
+          <input
+            type="range"
             min="10000" max="200000" step="5000"
             value={balance} onChange={(e) => setBalance(e.target.value)}
-            className="w-full accent-indigo-600 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer" 
+            className="w-full accent-indigo-600 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
           />
         </div>
         <div className="flex justify-between text-[10px] text-slate-400 font-bold tracking-wide">
@@ -555,7 +517,7 @@ const BalanceSimulator: React.FC = () => {
           <span>₹2,00,000</span>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-3 gap-2 sm:gap-3 border-t border-slate-100 dark:border-slate-800 pt-3 sm:pt-5">
         <div>
           <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Predicted Balance</p>
@@ -594,7 +556,7 @@ const FinancialHealth: React.FC = () => {
           </span>
         </div>
       </div>
-      
+
       <div className="flex-1 flex flex-col items-center justify-center relative z-10 my-4">
         <div className="relative w-48 h-28">
           <svg viewBox="0 0 100 50" className="w-full h-full drop-shadow-sm">
@@ -614,14 +576,14 @@ const FinancialHealth: React.FC = () => {
           <p className="text-[10px] text-slate-400 font-medium mt-1.5">vs last week</p>
         </div>
       </div>
-      
+
       <div className="bg-[#F8FAFC] dark:bg-slate-800/50 w-full rounded-2xl p-3.5 mt-2 flex items-start gap-3 border border-slate-100 dark:border-slate-800/80 z-10">
         <div className="text-indigo-500 text-lg mt-0.5">✨</div>
         <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
           Great job! Your financial health is <strong className="text-indigo-600 dark:text-indigo-400">better than 82%</strong> of our users.
         </p>
       </div>
-      
+
       <div className="grid grid-cols-3 w-full gap-2 mt-4 z-10">
         <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl p-2.5 text-center">
           <p className="text-[9px] font-bold text-slate-400 mb-1 tracking-wide">Score Trend</p>
@@ -642,9 +604,9 @@ const FinancialHealth: React.FC = () => {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const InsightsPage: React.FC = () => {
-  const [insights, setInsights]   = useState<Insight[]>([]);
-  const [cashflow, setCashflow]   = useState<CashflowPoint[]>([]);
-  const [loading, setLoading]     = useState(true);
+  const [insights, setInsights] = useState<Insight[]>([]);
+  const [cashflow, setCashflow] = useState<CashflowPoint[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([insightsApi.getInsights(), insightsApi.getCashflow()])
@@ -665,10 +627,10 @@ const InsightsPage: React.FC = () => {
       <TopHeader title="AI Insights ✨" subtitle="Intelligent analysis of your financial health" />
 
       <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-6">
-        
+
         {/* Top Section */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-          <div className="xl:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm relative overflow-hidden animate-fade-in-left stagger-1" style={{boxShadow:'0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)'}}>
+          <div className="xl:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm relative overflow-hidden animate-fade-in-left stagger-1" style={{ boxShadow: '0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)' }}>
             {/* Top accent strip */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-t-2xl" />
             <div className="flex items-center justify-between mb-2 z-10 relative mt-2">
@@ -678,7 +640,7 @@ const InsightsPage: React.FC = () => {
                 </div>
                 <h2 className="font-black text-slate-800 dark:text-white text-lg tracking-tight">7-Day Cash Flow</h2>
               </div>
-              
+
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-4 text-xs font-semibold text-slate-400 hidden sm:flex">
                   <span className="flex items-center gap-1.5"><span className="w-4 h-0.5 bg-blue-500 rounded-full inline-block" /> Outflow</span>
@@ -686,8 +648,8 @@ const InsightsPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-indigo-200 transition-colors">
-                   <span className="text-xs font-bold text-slate-600 dark:text-slate-300">7 Days</span>
-                   <LuChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
+                  <span className="text-xs font-bold text-slate-600 dark:text-slate-300">7 Days</span>
+                  <LuChevronRight className="w-3.5 h-3.5 text-slate-400 rotate-90" />
                 </div>
               </div>
             </div>
@@ -696,7 +658,7 @@ const InsightsPage: React.FC = () => {
           </div>
 
           <div className="xl:col-span-1 animate-fade-in-right stagger-2">
-             <FinancialHealth />
+            <FinancialHealth />
           </div>
         </div>
 
@@ -713,30 +675,30 @@ const InsightsPage: React.FC = () => {
               View all <LuChevronRight className="w-4 h-4" />
             </button>
           </div>
-          
+
           <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide snap-x">
             {insights.map((ins, i) => {
               const s = SEV_STYLE[ins.severity];
               return (
-                <div key={i} className={`bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 min-w-[270px] sm:min-w-[380px] max-w-[420px] flex-shrink-0 snap-start border shadow-sm relative overflow-hidden group hover-lift transition-all ${s.border} animate-fade-in-up`} style={{animationDelay: `${i * 0.08}s`}}>
+                <div key={i} className={`bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 min-w-[270px] sm:min-w-[380px] max-w-[420px] flex-shrink-0 snap-start border shadow-sm relative overflow-hidden group hover-lift transition-all ${s.border} animate-fade-in-up`} style={{ animationDelay: `${i * 0.08}s` }}>
                   {/* Colored top gradient strip */}
                   <div className={`absolute top-0 left-0 right-0 h-1.5 ${s.strip}`} />
-                  
+
                   <div className="flex items-start gap-4 mt-1">
                     <div className={`w-11 h-11 rounded-2xl ${s.bg} border ${s.border} flex items-center justify-center shrink-0 text-lg shadow-sm`}>
                       {s.icon}
                     </div>
-                    
+
                     <div className="flex-1">
                       <div className="flex items-center justify-between gap-2 mb-2">
                         <h3 className="font-black text-slate-800 dark:text-white text-[15px] group-hover:text-indigo-600 transition-colors tracking-tight">{ins.title}</h3>
                         <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest ${s.badge}`}>{ins.severity}</span>
                       </div>
                       <p className="text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed">{ins.body}</p>
-                      
+
                       <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
                         <button className="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 flex items-center gap-1 transition-colors">
-                           Review now <LuChevronRight className="w-4 h-4" />
+                          Review now <LuChevronRight className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
