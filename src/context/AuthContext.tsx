@@ -29,6 +29,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       const { token: tok, user: usr } = await authApi.login(email, password);
+      // The unified /auth/login endpoint also serves the admin account (no `user`
+      // in that case) — this context is only for regular user sessions.
+      if (!usr) throw new Error('Invalid email or password.');
       persistSession(tok, usr);
     } finally {
       setIsLoading(false);

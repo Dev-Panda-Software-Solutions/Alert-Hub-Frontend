@@ -24,7 +24,7 @@ http.interceptors.response.use(
     if (err.response?.status === 401) {
       const hadToken = Boolean(localStorage.getItem(ADMIN_TOKEN_KEY));
       localStorage.removeItem(ADMIN_TOKEN_KEY);
-      if (hadToken) window.location.href = '/admin/login';
+      if (hadToken) window.location.href = '/login';
     }
     const message = err.response?.data?.error || err.message || 'Request failed';
     return Promise.reject(new Error(message));
@@ -54,6 +54,13 @@ export interface AdminStats {
   pendingReminders: number;
   overdueReminders: number;
   completedReminders: number;
+  avgRemindersPerUser: number;
+  totalAmountTracked: number;
+  byModule: Record<'BUSINESS' | 'FAMILY' | 'FINANCE', number>;
+  byRecurrence: Record<'NONE' | 'MONTHLY' | 'YEARLY', number>;
+  topCountries: Array<{ country: string; count: number }>;
+  topCategories: Array<{ category: string; count: number }>;
+  signupGrowth: Array<{ date: string; count: number }>;
 }
 
 export interface AdminUserRow {
@@ -69,15 +76,22 @@ export interface AdminUserRow {
 }
 
 export interface AdminUserDetail extends Omit<AdminUserRow, 'reminderCount'> {
-  reminders: Array<{ id: string; title: string; module: string; category: string; amount: number; dueDate: string; completed: boolean }>;
+  whatsApp: string | null;
+  avatarUrl: string | null;
+  reminders: Array<{ id: string; title: string; module: string; category: string; amount: number; dueDate: string; completed: boolean; priority: string | null }>;
+  reminderStats: {
+    total: number;
+    pending: number;
+    overdue: number;
+    completed: number;
+    totalAmount: number;
+    byModule: Record<'BUSINESS' | 'FAMILY' | 'FINANCE', number>;
+  };
 }
 
 // ─── API ────────────────────────────────────────────────────────────────────
 
 export const adminApi = {
-  login: (username: string, password: string) =>
-    http.post<{ token: string }>('/admin/login', { username, password }).then((r) => r.data),
-
   stats: () =>
     http.get<AdminStats>('/admin/stats').then((r) => r.data),
 

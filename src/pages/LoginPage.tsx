@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { LuMail, LuLock, LuEye, LuEyeOff, LuFlaskConical, LuCircleCheck, LuCircleX } from 'react-icons/lu';
 import { useAuth } from '../context/useAuth';
 import { useToast } from '../components/ui/Toast';
+import { authApi } from '../services/api';
+import { setAdminToken } from '../services/adminApi';
 
 function getPasswordHint(pw: string): { ok: boolean; text: string } | null {
   if (!pw) return null;
@@ -15,22 +17,36 @@ function getPasswordHint(pw: string): { ok: boolean; text: string } | null {
 }
 
 const LoginPage: React.FC = () => {
-  const { login, loginSandbox, isLoading } = useAuth();
+  const { loginWithToken, loginSandbox, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw]     = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const isLoading = authLoading || submitting;
 
+  // One form, one endpoint — the credentials themselves decide whether this is
+  // an admin session or a regular user session, so there's no separate admin login page.
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
-      await login(email, password);
-      toast('Welcome back!', 'success');
-      navigate('/dashboard');
+      const result = await authApi.login(email, password);
+      if (result.admin) {
+        setAdminToken(result.token);
+        toast('Welcome, admin', 'success');
+        navigate('/admin');
+      } else if (result.user) {
+        loginWithToken(result.token, result.user);
+        toast('Welcome back!', 'success');
+        navigate('/dashboard');
+      }
     } catch (err: unknown) {
       toast(err instanceof Error ? err.message : 'Login failed', 'error');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -63,7 +79,7 @@ const LoginPage: React.FC = () => {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email</label>
               <div className="relative">
                 <LuMail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10" />
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="input" style={{ paddingLeft: '2.5rem' }} />
+                <input type="text" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="input" style={{ paddingLeft: '2.5rem' }} />
               </div>
             </div>
 

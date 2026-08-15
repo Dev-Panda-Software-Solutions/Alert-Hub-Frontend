@@ -51,8 +51,10 @@ export const authApi = {
   register: (data: { name: string; email: string; password: string; country: string }) =>
     http.post<{ token: string; user: User }>('/auth/register', data).then((r) => r.data),
 
+  // One login endpoint serves both regular users and the single admin account —
+  // `admin: true` in the response (no `user`) means the credentials were the admin's.
   login: (email: string, password: string) =>
-    http.post<{ token: string; user: User }>('/auth/login', { email, password }).then((r) => r.data),
+    http.post<{ token: string; user?: User; admin?: boolean }>('/auth/login', { email, password }).then((r) => r.data),
 
   sandbox: () =>
     http.post<{ token: string; user: User }>('/auth/sandbox').then((r) => r.data),

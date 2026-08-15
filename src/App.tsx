@@ -18,7 +18,6 @@ import CalendarPage  from './pages/CalendarPage';
 import InsightsPage  from './pages/InsightsPage';
 import PricingPage   from './pages/PricingPage';
 import ProfilePage   from './pages/ProfilePage';
-import AdminLoginPage     from './pages/admin/AdminLoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import { isAdminAuthed } from './services/adminApi';
 
@@ -34,9 +33,11 @@ const GuestOnly: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : <>{children}</>;
 };
 
-// Guard: admin session is separate from the regular user session entirely
+// Guard: admin session is separate from the regular user session entirely.
+// There's no dedicated admin login page — /login itself decides based on the
+// credentials entered, so an unauthenticated admin visit bounces there too.
 const RequireAdmin: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return isAdminAuthed() ? <>{children}</> : <Navigate to="/admin/login" replace />;
+  return isAdminAuthed() ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
 /* Auto-register push when user logs in */
@@ -57,9 +58,8 @@ const AppRoutes: React.FC = () => (
     <Route path="/forgot-password" element={<ForgotPasswordPage />} />
     <Route path="/reset-password"  element={<ResetPasswordPage />} />
 
-    {/* Admin — entirely separate auth/session from the regular app */}
-    <Route path="/admin/login" element={<AdminLoginPage />} />
-    <Route path="/admin"       element={<RequireAdmin><AdminDashboardPage /></RequireAdmin>} />
+    {/* Admin — logs in via the same /login form; entirely separate session from the regular app */}
+    <Route path="/admin" element={<RequireAdmin><AdminDashboardPage /></RequireAdmin>} />
 
     {/* Protected — all wrapped in AppLayout (sidebar + outlet) */}
     <Route element={<RequireAuth><AppLayout /></RequireAuth>}>

@@ -1,11 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LuShieldCheck, LuLogOut, LuSearch, LuUsers, LuBell, LuClock, LuTriangleAlert, LuCircleCheck, LuTrash2 } from 'react-icons/lu';
+import {
+  LuShieldCheck, LuLogOut, LuSearch, LuUsers, LuBell, LuClock, LuTriangleAlert,
+  LuCircleCheck, LuTrash2, LuWallet, LuGauge, LuEye,
+} from 'react-icons/lu';
 import { adminApi, clearAdminToken } from '../../services/adminApi';
 import type { AdminStats, AdminUserRow } from '../../services/adminApi';
 import { useToast } from '../../components/ui/Toast';
+import { BarList, GrowthChart } from './AdminCharts';
+import AdminUserDrawer from './AdminUserDrawer';
 
 const PLAN_OPTIONS = ['FREE', 'PERSONAL', 'FAMILY', 'BUSINESS'] as const;
+const MODULE_ORDER = ['BUSINESS', 'FAMILY', 'FINANCE'] as const;
 
 const StatCard: React.FC<{ label: string; value: number | string; Icon: React.ComponentType<{ className?: string }>; tint: string }> = ({ label, value, Icon, tint }) => (
   <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center gap-3">
@@ -29,6 +35,7 @@ const AdminDashboardPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const limit = 20;
 
   const loadStats = useCallback(async () => {
@@ -51,7 +58,7 @@ const AdminDashboardPage: React.FC = () => {
   useEffect(() => { loadStats(); }, [loadStats]);
   useEffect(() => { loadUsers(page, search); }, [loadUsers, page, search]);
 
-  const handleLogout = () => { clearAdminToken(); navigate('/admin/login'); };
+  const handleLogout = () => { clearAdminToken(); navigate('/login'); };
 
   const handlePlanChange = async (id: string, plan: string) => {
     try {
@@ -69,6 +76,7 @@ const AdminDashboardPage: React.FC = () => {
     try {
       await adminApi.deleteUser(id);
       toast('User deleted', 'success');
+      if (selectedUserId === id) setSelectedUserId(null);
       loadUsers(page, search);
       loadStats();
     } catch (err) {
@@ -91,28 +99,52 @@ const AdminDashboardPage: React.FC = () => {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-6 space-y-6">
-        {/* Stats */}
+        {/* Top-line stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <StatCard label="Total users" value={stats?.totalUsers ?? '—'} Icon={LuUsers} tint="bg-indigo-500/15 text-indigo-400" />
           <StatCard label="New (30d)" value={stats?.newUsers30d ?? '—'} Icon={LuUsers} tint="bg-emerald-500/15 text-emerald-400" />
           <StatCard label="Active trials" value={stats?.activeTrials ?? '—'} Icon={LuClock} tint="bg-amber-500/15 text-amber-400" />
+          <StatCard label="Avg reminders/user" value={stats?.avgRemindersPerUser ?? '—'} Icon={LuGauge} tint="bg-fuchsia-500/15 text-fuchsia-400" />
           <StatCard label="Total reminders" value={stats?.totalReminders ?? '—'} Icon={LuBell} tint="bg-sky-500/15 text-sky-400" />
           <StatCard label="Pending" value={stats?.pendingReminders ?? '—'} Icon={LuClock} tint="bg-violet-500/15 text-violet-400" />
           <StatCard label="Overdue" value={stats?.overdueReminders ?? '—'} Icon={LuTriangleAlert} tint="bg-red-500/15 text-red-400" />
           <StatCard label="Completed" value={stats?.completedReminders ?? '—'} Icon={LuCircleCheck} tint="bg-teal-500/15 text-teal-400" />
-          <StatCard label="Business plan" value={stats?.byPlan.BUSINESS ?? '—'} Icon={LuUsers} tint="bg-orange-500/15 text-orange-400" />
         </div>
 
-        {/* Plan breakdown */}
-        {stats && (
-          <div className="flex flex-wrap gap-2">
-            {PLAN_OPTIONS.map((p) => (
-              <span key={p} className="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-300">
-                {p}: <span className="text-white font-semibold">{stats.byPlan[p]}</span>
-              </span>
-            ))}
+        {/* Amount tracked + plan breakdown */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5">
+            <LuWallet className="w-4 h-4 text-emerald-400" />
+            <span className="text-sm text-slate-400">Total amount tracked:</span>
+            <span className="text-sm font-bold text-white">₹{Math.round(stats?.totalAmountTracked ?? 0).toLocaleString('en-IN')}</span>
           </div>
-        )}
+          {stats && PLAN_OPTIONS.map((p) => (
+            <span key={p} className="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-300">
+              {p}: <span className="text-white font-semibold">{stats.byPlan[p]}</span>
+            </span>
+          ))}
+        </div>
+
+        {/* Insights: growth + breakdowns */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <GrowthChart points={stats?.signupGrowth ?? []} />
+          </div>
+          <BarList
+            title="Reminders by module"
+            rows={MODULE_ORDER.map((m) => ({ label: m, count: stats?.byModule[m] ?? 0 }))}
+          />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <BarList
+            title="Top categories"
+            rows={(stats?.topCategories ?? []).map((c) => ({ label: c.category, count: c.count }))}
+          />
+          <BarList
+            title="Top countries"
+            rows={(stats?.topCountries ?? []).map((c) => ({ label: c.country, count: c.count }))}
+          />
+        </div>
 
         {/* Users table */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
@@ -149,7 +181,11 @@ const AdminDashboardPage: React.FC = () => {
                   <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-500">No users found.</td></tr>
                 ) : users.map((u) => (
                   <tr key={u.id} className="border-b border-slate-800/60 hover:bg-slate-800/30">
-                    <td className="px-4 py-2.5 font-medium text-white">{u.name}</td>
+                    <td className="px-4 py-2.5">
+                      <button onClick={() => setSelectedUserId(u.id)} className="font-medium text-white hover:text-indigo-400 transition-colors text-left">
+                        {u.name}
+                      </button>
+                    </td>
                     <td className="px-4 py-2.5 text-slate-400">{u.email}</td>
                     <td className="px-4 py-2.5">
                       <select
@@ -163,10 +199,15 @@ const AdminDashboardPage: React.FC = () => {
                     <td className="px-4 py-2.5 text-slate-400">{u.reminderCount}</td>
                     <td className="px-4 py-2.5 text-slate-400">{u.trialEndsAt ? new Date(u.trialEndsAt).toLocaleDateString() : '—'}</td>
                     <td className="px-4 py-2.5 text-slate-400">{new Date(u.createdAt).toLocaleDateString()}</td>
-                    <td className="px-4 py-2.5 text-right">
-                      <button onClick={() => handleDelete(u.id, u.name)} className="text-slate-500 hover:text-red-400 transition-colors" title="Delete user">
-                        <LuTrash2 className="w-4 h-4" />
-                      </button>
+                    <td className="px-4 py-2.5">
+                      <div className="flex items-center justify-end gap-3">
+                        <button onClick={() => setSelectedUserId(u.id)} className="text-slate-500 hover:text-indigo-400 transition-colors" title="View details">
+                          <LuEye className="w-4 h-4" />
+                        </button>
+                        <button onClick={() => handleDelete(u.id, u.name)} className="text-slate-500 hover:text-red-400 transition-colors" title="Delete user">
+                          <LuTrash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -185,6 +226,14 @@ const AdminDashboardPage: React.FC = () => {
           )}
         </div>
       </main>
+
+      {selectedUserId && (
+        <AdminUserDrawer
+          userId={selectedUserId}
+          onClose={() => setSelectedUserId(null)}
+          onChanged={() => { loadUsers(page, search); loadStats(); }}
+        />
+      )}
     </div>
   );
 };
