@@ -1,5 +1,5 @@
 export const API_BASE_URL =
-  (import.meta.env.VITE_API_URL as string) || 'https://srv1567353.hstgr.cloud/alerthub/api';
+  (import.meta.env.VITE_API_URL as string) || 'https://git-pipeline.metatronhost.in/alert-hub/api';
 
 /** Resolves avatar / upload URLs that the backend returns as relative paths. */
 export function resolveAssetUrl(url: string | null | undefined): string | null {
